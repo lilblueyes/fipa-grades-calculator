@@ -1,0 +1,528 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --background: radial-gradient(circle, #1c2421, #121212);
+  --text-color: #fff;
+  --primary-color: #fff;
+  --secondary-color: #1abc9c;
+  --link-hover-color: #1abc9c;
+  --info-bulle-bg: rgba(26, 188, 156, 0.9);
+  --button-bg: #1abc9c;
+  --button-hover-bg: #1cceaa;
+  --input-bg: #2a2a2a;
+  --border-color: #555;
+  --active-bg-color: #333;
+  --ue-block-bg: #1a1a1a;
+  --ue-block-border-bottom: #444;
+  --ue-results-border-color: #444;
+  --calculate-btn-bg: #444;
+  --calculate-btn-hover-bg: var(--secondary-color);
+  --info-bulle-color: #000000;
+  --footer-link-bg-hover: rgba(26, 188, 156, 0.1);
+  --nav-hover-bg: rgba(26, 188, 156, 0.1);
+  --footer-text-color: var(--text-color);
+  --footer-link-color: var(--secondary-color);
+  --footer-link-hover-bg: rgba(26, 188, 156, 0.1);
+  --math-formula-color: var(--text-color);
+  --button-text-color: #000000;
+  --box-shadow-main: 0 0 10px rgba(0, 0, 0, 0.5);
+  --box-shadow-result: 0 0 5px rgba(0, 0, 0, 0.5);
+  --box-shadow-hover: 0 0 5px rgba(26, 188, 156, 0.5);
+  --box-shadow-info: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+body.light-theme {
+  --background: radial-gradient(circle at center 80%, #6630bd 1%, #ffffff 95%);
+  --text-color: #000000;
+  --primary-color: #000000;
+  --secondary-color: #8a2be2;
+  --link-hover-color: #8a2be2;
+  --info-bulle-bg: rgba(138, 43, 226, 0.9);
+  --button-bg: #8a2be2;
+  --button-hover-bg: #7a1fc2;
+  --input-bg: #f0f0f0;
+  --border-color: #ccc;
+  --active-bg-color: rgba(129, 40, 212, 0.116);
+  --ue-block-bg: #f0f0f0;
+  --ue-block-border-bottom: #ddd;
+  --ue-results-border-color: #ddd;
+  --calculate-btn-bg: #ccc;
+  --calculate-btn-hover-bg: var(--secondary-color);
+  --info-bulle-color: #fff;
+  --footer-link-bg-hover: rgba(97, 17, 172, 0.795);
+  --nav-hover-bg: rgba(138, 43, 226, 0.1);
+  --footer-text-color: var(--text-color);
+  --footer-link-color: #cfb2e2;
+  --footer-link-hover-bg: rgba(138, 43, 226, 0.1);
+  --math-formula-color: var(--text-color);
+  --button-text-color: #ffffff;
+  --box-shadow-main: 0 0 10px rgba(112, 111, 111, 0.3);
+  --box-shadow-result: 0 0 2px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 0 5px rgba(138, 43, 226, 0.5);
+  --box-shadow-info: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--text-color);
+  font-family: "Cabinet Grotesk", sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.scrollable-content {
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.scrollable-content::-webkit-scrollbar {
+  display: none;
+}
+
+header {
+  z-index: 1000;
+}
+
+.scrollable-content {
+  padding-left: 25px;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100px;
+  padding: 20px 0;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 20px;
+  padding-left: 25px;
+}
+
+nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s, background-color 0.3s;
+  margin: 15px 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+nav a:hover {
+  color: var(--secondary-color);
+  background-color: var(--nav-hover-bg);
+}
+
+nav a.active {
+  color: var(--secondary-color);
+  background-color: var(--active-bg-color);
+  font-weight: bold;
+}
+
+nav a.disabled {
+  color: gray;
+  cursor: not-allowed;
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+.logo-container {
+  position: fixed;
+  top: 35px;
+  right: 50px;
+}
+
+.logo-container img {
+  width: 150px;
+  height: auto;
+}
+
+h1 {
+  text-align: center;
+  margin: 30px 0;
+  font-size: 2.2em;
+  padding-top: 90px;
+}
+
+.specialty-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  padding: 50px 0 80px 0;
+}
+
+.specialty-select label {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.styled-select,
+.styled-input {
+  appearance: none;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 8px 12px;
+  color: var(--text-color);
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.styled-select {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path fill="currentColor" d="M0 0l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 5px;
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+.styled-select:hover,
+.styled-input:hover {
+  border-color: var(--secondary-color);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.styled-select:focus,
+.styled-input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.styled-input::-webkit-outer-spin-button,
+.styled-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.styled-input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#ue-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ue-block {
+  display: flex;
+  flex-direction: column;
+  background: var(--ue-block-bg);
+  width: 100%;
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow-main);
+  gap: 15px;
+}
+
+.ue-block h2 {
+  margin: 0;
+  font-size: 1.5em;
+  color: var(--secondary-color);
+  border-bottom: 1px solid var(--ue-block-border-bottom);
+  padding-bottom: 8px;
+}
+
+.ue-content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: stretch;
+  padding-top: 5px;
+}
+
+.separator {
+  width: 1px;
+  background-color: var(--border-color);
+  align-self: stretch;
+}
+
+.ue-inputs {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ue-inputs form label {
+  flex: 1;
+  font-size: 14px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: visible;
+}
+
+.ue-inputs form input[type="number"] {
+  flex: 0 0 60px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.ue-inputs form input[type="number"]:hover {
+  border-color: var(--secondary-color);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.ue-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ue-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.actions-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calculate-btn {
+  background: var(--secondary-color);
+  color: var(--button-text-color);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s, transform 0.2s;
+  font-size: 14px;
+}
+
+.calculate-btn:hover {
+  background: var(--button-hover-bg);
+  transform: translateY(-2px);
+}
+
+.ue-results {
+  background: var(--input-bg);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--ue-results-border-color);
+  box-shadow: var(--box-shadow-result);
+  margin-top: auto;
+  align-self: stretch;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ue-results h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  color: var(--secondary-color);
+  border-bottom: 1px solid var(--ue-results-border-color);
+  padding-bottom: 5px;
+}
+
+.ue-results p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+#calculateAllBtn {
+  margin: 20px auto;
+  display: block;
+  background: var(--calculate-btn-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#calculateAllBtn:hover {
+  background: var(--calculate-btn-hover-bg);
+  transform: translateY(-2px);
+}
+
+.info-bulle-container {
+  position: fixed;
+  bottom: 45px;
+  left: 45px;
+  z-index: 1001;
+}
+
+.info-icon {
+  position: relative;
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--secondary-color);
+}
+
+.info-bulle {
+  visibility: hidden;
+  width: 280px;
+  max-width: 90vw;
+  background-color: var(--info-bulle-bg);
+  color: var(--info-bulle-color);
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1002;
+  bottom: 35px;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: var(--box-shadow-info);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.info-icon:hover .info-bulle,
+.info-bulle-container.active .info-bulle {
+  visibility: visible;
+  opacity: 1;
+}
+
+.info-bulle p {
+  margin: 6px 0;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.info-bulle .math-formula {
+  font-size: 14px;
+  word-wrap: break-word;
+  color: var(--info-bulle-color);
+}
+
+.info-bulle .math-formula .mjx-chtml {
+  max-width: 100%;
+  display: block;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .info-bulle-container {
+    display: none;
+  }
+
+  .ue-content {
+    flex-direction: column;
+  }
+
+  .ue-inputs,
+  .ue-right {
+    flex: none;
+    width: 100%;
+  }
+
+  .separator {
+    display: none;
+  }
+
+  .ue-right {
+    gap: 10px;
+    padding-left: 0;
+  }
+
+  .ue-actions {
+    justify-content: flex-start;
+  }
+
+  .ue-results {
+    max-height: none;
+    align-self: stretch;
+    max-width: 100%;
+  }
+
+  .ue-inputs {
+    gap: 12px;
+  }
+
+  .ue-inputs form > div {
+    margin-bottom: 8px;
+  }
+}
+
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 45px;
+  right: 45px;
+  z-index: 1001;
+}
+
+.theme-toggle-btn:focus {
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--secondary-color);
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  color: var(--footer-text-color);
+}
+
+footer a.github-link {
+  color: var(--footer-link-color);
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s, background-color 0.3s;
+  padding: 8px 4px;
+  border-radius: 4px;
+}
+
+footer a.github-link:hover {
+  color: var(--footer-link-color);
+  background-color: var(--footer-link-bg-hover);
+}

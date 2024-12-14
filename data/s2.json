@@ -1,0 +1,79 @@
+{
+  "SE": [
+    {
+      "ue": "UE 2.1 - Modélisation des systèmes",
+      "courses": [
+        { "name": "Algorithmique fondamentale avec Python", "coef": 1 },
+        { "name": "Analyse numérique", "coef": 1 },
+        { "name": "Caractérisation des Processus aléatoires", "coef": 1 },
+        { "name": "Introduction aux réseaux", "coef": 1 },
+        { "name": "Vecteurs et approximations aléatoires", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 2.2 - Sciences et Technologies",
+      "courses": [
+        { "name": "Ingénierie Système", "coef": 1 },
+        { "name": "Introduction au Langage C", "coef": 1 },
+        { "name": "Projet prototypage de cartes électroniques", "coef": 1 },
+        { "name": "Systèmes de transmission RF", "coef": 1 },
+        { "name": "Systèmes embarqués d'interfaçage et prototypage électronique", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 2.3 - Sciences Humaines et Sociales et langues",
+      "courses": [
+        { "name": "Anglais", "coef": 1 },
+        { "name": "Communication orale", "coef": 1 },
+        { "name": "Analyse du cycle de vie", "coef": 1 },
+        { "name": "Enjeux de la défense", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 2.4 - SP2 : Technique I, qualité",
+      "courses": [
+        { "name": "SP2 - Académique", "coef": 1 },
+        { "name": "SP2 - Professionnelle", "coef": 1 }
+      ]
+    }
+  ],
+  "MECA": [
+    {
+      "ue": "UE 2.1 - Modélisation des systèmes",
+      "courses": [
+        { "name": "Analyse numérique", "coef": 0.5 },
+        { "name": "Commande des systèmes dynamiques", "coef": 0.75 },
+        { "name": "Mécanique des milieux continus", "coef": 1 },
+        { "name": "Outils mathématiques pour l'ingénieur mécanicien", "coef": 0.5 },
+        { "name": "Projet informatique", "coef": 1 },
+        { "name": "Python II - Conception d'algorithmes", "coef": 0.25 }
+      ]
+    },
+    {
+      "ue": "UE 2.2 - Sciences et Technologies",
+      "courses": [
+        { "name": "Actionneurs", "coef": 0.75 },
+        { "name": "Ingénierie Système", "coef": 0.25 },
+        { "name": "Logique, systèmes numériques et microcontrôleurs", "coef": 0.75 },
+        { "name": "Résistance des matériaux", "coef": 0.75 },
+        { "name": "Technologie II - Dimensionnement de liaisons", "coef": 0.75 },
+        { "name": "Transmission de puissance hydraulique", "coef": 0.75 }
+      ]
+    },
+    {
+      "ue": "UE 2.3 - Sciences Humaines et Sociales et langues",
+      "courses": [
+        { "name": "Anglais", "coef": 2 },
+        { "name": "Communication orale", "coef": 1 },
+        { "name": "Analyse du cycle de vie", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 2.4 - SP2 : Technique I, qualité",
+      "courses": [
+        { "name": "SP2 - Académique", "coef": 1 },
+        { "name": "SP2 - Professionnelle", "coef": 1 }
+      ]
+    }
+  ]
+}
