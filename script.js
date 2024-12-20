@@ -29,7 +29,7 @@ function loadSpecialties(semester) {
     .catch((error) => {
       console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
       const ueContainer = document.getElementById("ue-container");
-ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">Erreur lors du chargement des données pour le semestre ${semester}</p>`;
+      ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">Erreur lors du chargement des données pour le semestre ${semester}</p>`;
       updatePageTitle(semester);
       setActiveNav(semester);
     });
@@ -59,18 +59,13 @@ function populateSpecialtySelect() {
 }
 
 function formatSpecialtyName(specialty) {
-  switch (specialty) {
-    case "SE":
-      return "Systèmes Embarqués (SE)";
-    case "MECA":
-      return "Mécanique (MECA)";
-    case "ANO":
-      return "Architecture Navale (ANO)";
-    case "AV":
-      return "Architecture de Véhicules (AV)";
-    default:
-      return specialty;
-  }
+  const names = {
+    SE: "Systèmes Embarqués (SE)",
+    MECA: "Mécanique (MECA)",
+    ANO: "Architecture Navale (ANO)",
+    AV: "Architecture de Véhicules (AV)",
+  };
+  return names[specialty] || specialty;
 }
 
 function applySelectedSpecialty() {
@@ -164,7 +159,7 @@ function renderSpecialty(specialty) {
           <input type="number" id="note-${index}-${sanitizeString(
           course.name
         )}" name="notes[]" placeholder="Note" 
-          class="styled-input" style="width: 73px;" min="0" max="20" step="0.1" />
+            class="styled-input" style="width: 73px;" min="0" max="20" step="0.1" />
           <input type="hidden" name="coeffs[]" value="${course.coef}" />
         `;
       }
@@ -603,42 +598,89 @@ const confettiGenerator = new ConfettiGenerator();
 function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
   const logo = document.getElementById("logo");
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("nav-menu");
+  const hamburgerIcon = hamburger.querySelector("i");
 
-  const updateLogo = (theme) => {
+  function updateLogo(theme) {
     if (theme === "light") {
       logo.src = "assets/logo_ensta_dark.png";
     } else {
       logo.src = "assets/logo_ensta.png";
     }
-  };
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("light-theme");
+    const isLight = document.body.classList.contains("light-theme");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    updateLogo(isLight ? "light" : "dark");
+
+    const icons = document.querySelectorAll(".theme-toggle-btn-mobile i, #themeToggleBtn i");
+    icons.forEach((icon) => {
+      if (isLight) {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+      } else {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+      }
+    });
+  }
 
   const savedTheme = localStorage.getItem("theme") || "dark";
   if (savedTheme === "light") {
     document.body.classList.add("light-theme");
-    themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
   } else {
     document.body.classList.remove("light-theme");
-    themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
   }
 
   updateLogo(savedTheme);
 
-  themeToggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("light-theme");
-    let currentTheme;
-    if (document.body.classList.contains("light-theme")) {
-      themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-      localStorage.setItem("theme", "light");
-      currentTheme = "light";
+  const initialIcon =
+    savedTheme === "light" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  themeToggleBtn.innerHTML = initialIcon;
+  themeToggleBtnMobile.innerHTML = initialIcon;
+  themeToggleBtn.addEventListener("click", toggleTheme);
+  themeToggleBtnMobile.addEventListener("click", toggleTheme);
+
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isActive = navMenu.classList.toggle("active");
+    hamburger.setAttribute("aria-expanded", isActive);
+    document.body.classList.toggle("menu-open", isActive);
+
+    if (isActive) {
+      hamburgerIcon.classList.remove("fa-bars");
+      hamburgerIcon.classList.add("fa-times");
     } else {
-      themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-      localStorage.setItem("theme", "dark");
-      currentTheme = "dark";
+      hamburgerIcon.classList.remove("fa-times");
+      hamburgerIcon.classList.add("fa-bars");
     }
-    updateLogo(currentTheme);
+  });
+
+  const navLinks = navMenu.querySelectorAll("a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("active");
+      hamburger.setAttribute("aria-expanded", false);
+      document.body.classList.remove("menu-open");
+      hamburgerIcon.classList.remove("fa-times");
+      hamburgerIcon.classList.add("fa-bars");
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
+      navMenu.classList.remove("active");
+      hamburger.setAttribute("aria-expanded", false);
+      document.body.classList.remove("menu-open");
+      hamburgerIcon.classList.remove("fa-times");
+      hamburgerIcon.classList.add("fa-bars");
+    }
   });
 });

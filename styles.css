@@ -29,6 +29,7 @@
   --footer-link-hover-bg: rgba(26, 188, 156, 0.1);
   --math-formula-color: var(--text-color);
   --button-text-color: #000000;
+  --menu-bg-color: #2c2c2c;
   --box-shadow-main: 0 0 10px rgba(0, 0, 0, 0.5);
   --box-shadow-result: 0 0 5px rgba(0, 0, 0, 0.5);
   --box-shadow-hover: 0 0 5px rgba(26, 188, 156, 0.5);
@@ -81,6 +82,7 @@ body {
   height: 100%;
   overflow-y: scroll;
   scrollbar-width: none;
+  padding-left: 25px;
 }
 
 .scrollable-content::-webkit-scrollbar {
@@ -89,13 +91,6 @@ body {
 
 header {
   z-index: 1000;
-}
-
-.scrollable-content {
-  padding-left: 25px;
-}
-
-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -443,7 +438,69 @@ h1 {
   overflow-wrap: break-word;
 }
 
-@media (max-width: 768px) {
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 45px;
+  right: 45px;
+  z-index: 1001;
+}
+
+.theme-toggle-btn:focus {
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--secondary-color);
+}
+
+.theme-toggle-btn-mobile {
+  display: none;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  color: var(--footer-text-color);
+}
+
+footer a.github-link {
+  color: var(--footer-link-color);
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s, background-color 0.3s;
+  padding: 8px 4px;
+  border-radius: 4px;
+}
+
+footer a.github-link:hover {
+  color: var(--footer-link-color);
+  background-color: var(--footer-link-bg-hover);
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  cursor: pointer;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1100;
+}
+
+.hamburger:focus {
+  outline: none;
+}
+
+@media (max-width: 767px) {
   .info-bulle-container {
     display: none;
   }
@@ -484,45 +541,80 @@ h1 {
   .ue-inputs form > div {
     margin-bottom: 8px;
   }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--menu-bg-color);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 70px 15px;
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+  }
+
+  nav.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  nav a {
+    font-size: 18px;
+    color: #ffffff;
+    transition: color 0.3s, background-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    margin: 0 0 10px 0;
+    text-decoration: none;
+  }
+
+  .theme-toggle-btn-mobile {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    color: var(--secondary-color);
+  }
+
+  .theme-toggle-btn-mobile i {
+    margin-right: 8px;
+  }
+
+  .hamburger {
+    display: block;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .logo-container,
+  .theme-toggle-btn {
+    display: none;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
 }
 
-.theme-toggle-btn {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  font-size: 24px;
-  cursor: pointer;
-  position: fixed;
-  bottom: 45px;
-  right: 45px;
-  z-index: 1001;
-}
-
-.theme-toggle-btn:focus {
-  outline: none;
-}
-
-.theme-toggle-btn:hover {
-  color: var(--secondary-color);
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-  color: var(--footer-text-color);
-}
-
-footer a.github-link {
-  color: var(--footer-link-color);
-  text-decoration: none;
-  font-size: 16px;
-  transition: color 0.3s, background-color 0.3s;
-  padding: 8px 4px;
-  border-radius: 4px;
-}
-
-footer a.github-link:hover {
-  color: var(--footer-link-color);
-  background-color: var(--footer-link-bg-hover);
+@media (min-width: 768px) {
+  .theme-toggle-btn-mobile {
+    display: none;
+  }
 }

@@ -28,13 +28,21 @@
   <body>
     <div class="scrollable-content">
       <header>
-        <nav>
-          <a href="#S1">S1</a>
-          <a href="#S2">S2</a>
-          <a href="#S3">S3</a>
-          <a href="#S4" class="disabled">S4</a>
-          <a href="#S5" class="disabled">S5</a>
-          <a href="#S6" class="disabled">S6</a>
+        <button id="hamburger" class="hamburger" aria-label="Menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <nav id="nav-menu">
+            <a href="#S1">S1</a>
+            <a href="#S2">S2</a>
+            <a href="#S3">S3</a>
+            <a href="" class="disabled">S4</a>
+            <a href="" class="disabled">S5</a>
+            <a href="" class="disabled">S6</a>
+
+          <button id="themeToggleBtn-mobile" class="theme-toggle-btn-mobile">
+            <i class="fas fa-moon"></i>
+          </button>
         </nav>
       </header>
 
