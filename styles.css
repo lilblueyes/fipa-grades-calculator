@@ -359,24 +359,6 @@ h1 {
   color: var(--text-color);
 }
 
-#calculateAllBtn {
-  margin: 20px auto;
-  display: block;
-  background: var(--calculate-btn-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-#calculateAllBtn:hover {
-  background: var(--calculate-btn-hover-bg);
-  transform: translateY(-2px);
-}
-
 .info-bulle-container {
   position: fixed;
   bottom: 45px;

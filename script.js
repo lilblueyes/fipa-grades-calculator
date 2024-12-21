@@ -198,33 +198,11 @@ function renderSpecialty(specialty) {
       <p>Notes nécessaires pour valider : -</p>
     `;
     ueRight.appendChild(ueResults);
-
     ueContent.appendChild(ueInputs);
     ueContent.appendChild(separator);
     ueContent.appendChild(ueRight);
-
     ueBlock.appendChild(ueContent);
     ueContainer.appendChild(ueBlock);
-
-    const ueSemesterMatch = ue.ue.match(/UE\s*(\d+)\./i);
-    const ueSemester = ueSemesterMatch ? ueSemesterMatch[1] : null;
-
-    if (ueSemester) {
-      const spNumber = ueSemester;
-
-      const inputs = ueBlock.querySelectorAll("input[type='number']");
-
-      inputs.forEach((input) => {
-        if (input.id.startsWith(`sp-acad-`)) {
-          const spNumbers = input.getAttribute("data-sp-numbers").split(",");
-          input.addEventListener("input", () => {
-            spNumbers.forEach((spNum) => {
-              updateSPAcademic(spNum, specialty);
-            });
-          });
-        }
-      });
-    }
   });
 }
 
@@ -264,9 +242,12 @@ function calculateAverageAndNeededPoints(
   });
 
   const currentAverage = totalCoefficients > 0 ? currentTotal / totalCoefficients : 0;
-  const neededPoints = targetAverage * totalCoefficients - currentTotal;
+  const neededPoints = Math.max(0, targetAverage * totalCoefficients - currentTotal);
 
-  const neededGrade = remainingCoefficients > 0 ? neededPoints / remainingCoefficients : null;
+  const neededGrade =
+    remainingCoefficients > 0
+      ? Math.ceil((neededPoints / remainingCoefficients) * 100) / 100
+      : null;
 
   return { currentAverage, neededGrade };
 }
@@ -283,28 +264,6 @@ window.addEventListener("hashchange", () => {
 });
 
 loadSpecialties(currentSemester);
-
-document.getElementById("calculateAllBtn").addEventListener("click", () => {
-  const ueBlocks = document.querySelectorAll(".ue-block");
-
-  ueBlocks.forEach((ueBlock, index) => {
-    calculateSingleUE(ueBlock, index);
-  });
-
-  const specialtySelect = document.getElementById("specialty");
-  const currentSpecialty = specialtySelect.value;
-
-  const spInputs = document.querySelectorAll('input[id*="sp-acad-"]');
-  spInputs.forEach((spInput) => {
-    const spMatch = spInput.id.match(/sp-acad-(\d+)/i);
-    const spNumber = spMatch ? spMatch[1] : null;
-    if (spNumber) {
-      updateSPAcademic(spNumber, currentSpecialty);
-    }
-  });
-
-  checkAndTriggerConfetti(currentSpecialty);
-});
 
 function calculateSingleUE(ueBlock, index) {
   const targetAverage = parseFloat(document.getElementById(`moyenneCible-${index}`).value);
@@ -341,7 +300,9 @@ function calculateSingleUE(ueBlock, index) {
 
   if (missingNotesCount > 0) {
     if (neededGrade !== null) {
-      if (neededGrade > 20) {
+      if (currentAverage >= targetAverage) {
+        ueResults.innerHTML += `<p style="color: green; font-weight: bold;">La moyenne cible est déjà atteinte !</p>`;
+      } else if (neededGrade > 20) {
         ueResults.innerHTML += `<p style="color: red; font-weight: bold;">Impossible d'atteindre la moyenne cible...</p>`;
       } else {
         if (missingNotesCount > 1) {
@@ -356,71 +317,38 @@ function calculateSingleUE(ueBlock, index) {
       ueResults.innerHTML += `<p>Toutes les notes sont déjà renseignées.</p>`;
     }
   } else {
-    if (currentAverage >= 10) {
+    if (currentAverage >= targetAverage) {
       ueResults.innerHTML += `<p style="color: green; font-weight: bold;">Bravo, l'UE est validée !</p>`;
-      const currentUE = ueBlock.getAttribute("data-ue-id");
-      if (currentUE.toLowerCase().includes("ue4")) {
+
+      const currentUE = ueBlock.getAttribute("data-ue-id").toLowerCase();
+      const specialtySelect = document.getElementById("specialty");
+      const specialty = specialtySelect.value;
+      const ueName = specialties[specialty].find((ue) => sanitizeString(ue.ue) === currentUE)?.ue;
+      const ueMatch = ueName?.toLowerCase().match(/ue\s*\d+\.4/);
+
+      if (ueMatch) {
         triggerConfetti();
+
+        const ueContainer = document.getElementById("ue-container");
+        const existingMessage = ueContainer.querySelector("#semester-valid-message");
+
+        if (!existingMessage) {
+          const semesterMessage = document.createElement("p");
+          semesterMessage.id = "semester-valid-message";
+          semesterMessage.textContent = "LE SEMESTRE EST VALIDÉ !";
+          semesterMessage.style.cssText =
+            "text-align: center; color: white; font-size: 1.5em; font-weight: bold; margin-top: 20px;";
+          ueContainer.appendChild(semesterMessage);
+        }
       }
     } else {
       ueResults.innerHTML += `<p style="color: red; font-weight: bold;">L'UE n'est pas validée, team rattrapage...</p>`;
     }
   }
-
-  const currentUE = ueBlock.getAttribute("data-ue-id");
-  const ueSemesterMatch = currentUE.match(/ue\s*(\d+)\./i);
-  const ueSemester = ueSemesterMatch ? ueSemesterMatch[1] : null;
-
-  if (ueSemester) {
-    const specialtySelect = document.getElementById("specialty");
-    const currentSpecialty = specialtySelect.value;
-
-    updateSPAcademic(ueSemester, currentSpecialty);
-  }
 }
 
 function validateNotes(notes) {
   return notes.every((note) => note === null || (note >= 0 && note <= 20));
-}
-
-function updateSPAcademic(spNumber, specialty) {
-  if (!spNumber || !specialty) return;
-
-  const associatedUEIds = specialties[specialty]
-    .filter((ue) =>
-      ue.courses.some((course) => {
-        const spMatches = [...course.name.matchAll(/SP(\d+)/gi)];
-        const spNumbers = spMatches.map((match) => match[1]);
-        return spNumbers.includes(spNumber);
-      })
-    )
-    .map((ue) => sanitizeString(ue.ue));
-
-  let totalAverage = 0;
-  let count = 0;
-
-  associatedUEIds.forEach((ueId) => {
-    const ueBlock = document.querySelector(`.ue-block[data-ue-id="${ueId}"]`);
-    if (ueBlock) {
-      const ueResults = ueBlock.querySelector(".ue-results p");
-      if (ueResults) {
-        const moyenneText = ueResults.textContent;
-        const moyenneMatch = moyenneText.match(/moyenne actuelle\s*:\s*(\d+(\.\d+)?)/i);
-        if (moyenneMatch) {
-          totalAverage += parseFloat(moyenneMatch[1]);
-          count++;
-        }
-      }
-    }
-  });
-
-  const finalAverage = count > 0 ? (totalAverage / count).toFixed(2) : null;
-  const spAcadInputs = document.querySelectorAll(`input[id*="sp-acad-${spNumber}"]`);
-  spAcadInputs.forEach((spAcadInput) => {
-    if (finalAverage !== null) {
-      spAcadInput.value = finalAverage;
-    }
-  });
 }
 
 function checkAndTriggerConfetti(specialty) {
@@ -598,6 +526,7 @@ const confettiGenerator = new ConfettiGenerator();
 function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
