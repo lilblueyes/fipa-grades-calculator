@@ -141,7 +141,7 @@ nav a.disabled {
 
 .logo-container {
   position: fixed;
-  top: 35px;
+  top: 50px;
   right: 50px;
 }
 
@@ -315,6 +315,11 @@ h1 {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.actions-left input {
+  flex: none;
+  width: 30%;
 }
 
 .calculate-btn {
@@ -600,3 +605,84 @@ footer a.github-link:hover {
     display: none;
   }
 }
+
+@media only screen and (max-width: 768px) {
+  #page-title {
+    font-size: 1.5em;
+    margin: 35px;
+  }
+
+  .specialty-select {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 15px 0;
+  }
+
+  .specialty-select label {
+    margin-right: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+
+  .styled-select {
+    width: 80%;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 1em;
+  }
+
+  .scrollable-content {
+    padding: 0 15px;
+  }
+
+  .ue-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .actions-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .actions-left label {
+    margin-bottom: 0;
+    font-size: 1em;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .actions-left input {
+    padding: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+    flex: none;
+    width: 20%;
+    max-width: 60px;
+  }
+
+  .calculate-btn {
+    padding: 8px 25px;
+    font-size: 1em;
+    cursor: pointer;
+    flex-shrink: 0;
+    align-self: center;
+    margin: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ue-content {
+    flex-direction: column;
+  }
+}
+

@@ -98,6 +98,11 @@ function renderSpecialty(specialty) {
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
 
+    const hasMultipleNotes = ue.courses.some((course) => course.grades && course.grades.length > 1);
+    if (hasMultipleNotes) {
+      ueBlock.classList.add("multiple-notes");
+    }
+
     const ueId = sanitizeString(ue.ue);
     ueBlock.setAttribute("data-ue-id", ueId);
 
