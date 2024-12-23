@@ -28,23 +28,23 @@
   <body>
     <div class="scrollable-content">
       <header>
-        <button id="hamburger" class="hamburger" aria-label="Menu" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
+        <div class="hamburger-container">
+          <button id="hamburger" class="hamburger">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
 
         <nav id="nav-menu">
-            <a href="#S1">S1</a>
-            <a href="#S2">S2</a>
-            <a href="#S3">S3</a>
-            <a href="" class="disabled">S4</a>
-            <a href="" class="disabled">S5</a>
-            <a href="" class="disabled">S6</a>
-
-          <button id="themeToggleBtn-mobile" class="theme-toggle-btn-mobile">
-            <i class="fas fa-moon"></i>
-          </button>
+          <a href="#S1">S1</a>
+          <a href="#S2">S2</a>
+          <a href="#S3">S3</a>
+          <a href="" class="disabled">S4</a>
+          <a href="" class="disabled">S5</a>
+          <a href="" class="disabled">S6</a>
         </nav>
       </header>
+
+      <div id="overlay" class="overlay"></div>
 
       <div class="logo-container">
         <img id="logo" src="assets/logo_ensta.png" alt="ENSTA Bretagne" />
