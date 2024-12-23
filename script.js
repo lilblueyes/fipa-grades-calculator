@@ -131,7 +131,7 @@ function renderSpecialty(specialty) {
           div.innerHTML = `
             <label for="sp-acad-${spNumbersString}-${index}">${course.name} (coef ${course.coef}) :</label>
             <input type="text" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note" 
-            class="styled-input" style="width: 73px;" data-sp-numbers="${spNumbersString}" />
+            class="styled-input" data-sp-numbers="${spNumbersString}" />
             <input type="hidden" name="coeffs[]" value="${course.coef}" />
           `;
         }
@@ -142,8 +142,7 @@ function renderSpecialty(specialty) {
               <input type="text" id="grade-${index}-${sanitizeString(
               course.name
             )}-${i}" name="grades[]" 
-              placeholder="${grade.name}" class="styled-input" 
-              style="width: 73px; margin-left: 5px;" />
+              placeholder="${grade.name}" class="styled-input"/>
               <input type="hidden" name="gradeCoeffs[]" value="${grade.coef}" />
             `
           )
@@ -163,7 +162,7 @@ function renderSpecialty(specialty) {
           <input type="text" id="note-${index}-${sanitizeString(
           course.name
         )}" name="notes[]" placeholder="Note" 
-            class="styled-input" style="width: 73px;" />
+            class="styled-input"/>
           <input type="hidden" name="coeffs[]" value="${course.coef}" />
         `;
       }
@@ -564,14 +563,14 @@ const confettiGenerator = new ConfettiGenerator();
 function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggleBtn");
-  const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
   const logo = document.getElementById("logo");
   const hamburger = document.getElementById("hamburger");
   const navMenu = document.getElementById("nav-menu");
   const hamburgerIcon = hamburger.querySelector("i");
+  const icon = themeToggleBtn.querySelector("i");
+  const overlay = document.getElementById("overlay");
 
   function updateLogo(theme) {
     if (theme === "light") {
@@ -587,16 +586,21 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("theme", isLight ? "light" : "dark");
     updateLogo(isLight ? "light" : "dark");
 
-    const icons = document.querySelectorAll(".theme-toggle-btn-mobile i, #themeToggleBtn i");
-    icons.forEach((icon) => {
-      if (isLight) {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
-      } else {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
-      }
-    });
+    if (isLight) {
+      icon.classList.remove("fa-moon");
+      icon.classList.add("fa-sun");
+    } else {
+      icon.classList.remove("fa-sun");
+      icon.classList.add("fa-moon");
+    }
+  }
+
+  function updateToggleZIndex() {
+    if (overlay.classList.contains("active")) {
+      themeToggleBtn.style.zIndex = "800";
+    } else {
+      themeToggleBtn.style.zIndex = "";
+    }
   }
 
   const savedTheme = localStorage.getItem("theme") || "dark";
@@ -608,26 +612,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateLogo(savedTheme);
 
-  const initialIcon =
-    savedTheme === "light" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-  themeToggleBtn.innerHTML = initialIcon;
-  themeToggleBtnMobile.innerHTML = initialIcon;
+  if (savedTheme === "light") {
+    icon.classList.remove("fa-moon");
+    icon.classList.add("fa-sun");
+  } else {
+    icon.classList.remove("fa-sun");
+    icon.classList.add("fa-moon");
+  }
+
   themeToggleBtn.addEventListener("click", toggleTheme);
-  themeToggleBtnMobile.addEventListener("click", toggleTheme);
 
   hamburger.addEventListener("click", (e) => {
     e.stopPropagation();
     const isActive = navMenu.classList.toggle("active");
     hamburger.setAttribute("aria-expanded", isActive);
     document.body.classList.toggle("menu-open", isActive);
-
-    if (isActive) {
-      hamburgerIcon.classList.remove("fa-bars");
-      hamburgerIcon.classList.add("fa-times");
-    } else {
-      hamburgerIcon.classList.remove("fa-times");
-      hamburgerIcon.classList.add("fa-bars");
-    }
+    overlay.classList.toggle("active", isActive);
+    updateToggleZIndex();
   });
 
   const navLinks = navMenu.querySelectorAll("a");
@@ -636,18 +637,31 @@ document.addEventListener("DOMContentLoaded", () => {
       navMenu.classList.remove("active");
       hamburger.setAttribute("aria-expanded", false);
       document.body.classList.remove("menu-open");
-      hamburgerIcon.classList.remove("fa-times");
-      hamburgerIcon.classList.add("fa-bars");
+      overlay.classList.remove("active");
+      updateToggleZIndex();
     });
+  });
+
+  overlay.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+    hamburger.setAttribute("aria-expanded", false);
+    document.body.classList.remove("menu-open");
+    overlay.classList.remove("active");
+    updateToggleZIndex();
   });
 
   document.addEventListener("click", (event) => {
     if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
-      navMenu.classList.remove("active");
-      hamburger.setAttribute("aria-expanded", false);
-      document.body.classList.remove("menu-open");
-      hamburgerIcon.classList.remove("fa-times");
-      hamburgerIcon.classList.add("fa-bars");
+      const wasActive = navMenu.classList.contains("active");
+      if (wasActive) {
+        navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", false);
+        document.body.classList.remove("menu-open");
+        overlay.classList.remove("active");
+        updateToggleZIndex();
+      }
     }
   });
+
+  updateToggleZIndex();
 });

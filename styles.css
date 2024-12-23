@@ -34,6 +34,7 @@
   --box-shadow-result: 0 0 5px rgba(0, 0, 0, 0.5);
   --box-shadow-hover: 0 0 5px rgba(26, 188, 156, 0.5);
   --box-shadow-info: 0 0 10px rgba(0, 0, 0, 0.5);
+  --hamburger-color: var(--secondary-color);
 }
 
 body.light-theme {
@@ -65,6 +66,7 @@ body.light-theme {
   --box-shadow-result: 0 0 2px rgba(0, 0, 0, 0.1);
   --box-shadow-hover: 0 0 5px rgba(138, 43, 226, 0.5);
   --box-shadow-info: 0 0 10px rgba(0, 0, 0, 0.3);
+  --hamburger-color: var(--text-color);
 }
 
 html,
@@ -100,6 +102,24 @@ header {
   height: 100%;
   width: 100px;
   padding: 20px 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 900;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 nav {
@@ -148,6 +168,7 @@ nav a.disabled {
 .logo-container img {
   width: 150px;
   height: auto;
+  z-index: 50;
 }
 
 h1 {
@@ -214,6 +235,10 @@ h1 {
   -moz-appearance: textfield;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.ue-block{
+  z-index: 400;
 }
 
 #ue-container {
@@ -309,6 +334,11 @@ h1 {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.ue-inputs input {
+  width: 73px;
+  margin-left: 5px;
 }
 
 .actions-left {
@@ -445,10 +475,6 @@ h1 {
   color: var(--secondary-color);
 }
 
-.theme-toggle-btn-mobile {
-  display: none;
-}
-
 footer {
   text-align: center;
   padding: 20px;
@@ -474,24 +500,106 @@ footer a.github-link:hover {
   display: none;
   background: none;
   border: none;
-  color: var(--text-color);
+  color: var(--hamburger-color);
   font-size: 24px;
+  position: absolute;
   cursor: pointer;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1100;
+  z-index: 1001;
 }
 
 .hamburger:focus {
   outline: none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1200px) {
+  .scrollable-content {
+    height: 100%;
+    padding-left: 0px;
+    position: relative;
+  }
+
+  header {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    top: 20px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .hamburger {
+    position: static;
+    display: block;
+  }
+
   .info-bulle-container {
     display: none;
   }
 
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--menu-bg-color);
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 70px 15px;
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+    z-index: 1100;
+  }
+
+  nav.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  nav a {
+    font-size: 18px;
+    color: #ffffff;
+    transition: color 0.3s, background-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    margin: 0 0 10px 0;
+    text-decoration: none;
+  }
+
+  .logo-container {
+    display: none;
+  }
+
+  .theme-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    bottom: auto;
+    z-index: 1001;
+    color: var(--hamburger-color);
+  }
+
+  .theme-toggle-btn:hover {
+    color: var(--hamburger-color);
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
   .ue-content {
     flex-direction: column;
   }
@@ -500,6 +608,11 @@ footer a.github-link:hover {
   .ue-right {
     flex: none;
     width: 100%;
+  }
+
+  .ue-inputs input {
+    width: 63px;
+    margin-left: 3px;
   }
 
   .separator {
@@ -529,86 +642,9 @@ footer a.github-link:hover {
     margin-bottom: 8px;
   }
 
-  nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background-color: var(--menu-bg-color);
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 70px 15px;
-    transform: translateX(-100%);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
-    z-index: 1000;
-  }
-
-  nav.active {
-    transform: translateX(0);
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  nav a {
-    font-size: 18px;
-    color: #ffffff;
-    transition: color 0.3s, background-color 0.3s;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 8px 10px;
-    margin: 0 0 10px 0;
-    text-decoration: none;
-  }
-
-  .theme-toggle-btn-mobile {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    transition: color 0.3s;
-    display: flex;
-    align-items: center;
-    color: var(--secondary-color);
-  }
-
-  .theme-toggle-btn-mobile i {
-    margin-right: 8px;
-  }
-
-  .hamburger {
-    display: block;
-    position: absolute;
-    left: 20px;
-    top: 20px;
-    cursor: pointer;
-    z-index: 1001;
-  }
-
-  .logo-container,
-  .theme-toggle-btn {
-    display: none;
-  }
-
-  body.menu-open {
-    overflow: hidden;
-  }
-}
-
-@media (min-width: 768px) {
-  .theme-toggle-btn-mobile {
-    display: none;
-  }
-}
-
-@media only screen and (max-width: 768px) {
   #page-title {
     font-size: 1.5em;
+    padding-top: 45px;
     margin: 35px;
   }
 
@@ -632,8 +668,12 @@ footer a.github-link:hover {
     font-size: 1em;
   }
 
-  .scrollable-content {
-    padding: 0 15px;
+  #ue-container {
+    width: 95%;
+  }
+
+  .ue-content {
+    flex-direction: column;
   }
 
   .ue-actions {
@@ -662,11 +702,11 @@ footer a.github-link:hover {
   }
 
   .actions-left input {
-    padding: 8px;
+    padding: 6px;
     font-size: 1em;
     box-sizing: border-box;
     flex: none;
-    width: 20%;
+    width: 15%;
     max-width: 60px;
   }
 
@@ -680,9 +720,13 @@ footer a.github-link:hover {
   }
 }
 
-@media (max-width: 767px) {
-  .ue-content {
-    flex-direction: column;
+@media (min-width: 500px) {
+  .hamburger {
+    padding-left: 20px;
+  }
+
+  .theme-toggle-btn {
+    right: 15px;
   }
 }
 
