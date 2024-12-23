@@ -371,10 +371,18 @@ function calculateSingleUE(ueBlock, index) {
 
 function validateNotesInput(inputs) {
   const regex = /^(\d{1,2}([.,]\d{1,2})?)$/;
-  return inputs.every((input) => {
+  const isFormatValid = inputs.every((input) => {
     if (input.trim() === "") return true;
     return regex.test(input.replace(",", "."));
   });
+
+  const isRangeValid = inputs.every((input) => {
+    if (input.trim() === "") return true;
+    const number = parseFloat(input.replace(",", "."));
+    return number >= 0 && number <= 20;
+  });
+
+  return isFormatValid && isRangeValid;
 }
 
 function validateNotes(notes) {
@@ -557,96 +565,89 @@ function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
 
-document.addEventListener("DOMContentLoaded"),
-  () => {
-    const themeToggleBtn = document.getElementById("themeToggleBtn");
-    const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
-    const logo = document.getElementById("logo");
-    const hamburger = document.getElementById("hamburger");
-    const navMenu = document.getElementById("nav-menu");
-    const hamburgerIcon = hamburger.querySelector("i");
+document.addEventListener("DOMContentLoaded", () => {
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
+  const logo = document.getElementById("logo");
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("nav-menu");
+  const hamburgerIcon = hamburger.querySelector("i");
 
-    function updateLogo(theme) {
-      if (theme === "light") {
-        logo.src = "assets/logo_ensta_dark.png";
-      } else {
-        logo.src = "assets/logo_ensta.png";
-      }
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("light-theme");
-      const isLight = document.body.classList.contains("light-theme");
-      localStorage.setItem("theme", isLight ? "light" : "dark");
-      updateLogo(isLight ? "light" : "dark");
-
-      const icons = document.querySelectorAll(".theme-toggle-btn-mobile i, #themeToggleBtn i");
-      icons.forEach((icon) => {
-        if (isLight) {
-          icon.classList.remove("fa-moon");
-          icon.classList.add("fa-sun");
-        } else {
-          icon.classList.remove("fa-sun");
-          icon.classList.add("fa-moon");
-        }
-      });
-    }
-
-    const savedTheme = localStorage.getItem("theme") || "dark";
-    if (savedTheme === "light") {
-      document.body.classList.add("light-theme");
+  function updateLogo(theme) {
+    if (theme === "light") {
+      logo.src = "assets/logo_ensta_dark.png";
     } else {
-      document.body.classList.remove("light-theme");
+      logo.src = "assets/logo_ensta.png";
     }
+  }
 
-    updateLogo(savedTheme);
+  function toggleTheme() {
+    document.body.classList.toggle("light-theme");
+    const isLight = document.body.classList.contains("light-theme");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    updateLogo(isLight ? "light" : "dark");
 
-    const initialIcon =
-      savedTheme === "light" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    themeToggleBtn.innerHTML = initialIcon;
-    themeToggleBtnMobile.innerHTML = initialIcon;
-    themeToggleBtn.addEventListener("click", toggleTheme);
-    themeToggleBtnMobile.addEventListener("click", toggleTheme);
-
-    hamburger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isActive = navMenu.classList.toggle("active");
-      hamburger.setAttribute("aria-expanded", isActive);
-      document.body.classList.toggle("menu-open", isActive);
-
-      if (isActive) {
-        hamburgerIcon.classList.remove("fa-bars");
-        hamburgerIcon.classList.add("fa-times");
+    const icons = document.querySelectorAll(".theme-toggle-btn-mobile i, #themeToggleBtn i");
+    icons.forEach((icon) => {
+      if (isLight) {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
       } else {
-        hamburgerIcon.classList.remove("fa-times");
-        hamburgerIcon.classList.add("fa-bars");
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
       }
     });
+  }
 
-    const navLinks = navMenu.querySelectorAll("a");
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        navMenu.classList.remove("active");
-        hamburger.setAttribute("aria-expanded", false);
-        document.body.classList.remove("menu-open");
-        hamburgerIcon.classList.remove("fa-times");
-        hamburgerIcon.classList.add("fa-bars");
-      });
-    });
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  if (savedTheme === "light") {
+    document.body.classList.add("light-theme");
+  } else {
+    document.body.classList.remove("light-theme");
+  }
 
-    document.addEventListener("click", (event) => {
-      if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
-        navMenu.classList.remove("active");
-        hamburger.setAttribute("aria-expanded", false);
-        document.body.classList.remove("menu-open");
-        hamburgerIcon.classList.remove("fa-times");
-        hamburgerIcon.classList.add("fa-bars");
-      }
-    });
+  updateLogo(savedTheme);
 
-    document.querySelectorAll('input[type="text"]').forEach((input) => {
-      input.addEventListener("input", (e) => {
-        input.value = input.value.replace(/[^0-9.,]/g, "");
-      });
+  const initialIcon =
+    savedTheme === "light" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  themeToggleBtn.innerHTML = initialIcon;
+  themeToggleBtnMobile.innerHTML = initialIcon;
+  themeToggleBtn.addEventListener("click", toggleTheme);
+  themeToggleBtnMobile.addEventListener("click", toggleTheme);
+
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isActive = navMenu.classList.toggle("active");
+    hamburger.setAttribute("aria-expanded", isActive);
+    document.body.classList.toggle("menu-open", isActive);
+
+    if (isActive) {
+      hamburgerIcon.classList.remove("fa-bars");
+      hamburgerIcon.classList.add("fa-times");
+    } else {
+      hamburgerIcon.classList.remove("fa-times");
+      hamburgerIcon.classList.add("fa-bars");
+    }
+  });
+
+  const navLinks = navMenu.querySelectorAll("a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("active");
+      hamburger.setAttribute("aria-expanded", false);
+      document.body.classList.remove("menu-open");
+      hamburgerIcon.classList.remove("fa-times");
+      hamburgerIcon.classList.add("fa-bars");
     });
-  };
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
+      navMenu.classList.remove("active");
+      hamburger.setAttribute("aria-expanded", false);
+      document.body.classList.remove("menu-open");
+      hamburgerIcon.classList.remove("fa-times");
+      hamburgerIcon.classList.add("fa-bars");
+    }
+  });
+});
