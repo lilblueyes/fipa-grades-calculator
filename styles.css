@@ -686,3 +686,12 @@ footer a.github-link:hover {
   }
 }
 
+@media (max-width: 1024px) {
+  input[type="text"],
+  input[type="number"],
+  select {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
