@@ -29,7 +29,7 @@ function loadSpecialties(semester) {
     .catch((error) => {
       console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
       const ueContainer = document.getElementById("ue-container");
-ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">Erreur lors du chargement des données pour le semestre ${semester}</p>`;
+      ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">Erreur lors du chargement des données pour le semestre ${semester}</p>`;
       updatePageTitle(semester);
       setActiveNav(semester);
     });
@@ -59,18 +59,13 @@ function populateSpecialtySelect() {
 }
 
 function formatSpecialtyName(specialty) {
-  switch (specialty) {
-    case "SE":
-      return "Systèmes Embarqués (SE)";
-    case "MECA":
-      return "Mécanique (MECA)";
-    case "ANO":
-      return "Architecture Navale (ANO)";
-    case "AV":
-      return "Architecture de Véhicules (AV)";
-    default:
-      return specialty;
-  }
+  const names = {
+    SE: "Systèmes Embarqués (SE)",
+    MECA: "Mécanique (MECA)",
+    ANO: "Architecture Navale (ANO)",
+    AV: "Architecture de Véhicules (AV)",
+  };
+  return names[specialty] || specialty;
 }
 
 function applySelectedSpecialty() {
@@ -103,6 +98,11 @@ function renderSpecialty(specialty) {
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
 
+    const hasMultipleNotes = ue.courses.some((course) => course.grades && course.grades.length > 1);
+    if (hasMultipleNotes) {
+      ueBlock.classList.add("multiple-notes");
+    }
+
     const ueId = sanitizeString(ue.ue);
     ueBlock.setAttribute("data-ue-id", ueId);
 
@@ -130,9 +130,8 @@ function renderSpecialty(specialty) {
 
           div.innerHTML = `
             <label for="sp-acad-${spNumbersString}-${index}">${course.name} (coef ${course.coef}) :</label>
-            <input type="number" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note" 
-            class="styled-input" style="width: 73px;" min="0" max="20" step="0.1" 
-            data-sp-numbers="${spNumbersString}" />
+            <input type="text" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note" 
+            class="styled-input" data-sp-numbers="${spNumbersString}" />
             <input type="hidden" name="coeffs[]" value="${course.coef}" />
           `;
         }
@@ -140,11 +139,10 @@ function renderSpecialty(specialty) {
         let gradeInputs = course.grades
           .map(
             (grade, i) => `
-              <input type="number" id="grade-${index}-${sanitizeString(
+              <input type="text" id="grade-${index}-${sanitizeString(
               course.name
             )}-${i}" name="grades[]" 
-              placeholder="${grade.name}" class="styled-input" min="0" max="20" step="0.1" 
-              style="width: 73px; margin-left: 5px;" />
+              placeholder="${grade.name}" class="styled-input"/>
               <input type="hidden" name="gradeCoeffs[]" value="${grade.coef}" />
             `
           )
@@ -161,10 +159,10 @@ function renderSpecialty(specialty) {
           <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
           course.coef
         }) :</label>
-          <input type="number" id="note-${index}-${sanitizeString(
+          <input type="text" id="note-${index}-${sanitizeString(
           course.name
         )}" name="notes[]" placeholder="Note" 
-          class="styled-input" style="width: 73px;" min="0" max="20" step="0.1" />
+            class="styled-input"/>
           <input type="hidden" name="coeffs[]" value="${course.coef}" />
         `;
       }
@@ -185,7 +183,7 @@ function renderSpecialty(specialty) {
     ueActions.innerHTML = `
       <div class="actions-left">
         <label for="moyenneCible-${index}">Moyenne cible :</label>
-        <input type="number" id="moyenneCible-${index}" value="10" min="0" max="20" step="0.1" class="styled-input">
+        <input type="text" id="moyenneCible-${index}" value="10" class="styled-input" />
       </div>
       <button class="calculate-btn">Calculer</button>
     `;
@@ -203,33 +201,11 @@ function renderSpecialty(specialty) {
       <p>Notes nécessaires pour valider : -</p>
     `;
     ueRight.appendChild(ueResults);
-
     ueContent.appendChild(ueInputs);
     ueContent.appendChild(separator);
     ueContent.appendChild(ueRight);
-
     ueBlock.appendChild(ueContent);
     ueContainer.appendChild(ueBlock);
-
-    const ueSemesterMatch = ue.ue.match(/UE\s*(\d+)\./i);
-    const ueSemester = ueSemesterMatch ? ueSemesterMatch[1] : null;
-
-    if (ueSemester) {
-      const spNumber = ueSemester;
-
-      const inputs = ueBlock.querySelectorAll("input[type='number']");
-
-      inputs.forEach((input) => {
-        if (input.id.startsWith(`sp-acad-`)) {
-          const spNumbers = input.getAttribute("data-sp-numbers").split(",");
-          input.addEventListener("input", () => {
-            spNumbers.forEach((spNum) => {
-              updateSPAcademic(spNum, specialty);
-            });
-          });
-        }
-      });
-    }
   });
 }
 
@@ -269,9 +245,12 @@ function calculateAverageAndNeededPoints(
   });
 
   const currentAverage = totalCoefficients > 0 ? currentTotal / totalCoefficients : 0;
-  const neededPoints = targetAverage * totalCoefficients - currentTotal;
+  const neededPoints = Math.max(0, targetAverage * totalCoefficients - currentTotal);
 
-  const neededGrade = remainingCoefficients > 0 ? neededPoints / remainingCoefficients : null;
+  const neededGrade =
+    remainingCoefficients > 0
+      ? Math.ceil((neededPoints / remainingCoefficients) * 100) / 100
+      : null;
 
   return { currentAverage, neededGrade };
 }
@@ -289,40 +268,34 @@ window.addEventListener("hashchange", () => {
 
 loadSpecialties(currentSemester);
 
-document.getElementById("calculateAllBtn").addEventListener("click", () => {
-  const ueBlocks = document.querySelectorAll(".ue-block");
-
-  ueBlocks.forEach((ueBlock, index) => {
-    calculateSingleUE(ueBlock, index);
-  });
-
-  const specialtySelect = document.getElementById("specialty");
-  const currentSpecialty = specialtySelect.value;
-
-  const spInputs = document.querySelectorAll('input[id*="sp-acad-"]');
-  spInputs.forEach((spInput) => {
-    const spMatch = spInput.id.match(/sp-acad-(\d+)/i);
-    const spNumber = spMatch ? spMatch[1] : null;
-    if (spNumber) {
-      updateSPAcademic(spNumber, currentSpecialty);
-    }
-  });
-
-  checkAndTriggerConfetti(currentSpecialty);
-});
-
 function calculateSingleUE(ueBlock, index) {
-  const targetAverage = parseFloat(document.getElementById(`moyenneCible-${index}`).value);
+  const targetAverageInput = document.getElementById(`moyenneCible-${index}`).value;
+  const targetAverage = parseFloat(targetAverageInput.replace(",", "."));
   const form = ueBlock.querySelector("form");
 
   const formData = new FormData(form);
-  const notes = formData.getAll("notes[]").map((n) => (n.trim() === "" ? null : parseFloat(n)));
+
+  const notesRaw = formData.getAll("notes[]");
+  const gradesRaw = formData.getAll("grades[]");
+
+  const notes = notesRaw.map((n) => {
+    const normalized = n.trim().replace(",", ".");
+    return normalized === "" ? null : parseFloat(normalized);
+  });
+
   const coefficients = formData.getAll("coeffs[]").map(parseFloat);
 
-  const grades = formData.getAll("grades[]").map((g) => (g.trim() === "" ? null : parseFloat(g)));
+  const grades = gradesRaw.map((g) => {
+    const normalized = g.trim().replace(",", ".");
+    return normalized === "" ? null : parseFloat(normalized);
+  });
+
   const gradeCoefficients = formData.getAll("gradeCoeffs[]").map(parseFloat);
 
-  if (!validateNotes(notes) || !validateNotes(grades)) {
+  const isNotesValid = validateNotesInput(notesRaw);
+  const isGradesValid = validateNotesInput(gradesRaw);
+
+  if (!isNotesValid || !isGradesValid) {
     alert("Veuillez entrer des notes valides entre 0 et 20.");
     return;
   }
@@ -341,91 +314,78 @@ function calculateSingleUE(ueBlock, index) {
   const ueResults = ueBlock.querySelector(".ue-results");
   ueResults.innerHTML = `<h3>Résultats :</h3>`;
   ueResults.innerHTML += `<p>Moyenne actuelle : ${
-    isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2)
+    isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2).replace(".", ",")
   }</p>`;
 
   if (missingNotesCount > 0) {
     if (neededGrade !== null) {
-      if (neededGrade > 20) {
+      if (currentAverage >= targetAverage) {
+        ueResults.innerHTML += `<p style="color: green; font-weight: bold;">La moyenne cible est déjà atteinte !</p>`;
+      } else if (neededGrade > 20) {
         ueResults.innerHTML += `<p style="color: red; font-weight: bold;">Impossible d'atteindre la moyenne cible...</p>`;
       } else {
         if (missingNotesCount > 1) {
-          ueResults.innerHTML += `<p>Notes nécessaires pour valider : ${neededGrade.toFixed(
-            2
-          )}</p>`;
+          ueResults.innerHTML += `<p>Notes nécessaires pour valider : ${neededGrade
+            .toFixed(2)
+            .replace(".", ",")}</p>`;
         } else {
-          ueResults.innerHTML += `<p>Note nécessaire pour valider : ${neededGrade.toFixed(2)}</p>`;
+          ueResults.innerHTML += `<p>Note nécessaire pour valider : ${neededGrade
+            .toFixed(2)
+            .replace(".", ",")}</p>`;
         }
       }
     } else {
       ueResults.innerHTML += `<p>Toutes les notes sont déjà renseignées.</p>`;
     }
   } else {
-    if (currentAverage >= 10) {
+    if (currentAverage >= targetAverage) {
       ueResults.innerHTML += `<p style="color: green; font-weight: bold;">Bravo, l'UE est validée !</p>`;
-      const currentUE = ueBlock.getAttribute("data-ue-id");
-      if (currentUE.toLowerCase().includes("ue4")) {
+
+      const currentUE = ueBlock.getAttribute("data-ue-id").toLowerCase();
+      const specialtySelect = document.getElementById("specialty");
+      const specialty = specialtySelect.value;
+      const ueName = specialties[specialty].find((ue) => sanitizeString(ue.ue) === currentUE)?.ue;
+      const ueMatch = ueName?.toLowerCase().match(/ue\s*\d+\.4/);
+
+      if (ueMatch) {
         triggerConfetti();
+
+        const ueContainer = document.getElementById("ue-container");
+        const existingMessage = ueContainer.querySelector("#semester-valid-message");
+
+        if (!existingMessage) {
+          const semesterMessage = document.createElement("p");
+          semesterMessage.id = "semester-valid-message";
+          semesterMessage.textContent = "LE SEMESTRE EST VALIDÉ !";
+          semesterMessage.style.cssText =
+            "text-align: center; color: white; font-size: 1.5em; font-weight: bold; margin-top: 20px;";
+          ueContainer.appendChild(semesterMessage);
+        }
       }
     } else {
       ueResults.innerHTML += `<p style="color: red; font-weight: bold;">L'UE n'est pas validée, team rattrapage...</p>`;
     }
   }
+}
 
-  const currentUE = ueBlock.getAttribute("data-ue-id");
-  const ueSemesterMatch = currentUE.match(/ue\s*(\d+)\./i);
-  const ueSemester = ueSemesterMatch ? ueSemesterMatch[1] : null;
+function validateNotesInput(inputs) {
+  const regex = /^(\d{1,2}([.,]\d{1,2})?)$/;
+  const isFormatValid = inputs.every((input) => {
+    if (input.trim() === "") return true;
+    return regex.test(input.replace(",", "."));
+  });
 
-  if (ueSemester) {
-    const specialtySelect = document.getElementById("specialty");
-    const currentSpecialty = specialtySelect.value;
+  const isRangeValid = inputs.every((input) => {
+    if (input.trim() === "") return true;
+    const number = parseFloat(input.replace(",", "."));
+    return number >= 0 && number <= 20;
+  });
 
-    updateSPAcademic(ueSemester, currentSpecialty);
-  }
+  return isFormatValid && isRangeValid;
 }
 
 function validateNotes(notes) {
   return notes.every((note) => note === null || (note >= 0 && note <= 20));
-}
-
-function updateSPAcademic(spNumber, specialty) {
-  if (!spNumber || !specialty) return;
-
-  const associatedUEIds = specialties[specialty]
-    .filter((ue) =>
-      ue.courses.some((course) => {
-        const spMatches = [...course.name.matchAll(/SP(\d+)/gi)];
-        const spNumbers = spMatches.map((match) => match[1]);
-        return spNumbers.includes(spNumber);
-      })
-    )
-    .map((ue) => sanitizeString(ue.ue));
-
-  let totalAverage = 0;
-  let count = 0;
-
-  associatedUEIds.forEach((ueId) => {
-    const ueBlock = document.querySelector(`.ue-block[data-ue-id="${ueId}"]`);
-    if (ueBlock) {
-      const ueResults = ueBlock.querySelector(".ue-results p");
-      if (ueResults) {
-        const moyenneText = ueResults.textContent;
-        const moyenneMatch = moyenneText.match(/moyenne actuelle\s*:\s*(\d+(\.\d+)?)/i);
-        if (moyenneMatch) {
-          totalAverage += parseFloat(moyenneMatch[1]);
-          count++;
-        }
-      }
-    }
-  });
-
-  const finalAverage = count > 0 ? (totalAverage / count).toFixed(2) : null;
-  const spAcadInputs = document.querySelectorAll(`input[id*="sp-acad-${spNumber}"]`);
-  spAcadInputs.forEach((spAcadInput) => {
-    if (finalAverage !== null) {
-      spAcadInput.value = finalAverage;
-    }
-  });
 }
 
 function checkAndTriggerConfetti(specialty) {
@@ -436,7 +396,7 @@ function checkAndTriggerConfetti(specialty) {
     const spMatch = spInput.id.match(/sp-acad-(\d+)/i);
     const spNumber = spMatch ? spMatch[1] : null;
     if (spNumber) {
-      const average = parseFloat(spInput.value);
+      const average = parseFloat(spInput.value.replace(",", "."));
       if (isNaN(average) || average < 10) {
         allValidated = false;
       }
@@ -603,42 +563,105 @@ const confettiGenerator = new ConfettiGenerator();
 function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const logo = document.getElementById("logo");
+  const hamburger = document.getElementById("hamburger");
+  const navMenu = document.getElementById("nav-menu");
+  const hamburgerIcon = hamburger.querySelector("i");
+  const icon = themeToggleBtn.querySelector("i");
+  const overlay = document.getElementById("overlay");
 
-  const updateLogo = (theme) => {
+  function updateLogo(theme) {
     if (theme === "light") {
       logo.src = "assets/logo_ensta_dark.png";
     } else {
       logo.src = "assets/logo_ensta.png";
     }
-  };
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("light-theme");
+    const isLight = document.body.classList.contains("light-theme");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    updateLogo(isLight ? "light" : "dark");
+
+    if (isLight) {
+      icon.classList.remove("fa-moon");
+      icon.classList.add("fa-sun");
+    } else {
+      icon.classList.remove("fa-sun");
+      icon.classList.add("fa-moon");
+    }
+  }
+
+  function updateToggleZIndex() {
+    if (overlay.classList.contains("active")) {
+      themeToggleBtn.style.zIndex = "800";
+    } else {
+      themeToggleBtn.style.zIndex = "";
+    }
+  }
 
   const savedTheme = localStorage.getItem("theme") || "dark";
   if (savedTheme === "light") {
     document.body.classList.add("light-theme");
-    themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
   } else {
     document.body.classList.remove("light-theme");
-    themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
   }
 
   updateLogo(savedTheme);
 
-  themeToggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("light-theme");
-    let currentTheme;
-    if (document.body.classList.contains("light-theme")) {
-      themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-      localStorage.setItem("theme", "light");
-      currentTheme = "light";
-    } else {
-      themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-      localStorage.setItem("theme", "dark");
-      currentTheme = "dark";
-    }
-    updateLogo(currentTheme);
+  if (savedTheme === "light") {
+    icon.classList.remove("fa-moon");
+    icon.classList.add("fa-sun");
+  } else {
+    icon.classList.remove("fa-sun");
+    icon.classList.add("fa-moon");
+  }
+
+  themeToggleBtn.addEventListener("click", toggleTheme);
+
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isActive = navMenu.classList.toggle("active");
+    hamburger.setAttribute("aria-expanded", isActive);
+    document.body.classList.toggle("menu-open", isActive);
+    overlay.classList.toggle("active", isActive);
+    updateToggleZIndex();
   });
+
+  const navLinks = navMenu.querySelectorAll("a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("active");
+      hamburger.setAttribute("aria-expanded", false);
+      document.body.classList.remove("menu-open");
+      overlay.classList.remove("active");
+      updateToggleZIndex();
+    });
+  });
+
+  overlay.addEventListener("click", () => {
+    navMenu.classList.remove("active");
+    hamburger.setAttribute("aria-expanded", false);
+    document.body.classList.remove("menu-open");
+    overlay.classList.remove("active");
+    updateToggleZIndex();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
+      const wasActive = navMenu.classList.contains("active");
+      if (wasActive) {
+        navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", false);
+        document.body.classList.remove("menu-open");
+        overlay.classList.remove("active");
+        updateToggleZIndex();
+      }
+    }
+  });
+
+  updateToggleZIndex();
 });
