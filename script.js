@@ -130,9 +130,8 @@ function renderSpecialty(specialty) {
 
           div.innerHTML = `
             <label for="sp-acad-${spNumbersString}-${index}">${course.name} (coef ${course.coef}) :</label>
-            <input type="number" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note" 
-            class="styled-input" style="width: 73px;" min="0" max="20" step="0.1" 
-            data-sp-numbers="${spNumbersString}" />
+            <input type="text" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note" 
+            class="styled-input" style="width: 73px;" data-sp-numbers="${spNumbersString}" />
             <input type="hidden" name="coeffs[]" value="${course.coef}" />
           `;
         }
@@ -140,10 +139,10 @@ function renderSpecialty(specialty) {
         let gradeInputs = course.grades
           .map(
             (grade, i) => `
-              <input type="number" id="grade-${index}-${sanitizeString(
+              <input type="text" id="grade-${index}-${sanitizeString(
               course.name
             )}-${i}" name="grades[]" 
-              placeholder="${grade.name}" class="styled-input" min="0" max="20" step="0.1" 
+              placeholder="${grade.name}" class="styled-input" 
               style="width: 73px; margin-left: 5px;" />
               <input type="hidden" name="gradeCoeffs[]" value="${grade.coef}" />
             `
@@ -161,10 +160,10 @@ function renderSpecialty(specialty) {
           <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
           course.coef
         }) :</label>
-          <input type="number" id="note-${index}-${sanitizeString(
+          <input type="text" id="note-${index}-${sanitizeString(
           course.name
         )}" name="notes[]" placeholder="Note" 
-            class="styled-input" style="width: 73px;" min="0" max="20" step="0.1" />
+            class="styled-input" style="width: 73px;" />
           <input type="hidden" name="coeffs[]" value="${course.coef}" />
         `;
       }
@@ -185,7 +184,7 @@ function renderSpecialty(specialty) {
     ueActions.innerHTML = `
       <div class="actions-left">
         <label for="moyenneCible-${index}">Moyenne cible :</label>
-        <input type="number" id="moyenneCible-${index}" value="10" min="0" max="20" step="0.1" class="styled-input">
+        <input type="text" id="moyenneCible-${index}" value="10" class="styled-input" />
       </div>
       <button class="calculate-btn">Calculer</button>
     `;
@@ -271,17 +270,33 @@ window.addEventListener("hashchange", () => {
 loadSpecialties(currentSemester);
 
 function calculateSingleUE(ueBlock, index) {
-  const targetAverage = parseFloat(document.getElementById(`moyenneCible-${index}`).value);
+  const targetAverageInput = document.getElementById(`moyenneCible-${index}`).value;
+  const targetAverage = parseFloat(targetAverageInput.replace(",", "."));
   const form = ueBlock.querySelector("form");
 
   const formData = new FormData(form);
-  const notes = formData.getAll("notes[]").map((n) => (n.trim() === "" ? null : parseFloat(n)));
+
+  const notesRaw = formData.getAll("notes[]");
+  const gradesRaw = formData.getAll("grades[]");
+
+  const notes = notesRaw.map((n) => {
+    const normalized = n.trim().replace(",", ".");
+    return normalized === "" ? null : parseFloat(normalized);
+  });
+
   const coefficients = formData.getAll("coeffs[]").map(parseFloat);
 
-  const grades = formData.getAll("grades[]").map((g) => (g.trim() === "" ? null : parseFloat(g)));
+  const grades = gradesRaw.map((g) => {
+    const normalized = g.trim().replace(",", ".");
+    return normalized === "" ? null : parseFloat(normalized);
+  });
+
   const gradeCoefficients = formData.getAll("gradeCoeffs[]").map(parseFloat);
 
-  if (!validateNotes(notes) || !validateNotes(grades)) {
+  const isNotesValid = validateNotesInput(notesRaw);
+  const isGradesValid = validateNotesInput(gradesRaw);
+
+  if (!isNotesValid || !isGradesValid) {
     alert("Veuillez entrer des notes valides entre 0 et 20.");
     return;
   }
@@ -300,7 +315,7 @@ function calculateSingleUE(ueBlock, index) {
   const ueResults = ueBlock.querySelector(".ue-results");
   ueResults.innerHTML = `<h3>Résultats :</h3>`;
   ueResults.innerHTML += `<p>Moyenne actuelle : ${
-    isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2)
+    isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2).replace(".", ",")
   }</p>`;
 
   if (missingNotesCount > 0) {
@@ -311,11 +326,13 @@ function calculateSingleUE(ueBlock, index) {
         ueResults.innerHTML += `<p style="color: red; font-weight: bold;">Impossible d'atteindre la moyenne cible...</p>`;
       } else {
         if (missingNotesCount > 1) {
-          ueResults.innerHTML += `<p>Notes nécessaires pour valider : ${neededGrade.toFixed(
-            2
-          )}</p>`;
+          ueResults.innerHTML += `<p>Notes nécessaires pour valider : ${neededGrade
+            .toFixed(2)
+            .replace(".", ",")}</p>`;
         } else {
-          ueResults.innerHTML += `<p>Note nécessaire pour valider : ${neededGrade.toFixed(2)}</p>`;
+          ueResults.innerHTML += `<p>Note nécessaire pour valider : ${neededGrade
+            .toFixed(2)
+            .replace(".", ",")}</p>`;
         }
       }
     } else {
@@ -352,6 +369,14 @@ function calculateSingleUE(ueBlock, index) {
   }
 }
 
+function validateNotesInput(inputs) {
+  const regex = /^(\d{1,2}([.,]\d{1,2})?)$/;
+  return inputs.every((input) => {
+    if (input.trim() === "") return true;
+    return regex.test(input.replace(",", "."));
+  });
+}
+
 function validateNotes(notes) {
   return notes.every((note) => note === null || (note >= 0 && note <= 20));
 }
@@ -364,7 +389,7 @@ function checkAndTriggerConfetti(specialty) {
     const spMatch = spInput.id.match(/sp-acad-(\d+)/i);
     const spNumber = spMatch ? spMatch[1] : null;
     if (spNumber) {
-      const average = parseFloat(spInput.value);
+      const average = parseFloat(spInput.value.replace(",", "."));
       if (isNaN(average) || average < 10) {
         allValidated = false;
       }
@@ -532,89 +557,96 @@ function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const themeToggleBtn = document.getElementById("themeToggleBtn");
-  const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
-  const logo = document.getElementById("logo");
-  const hamburger = document.getElementById("hamburger");
-  const navMenu = document.getElementById("nav-menu");
-  const hamburgerIcon = hamburger.querySelector("i");
+document.addEventListener("DOMContentLoaded"),
+  () => {
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    const themeToggleBtnMobile = document.getElementById("themeToggleBtn-mobile");
+    const logo = document.getElementById("logo");
+    const hamburger = document.getElementById("hamburger");
+    const navMenu = document.getElementById("nav-menu");
+    const hamburgerIcon = hamburger.querySelector("i");
 
-  function updateLogo(theme) {
-    if (theme === "light") {
-      logo.src = "assets/logo_ensta_dark.png";
-    } else {
-      logo.src = "assets/logo_ensta.png";
-    }
-  }
-
-  function toggleTheme() {
-    document.body.classList.toggle("light-theme");
-    const isLight = document.body.classList.contains("light-theme");
-    localStorage.setItem("theme", isLight ? "light" : "dark");
-    updateLogo(isLight ? "light" : "dark");
-
-    const icons = document.querySelectorAll(".theme-toggle-btn-mobile i, #themeToggleBtn i");
-    icons.forEach((icon) => {
-      if (isLight) {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
+    function updateLogo(theme) {
+      if (theme === "light") {
+        logo.src = "assets/logo_ensta_dark.png";
       } else {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
+        logo.src = "assets/logo_ensta.png";
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("light-theme");
+      const isLight = document.body.classList.contains("light-theme");
+      localStorage.setItem("theme", isLight ? "light" : "dark");
+      updateLogo(isLight ? "light" : "dark");
+
+      const icons = document.querySelectorAll(".theme-toggle-btn-mobile i, #themeToggleBtn i");
+      icons.forEach((icon) => {
+        if (isLight) {
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+        } else {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+        }
+      });
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    if (savedTheme === "light") {
+      document.body.classList.add("light-theme");
+    } else {
+      document.body.classList.remove("light-theme");
+    }
+
+    updateLogo(savedTheme);
+
+    const initialIcon =
+      savedTheme === "light" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    themeToggleBtn.innerHTML = initialIcon;
+    themeToggleBtnMobile.innerHTML = initialIcon;
+    themeToggleBtn.addEventListener("click", toggleTheme);
+    themeToggleBtnMobile.addEventListener("click", toggleTheme);
+
+    hamburger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isActive = navMenu.classList.toggle("active");
+      hamburger.setAttribute("aria-expanded", isActive);
+      document.body.classList.toggle("menu-open", isActive);
+
+      if (isActive) {
+        hamburgerIcon.classList.remove("fa-bars");
+        hamburgerIcon.classList.add("fa-times");
+      } else {
+        hamburgerIcon.classList.remove("fa-times");
+        hamburgerIcon.classList.add("fa-bars");
       }
     });
-  }
 
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  if (savedTheme === "light") {
-    document.body.classList.add("light-theme");
-  } else {
-    document.body.classList.remove("light-theme");
-  }
-
-  updateLogo(savedTheme);
-
-  const initialIcon =
-    savedTheme === "light" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-  themeToggleBtn.innerHTML = initialIcon;
-  themeToggleBtnMobile.innerHTML = initialIcon;
-  themeToggleBtn.addEventListener("click", toggleTheme);
-  themeToggleBtnMobile.addEventListener("click", toggleTheme);
-
-  hamburger.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isActive = navMenu.classList.toggle("active");
-    hamburger.setAttribute("aria-expanded", isActive);
-    document.body.classList.toggle("menu-open", isActive);
-
-    if (isActive) {
-      hamburgerIcon.classList.remove("fa-bars");
-      hamburgerIcon.classList.add("fa-times");
-    } else {
-      hamburgerIcon.classList.remove("fa-times");
-      hamburgerIcon.classList.add("fa-bars");
-    }
-  });
-
-  const navLinks = navMenu.querySelectorAll("a");
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      navMenu.classList.remove("active");
-      hamburger.setAttribute("aria-expanded", false);
-      document.body.classList.remove("menu-open");
-      hamburgerIcon.classList.remove("fa-times");
-      hamburgerIcon.classList.add("fa-bars");
+    const navLinks = navMenu.querySelectorAll("a");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", false);
+        document.body.classList.remove("menu-open");
+        hamburgerIcon.classList.remove("fa-times");
+        hamburgerIcon.classList.add("fa-bars");
+      });
     });
-  });
 
-  document.addEventListener("click", (event) => {
-    if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
-      navMenu.classList.remove("active");
-      hamburger.setAttribute("aria-expanded", false);
-      document.body.classList.remove("menu-open");
-      hamburgerIcon.classList.remove("fa-times");
-      hamburgerIcon.classList.add("fa-bars");
-    }
-  });
-});
+    document.addEventListener("click", (event) => {
+      if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", false);
+        document.body.classList.remove("menu-open");
+        hamburgerIcon.classList.remove("fa-times");
+        hamburgerIcon.classList.add("fa-bars");
+      }
+    });
+
+    document.querySelectorAll('input[type="text"]').forEach((input) => {
+      input.addEventListener("input", (e) => {
+        input.value = input.value.replace(/[^0-9.,]/g, "");
+      });
+    });
+  };
