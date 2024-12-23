@@ -237,7 +237,7 @@ h1 {
   appearance: none;
 }
 
-.ue-block{
+.ue-block {
   z-index: 400;
 }
 
@@ -727,6 +727,12 @@ footer a.github-link:hover {
 
   .theme-toggle-btn {
     right: 15px;
+  }
+}
+
+@media (min-width: 1300px) {
+  .theme-toggle-btn {
+    right: 45px;
   }
 }
 
