@@ -225,12 +225,15 @@ function calculateAverageAndNeededPoints(
 ) {
   const totalCoefficients =
     coefficients.reduce((a, b) => a + b, 0) + gradeCoefficients.reduce((a, b) => a + b, 0);
+
   let currentTotal = 0;
+  let filledCoefficients = 0;
   let remainingCoefficients = 0;
 
   notes.forEach((note, i) => {
     if (note !== null && !isNaN(note)) {
       currentTotal += note * coefficients[i];
+      filledCoefficients += coefficients[i];
     } else {
       remainingCoefficients += coefficients[i];
     }
@@ -239,12 +242,13 @@ function calculateAverageAndNeededPoints(
   grades.forEach((grade, i) => {
     if (grade !== null && !isNaN(grade)) {
       currentTotal += grade * gradeCoefficients[i];
+      filledCoefficients += gradeCoefficients[i];
     } else {
       remainingCoefficients += gradeCoefficients[i];
     }
   });
 
-  const currentAverage = totalCoefficients > 0 ? currentTotal / totalCoefficients : 0;
+  const currentAverage = filledCoefficients > 0 ? currentTotal / filledCoefficients : 0;
   const neededPoints = Math.max(0, targetAverage * totalCoefficients - currentTotal);
 
   const neededGrade =
