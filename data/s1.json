@@ -8,7 +8,6 @@
         {
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 1.5,
-          "type": "math",
           "grades": [
             { "name": "Note 1", "coef": 0.1 },
             { "name": "Note 2", "coef": 0.45 },
@@ -22,9 +21,24 @@
     {
       "ue": "UE 1.2 - Sciences et Technologies",
       "courses": [
-        { "name": "Administration Système", "coef": 1 },
+        {
+          "name": "Administration Système",
+          "coef": 1,
+          "grades": [
+            { "name": "Note 1", "coef": 0.33 },
+            { "name": "Note 2", "coef": 0.33 },
+            { "name": "Note 3", "coef": 0.33 }
+          ]
+        },
         { "name": "Capteurs et systèmes de mesure", "coef": 1 },
-        { "name": "Fondements du traitement du signal analogique", "coef": 1 },
+        {
+          "name": "Fondements du traitement du signal analogique",
+          "coef": 1,
+          "grades": [
+            { "name": "Note 1", "coef": 0.5 },
+            { "name": "Note 2", "coef": 0.5 }
+          ]
+        },
         {
           "name": "Logique, systèmes numériques et description électronique",
           "coef": 1
@@ -36,7 +50,8 @@
       "ue": "UE 1.3 - Sciences Humaines et Sociales et langues",
       "courses": [
         { "name": "Anglais", "coef": 2 },
-        { "name": "Métiers de l'ingénieur", "coef": 1 }
+        { "name": "Métiers de l'ingénieur", "coef": 1 },
+        { "name": "Ingénierie et transitions", "coef": 1 }
       ]
     },
     {
@@ -79,7 +94,8 @@
       "courses": [
         { "name": "Anglais", "coef": 2 },
         { "name": "Métiers de l'ingénieur", "coef": 1 },
-        { "name": "Enjeux de la défense", "coef": 1 }
+        { "name": "Enjeux de la défense", "coef": 1 },
+        { "name": "Ingénierie et transitions", "coef": 1 }
       ]
     },
     {
