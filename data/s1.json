@@ -52,7 +52,6 @@
       "ue": "UE 1.1 - Modélisation des systèmes",
       "courses": [
         { "name": "Modélisation des systèmes dynamiques", "coef": 2 },
-        { "name": "Outils mathématiques pour l'ingénieur", "coef": 2.5 },
         {
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 2.5,
@@ -62,6 +61,7 @@
             { "name": "Note 3", "coef": 1 }
           ]
         },
+        { "name": "Outils numériques pour l'ingénieur", "coef": 1 },
         { "name": "Python I - Langage et algorithmique", "coef": 1.5 }
       ]
     },
