@@ -143,7 +143,7 @@ function renderSpecialty(specialty) {
               course.name
             )}-${i}" name="grades[]" 
               placeholder="${grade.name}" class="styled-input"/>
-              <input type="hidden" name="gradeCoeffs[]" value="${grade.coef}" />
+              <input type="hidden" name="gradeCoeffs[]" value="${course.coef * grade.coef}" />
             `
           )
           .join("");
