@@ -130,8 +130,8 @@ function renderSpecialty(specialty) {
 
           div.innerHTML = `
             <label for="sp-acad-${spNumbersString}-${index}">${course.name} (coef ${course.coef}) :</label>
-            <input type="text" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note" 
-            class="styled-input" data-sp-numbers="${spNumbersString}" />
+            <input type="text" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note"
+                   class="styled-input" data-sp-numbers="${spNumbersString}" />
             <input type="hidden" name="coeffs[]" value="${course.coef}" />
           `;
         }
@@ -141,8 +141,8 @@ function renderSpecialty(specialty) {
             (grade, i) => `
               <input type="text" id="grade-${index}-${sanitizeString(
               course.name
-            )}-${i}" name="grades[]" 
-              placeholder="${grade.name}" class="styled-input"/>
+            )}-${i}" name="grades[]"
+                     placeholder="${grade.name}" class="styled-input"/>
               <input type="hidden" name="gradeCoeffs[]" value="${course.coef * grade.coef}" />
             `
           )
@@ -161,14 +161,36 @@ function renderSpecialty(specialty) {
         }) :</label>
           <input type="text" id="note-${index}-${sanitizeString(
           course.name
-        )}" name="notes[]" placeholder="Note" 
-            class="styled-input"/>
+        )}" name="notes[]" placeholder="Note"
+                 class="styled-input"/>
           <input type="hidden" name="coeffs[]" value="${course.coef}" />
         `;
       }
 
       form.appendChild(div);
     });
+
+    const savedNotesKey = `notes-${currentSemester}-${specialty}-${ueId}`;
+    let savedNotes = localStorage.getItem(savedNotesKey);
+    if (savedNotes) {
+      try {
+        savedNotes = JSON.parse(savedNotes);
+        const noteInputs = form.querySelectorAll('input[name="notes[]"]');
+        savedNotes.notes.forEach((val, i) => {
+          if (val !== null && noteInputs[i]) {
+            noteInputs[i].value = val;
+          }
+        });
+        const gradeInputs = form.querySelectorAll('input[name="grades[]"]');
+        savedNotes.grades.forEach((val, i) => {
+          if (val !== null && gradeInputs[i]) {
+            gradeInputs[i].value = val;
+          }
+        });
+      } catch (e) {
+        console.error("Erreur parsing notes sauvegardées :", e);
+      }
+    }
 
     ueInputs.appendChild(form);
 
@@ -294,7 +316,7 @@ function calculateSingleUE(ueBlock, index) {
 
   const isNotesValid = validateNotesInput(notesRaw);
   const isGradesValid = validateNotesInput(gradesRaw);
-
+  
   if (!isNotesValid || !isGradesValid) {
     alert("Veuillez entrer des notes valides entre 0 et 20.");
     return;
@@ -306,6 +328,13 @@ function calculateSingleUE(ueBlock, index) {
     targetAverage,
     grades,
     gradeCoefficients
+  );
+
+  const specialty = document.getElementById("specialty").value;
+  const ueId = ueBlock.getAttribute("data-ue-id");
+  localStorage.setItem(
+    `notes-${currentSemester}-${specialty}-${ueId}`,
+    JSON.stringify({ notes, grades })
   );
 
   const missingNotesCount =
