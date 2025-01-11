@@ -82,8 +82,20 @@ function applySelectedSpecialty() {
     }
   }
 
+  updateFCVisibility();
   renderSpecialty(specialtySelect.value);
 }
+
+function updateFCVisibility() {
+  const checkboxFCContainer = document.getElementById("checkboxFCContainer");
+  const specialtySelect = document.getElementById("specialty");
+  checkboxFCContainer.style.display = specialtySelect.value === "SE" ? "inline-block" : "none";
+}
+
+const checkboxFC = document.getElementById("checkboxFC");
+checkboxFC.addEventListener("change", () => {
+  renderSpecialty(document.getElementById("specialty").value);
+});
 
 function renderSpecialty(specialty) {
   const ueContainer = document.getElementById("ue-container");
@@ -117,58 +129,56 @@ function renderSpecialty(specialty) {
     ueInputs.classList.add("ue-inputs");
 
     const form = document.createElement("form");
-    ue.courses.forEach((course) => {
-      const div = document.createElement("div");
-      div.classList.add("course-row");
 
-      if (course.name.toLowerCase().includes("académique")) {
-        const spMatches = [...course.name.matchAll(/SP(\d+)/gi)];
-        const spNumbers = spMatches.map((match) => match[1]);
+    const showFC = checkboxFC && checkboxFC.checked;
 
-        if (spNumbers.length > 0) {
-          const spNumbersString = spNumbers.join(",");
+    const specialtySelectDiv = document.querySelector(".specialty-select");
+    specialtySelectDiv.classList.remove("se", "meca");
+
+    if (specialty === "SE") {
+      specialtySelectDiv.classList.add("se");
+    } else if (specialty === "MECA") {
+      specialtySelectDiv.classList.add("meca");
+    }
+
+    ue.courses
+      .filter((course) => {
+        return !showFC || !course.isFC;
+      })
+      .forEach((course) => {
+        const div = document.createElement("div");
+        div.classList.add("course-row");
+
+        if (course.grades) {
+          let gradeInputs = course.grades
+            .map(
+              (grade, i) => `
+                <input type="text" id="grade-${index}-${sanitizeString(course.name)}-${i}" 
+                  name="grades[]" placeholder="${grade.name}" class="styled-input"/>
+                <input type="hidden" name="gradeCoeffs[]" value="${course.coef * grade.coef}" />
+              `
+            )
+            .join("");
 
           div.innerHTML = `
-            <label for="sp-acad-${spNumbersString}-${index}">${course.name} (coef ${course.coef}) :</label>
-            <input type="text" id="sp-acad-${spNumbersString}-${index}" name="notes[]" placeholder="Note"
-                   class="styled-input" data-sp-numbers="${spNumbersString}" />
+            <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
+            course.coef
+          }) :</label>
+            <div style="display: flex; align-items: center;">${gradeInputs}</div>
+          `;
+        } else {
+          div.innerHTML = `
+            <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
+            course.coef
+          }) :</label>
+            <input type="text" id="note-${index}-${sanitizeString(course.name)}" name="notes[]" 
+              placeholder="Note" class="styled-input"/>
             <input type="hidden" name="coeffs[]" value="${course.coef}" />
           `;
         }
-      } else if (course.grades) {
-        let gradeInputs = course.grades
-          .map(
-            (grade, i) => `
-              <input type="text" id="grade-${index}-${sanitizeString(
-              course.name
-            )}-${i}" name="grades[]"
-                     placeholder="${grade.name}" class="styled-input"/>
-              <input type="hidden" name="gradeCoeffs[]" value="${course.coef * grade.coef}" />
-            `
-          )
-          .join("");
 
-        div.innerHTML = `
-          <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
-          course.coef
-        }) :</label>
-          <div style="display: flex; align-items: center;">${gradeInputs}</div>
-        `;
-      } else {
-        div.innerHTML = `
-          <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
-          course.coef
-        }) :</label>
-          <input type="text" id="note-${index}-${sanitizeString(
-          course.name
-        )}" name="notes[]" placeholder="Note"
-                 class="styled-input"/>
-          <input type="hidden" name="coeffs[]" value="${course.coef}" />
-        `;
-      }
-
-      form.appendChild(div);
-    });
+        form.appendChild(div);
+      });
 
     const savedNotesKey = `notes-${currentSemester}-${specialty}-${ueId}`;
     let savedNotes = localStorage.getItem(savedNotesKey);
@@ -280,6 +290,7 @@ function calculateAverageAndNeededPoints(
 document.getElementById("specialty").addEventListener("change", (event) => {
   const selectedSpecialty = event.target.value;
   localStorage.setItem("selectedSpecialty", selectedSpecialty);
+  updateFCVisibility();
   renderSpecialty(selectedSpecialty);
 });
 
@@ -316,7 +327,7 @@ function calculateSingleUE(ueBlock, index) {
 
   const isNotesValid = validateNotesInput(notesRaw);
   const isGradesValid = validateNotesInput(gradesRaw);
-  
+
   if (!isNotesValid || !isGradesValid) {
     alert("Veuillez entrer des notes valides entre 0 et 20.");
     return;
@@ -592,6 +603,7 @@ const confettiGenerator = new ConfettiGenerator();
 function triggerConfetti() {
   confettiGenerator.start(1500); // ms
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const logo = document.getElementById("logo");
@@ -693,4 +705,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateToggleZIndex();
+
+  const checkboxFC = document.getElementById("checkboxFC");
+  checkboxFC.checked = localStorage.getItem("checkboxFC") === "true";
+
+  checkboxFC.addEventListener("change", () => {
+    localStorage.setItem("checkboxFC", checkboxFC.checked);
+    renderSpecialty(document.getElementById("specialty").value);
+  });
 });

@@ -4,7 +4,7 @@
       "ue": "UE 1.1 - Modélisation des systèmes",
       "courses": [
         { "name": "Événements et variables aléatoires", "coef": 0.5 },
-        { "name": "Modélisation des systèmes dynamiques", "coef": 1 },
+        { "name": "Modélisation des systèmes dynamiques", "coef": 1, "isFC": true },
         {
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 1.5,
@@ -27,9 +27,10 @@
           "grades": [
             { "name": "Note 1", "coef": 0.5 },
             { "name": "Note 2", "coef": 0.5 }
-          ]
+          ],
+          "isFC": true
         },
-        { "name": "Capteurs et systèmes de mesure", "coef": 1 },
+        { "name": "Capteurs et systèmes de mesure", "coef": 1, "isFC": true },
         {
           "name": "Fondements du traitement du signal analogique",
           "coef": 1,
@@ -49,8 +50,8 @@
       "ue": "UE 1.3 - Sciences Humaines et Sociales et langues",
       "courses": [
         { "name": "Anglais", "coef": 2 },
-        { "name": "Métiers de l'ingénieur", "coef": 1 },
-        { "name": "Ingénierie et transitions", "coef": 1 }
+        { "name": "Métiers de l'ingénieur", "coef": 1, "isFC": true },
+        { "name": "Ingénierie et transitions", "coef": 1, "isFC": true }
       ]
     },
     {
