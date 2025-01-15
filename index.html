@@ -5,97 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FIPA Grades Calculator</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;600;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-..."
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-    ></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: radial-gradient(circle, #1c1c1c, #121212);
+        color: #ffffff;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 0.5em;
+      }
+      p {
+        font-size: 1.2em;
+        margin: 0;
+      }
+      .icon {
+        font-size: 4em;
+        margin-bottom: 0.5em;
+        color: #1abc9c;
+      }
+    </style>
   </head>
-
   <body>
-    <div class="scrollable-content">
-      <header>
-        <div class="hamburger-container">
-          <button id="hamburger" class="hamburger">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-
-        <nav id="nav-menu">
-          <a href="#S1">S1</a>
-          <a href="#S2">S2</a>
-          <a href="#S3">S3</a>
-          <a href="" class="disabled">S4</a>
-          <a href="" class="disabled">S5</a>
-          <a href="" class="disabled">S6</a>
-        </nav>
-      </header>
-
-      <div id="overlay" class="overlay"></div>
-
-      <div class="logo-container">
-        <img id="logo" src="assets/logo_ensta.png" alt="ENSTA Bretagne" />
-      </div>
-
-      <h1 id="page-title">Calcul des moyennes pour le semestre 1</h1>
-
-      <div class="specialty-select">
-        <label for="specialty">Choisissez votre spécialité :</label>
-        <select id="specialty" class="styled-select"></select>
-      </div>
-
-      <div id="checkboxFCContainer" style="display: none">
-        <label for="checkboxFC">
-          <input type="checkbox" id="checkboxFC" />
-          Formation Continue
-        </label>
-      </div>
-
-      <div id="ue-container"></div>
-
-      <div class="info-bulle-container">
-        <span class="info-icon">
-          <i class="fas fa-info-circle"></i>
-          <span class="info-bulle">
-            <p>Formule de la moyenne pondérée :</p>
-            <div class="math-formula">
-              $$\bar{M} = \frac{\sum_{i=1}^{n} (\text{Note}_i \times
-              \text{Coefficient}_i)}{\sum_{i=1}^{n} \text{Coefficient}_i}$$
-            </div>
-          </span>
-        </span>
-      </div>
-
-      <button id="themeToggleBtn" class="theme-toggle-btn">
-        <i class="fas fa-moon"></i>
-      </button>
-
-      <footer>
-        <p>
-          © 2025 Jocelyn   - 
-          <a
-            href="https://github.com/lilblueyes/fipa-grades-calculator"
-            target="_blank"
-            class="github-link"
-            >GitHub</a
-          >
-        </p>
-      </footer>
+    <div>
+      <div class="icon">⚙️</div>
+      <h1>Site en maintenance</h1>
+      <p>Sorry les FIPA</p>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
-    <script src="script.js"></script>
   </body>
 </html>
