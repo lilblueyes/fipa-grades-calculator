@@ -248,45 +248,6 @@ function sanitizeString(str) {
     .toLowerCase();
 }
 
-function calculateAverageAndNeededPoints(
-  notes,
-  coefficients,
-  targetAverage,
-  grades = [],
-  gradeCoefficients = []
-) {
-  const totalCoefficients =
-    coefficients.reduce((a, b) => a + b, 0) + gradeCoefficients.reduce((a, b) => a + b, 0);
-  let currentTotal = 0;
-  let remainingCoefficients = 0;
-
-  notes.forEach((note, i) => {
-    if (note !== null && !isNaN(note)) {
-      currentTotal += note * coefficients[i];
-    } else {
-      remainingCoefficients += coefficients[i];
-    }
-  });
-
-  grades.forEach((grade, i) => {
-    if (grade !== null && !isNaN(grade)) {
-      currentTotal += grade * gradeCoefficients[i];
-    } else {
-      remainingCoefficients += gradeCoefficients[i];
-    }
-  });
-
-  const currentAverage = totalCoefficients > 0 ? currentTotal / totalCoefficients : 0;
-  const neededPoints = Math.max(0, targetAverage * totalCoefficients - currentTotal);
-
-  const neededGrade =
-    remainingCoefficients > 0
-      ? Math.ceil((neededPoints / remainingCoefficients) * 100) / 100
-      : null;
-
-  return { currentAverage, neededGrade };
-}
-
 document.getElementById("specialty").addEventListener("change", (event) => {
   const selectedSpecialty = event.target.value;
   localStorage.setItem("selectedSpecialty", selectedSpecialty);
@@ -306,50 +267,84 @@ function calculateSingleUE(ueBlock, index) {
   const targetAverage = parseFloat(targetAverageInput.replace(",", "."));
   const form = ueBlock.querySelector("form");
 
-  const formData = new FormData(form);
-
-  const notesRaw = formData.getAll("notes[]");
-  const gradesRaw = formData.getAll("grades[]");
-
-  const notes = notesRaw.map((n) => {
-    const normalized = n.trim().replace(",", ".");
-    return normalized === "" ? null : parseFloat(normalized);
-  });
-
-  const coefficients = formData.getAll("coeffs[]").map(parseFloat);
-
-  const grades = gradesRaw.map((g) => {
-    const normalized = g.trim().replace(",", ".");
-    return normalized === "" ? null : parseFloat(normalized);
-  });
-
-  const gradeCoefficients = formData.getAll("gradeCoeffs[]").map(parseFloat);
-
-  const isNotesValid = validateNotesInput(notesRaw);
-  const isGradesValid = validateNotesInput(gradesRaw);
-
-  if (!isNotesValid || !isGradesValid) {
-    alert("Veuillez entrer des notes valides entre 0 et 20.");
-    return;
+  const noteInputs = form.querySelectorAll('input[type="text"]');
+  for (let input of noteInputs) {
+    let value = input.value.trim().replace(",", ".");
+    if (value !== "") {
+      const num = parseFloat(value);
+      if (isNaN(num) || num < 0 || num > 20) {
+        alert("Veuillez saisir des notes comprises entre 0 et 20");
+        return;
+      }
+    }
   }
-
-  const { currentAverage, neededGrade } = calculateAverageAndNeededPoints(
-    notes,
-    coefficients,
-    targetAverage,
-    grades,
-    gradeCoefficients
-  );
 
   const specialty = document.getElementById("specialty").value;
   const ueId = ueBlock.getAttribute("data-ue-id");
-  localStorage.setItem(
-    `notes-${currentSemester}-${specialty}-${ueId}`,
-    JSON.stringify({ notes, grades })
-  );
+  const ueData = specialties[specialty][index];
+  let totalWeightedSum = 0;
+  let totalCoefficients = 0;
+  let missingNotesCount = 0;
+  let remainingCoefficients = 0;
 
-  const missingNotesCount =
-    notes.filter((n) => n === null).length + grades.filter((g) => g === null).length;
+  ueData.courses.forEach((course) => {
+    if (course.grades) {
+      let courseWeightedSum = 0;
+      const totalInternalCoef = course.grades.reduce((sum, grade) => sum + grade.coef, 0);
+      course.grades.forEach((grade, i) => {
+        const input = form.querySelector(`input[id$="${sanitizeString(course.name)}-${i}"]`);
+        if (input) {
+          const value = input.value.trim().replace(",", ".");
+          if (value !== "") {
+            const noteValue = parseFloat(value);
+            if (!isNaN(noteValue) && noteValue >= 0 && noteValue <= 20) {
+              courseWeightedSum += noteValue * grade.coef;
+            }
+          } else {
+            missingNotesCount++;
+            remainingCoefficients += (grade.coef / totalInternalCoef) * course.coef;
+          }
+        }
+      });
+      totalWeightedSum += (courseWeightedSum / totalInternalCoef) * course.coef;
+      totalCoefficients += course.coef;
+    } else {
+      const input = form.querySelector(`input[id$="${sanitizeString(course.name)}"]`);
+      if (input) {
+        const value = input.value.trim().replace(",", ".");
+        if (value !== "") {
+          const noteValue = parseFloat(value);
+          if (!isNaN(noteValue) && noteValue >= 0 && noteValue <= 20) {
+            totalWeightedSum += noteValue * course.coef;
+            totalCoefficients += course.coef;
+          }
+        } else {
+          missingNotesCount++;
+          remainingCoefficients += course.coef;
+          totalWeightedSum += 0;
+          totalCoefficients += course.coef;
+        }
+      }
+    }
+  });
+
+  const notesData = { notes: [], grades: [] };
+  form.querySelectorAll('input[name="notes[]"]').forEach((input) => {
+    notesData.notes.push(input.value === "" ? null : parseFloat(input.value.replace(",", ".")));
+  });
+  form.querySelectorAll('input[name="grades[]"]').forEach((input) => {
+    notesData.grades.push(input.value === "" ? null : parseFloat(input.value.replace(",", ".")));
+  });
+  localStorage.setItem(`notes-${currentSemester}-${specialty}-${ueId}`, JSON.stringify(notesData));
+
+  const currentAverage = totalCoefficients > 0 ? totalWeightedSum / totalCoefficients : 0;
+
+  let neededGrade = null;
+  if (remainingCoefficients > 0) {
+    const totalTargetPoints = targetAverage * totalCoefficients;
+    const neededPoints = totalTargetPoints - totalWeightedSum;
+    neededGrade = neededPoints / remainingCoefficients;
+  }
 
   const ueResults = ueBlock.querySelector(".ue-results");
   ueResults.innerHTML = `<h3>Résultats :</h3>`;
@@ -359,20 +354,15 @@ function calculateSingleUE(ueBlock, index) {
 
   if (missingNotesCount > 0) {
     if (neededGrade !== null) {
-      if (currentAverage >= targetAverage) {
+      if (neededGrade <= 0) {
         ueResults.innerHTML += `<p style="color: green; font-weight: bold;">La moyenne cible est déjà atteinte !</p>`;
       } else if (neededGrade > 20) {
         ueResults.innerHTML += `<p style="color: red; font-weight: bold;">Impossible d'atteindre la moyenne cible...</p>`;
       } else {
-        if (missingNotesCount > 1) {
-          ueResults.innerHTML += `<p>Notes nécessaires pour valider : ${neededGrade
-            .toFixed(2)
-            .replace(".", ",")}</p>`;
-        } else {
-          ueResults.innerHTML += `<p>Note nécessaire pour valider : ${neededGrade
-            .toFixed(2)
-            .replace(".", ",")}</p>`;
-        }
+        const message = missingNotesCount > 1 ? "Notes nécessaires" : "Note nécessaire";
+        ueResults.innerHTML += `<p>${message} pour valider : ${neededGrade
+          .toFixed(2)
+          .replace(".", ",")}</p>`;
       }
     } else {
       ueResults.innerHTML += `<p>Toutes les notes sont déjà renseignées.</p>`;
@@ -380,19 +370,10 @@ function calculateSingleUE(ueBlock, index) {
   } else {
     if (currentAverage >= targetAverage) {
       ueResults.innerHTML += `<p style="color: green; font-weight: bold;">Bravo, l'UE est validée !</p>`;
-
-      const currentUE = ueBlock.getAttribute("data-ue-id").toLowerCase();
-      const specialtySelect = document.getElementById("specialty");
-      const specialty = specialtySelect.value;
-      const ueName = specialties[specialty].find((ue) => sanitizeString(ue.ue) === currentUE)?.ue;
-      const ueMatch = ueName?.toLowerCase().match(/ue\s*\d+\.4/);
-
-      if (ueMatch) {
+      if (ueId.toLowerCase().match(/ue\s*\d+\.4/)) {
         triggerConfetti();
-
         const ueContainer = document.getElementById("ue-container");
         const existingMessage = ueContainer.querySelector("#semester-valid-message");
-
         if (!existingMessage) {
           const semesterMessage = document.createElement("p");
           semesterMessage.id = "semester-valid-message";
@@ -406,26 +387,6 @@ function calculateSingleUE(ueBlock, index) {
       ueResults.innerHTML += `<p style="color: red; font-weight: bold;">L'UE n'est pas validée, team rattrapage...</p>`;
     }
   }
-}
-
-function validateNotesInput(inputs) {
-  const regex = /^(\d{1,2}([.,]\d{1,2})?)$/;
-  const isFormatValid = inputs.every((input) => {
-    if (input.trim() === "") return true;
-    return regex.test(input.replace(",", "."));
-  });
-
-  const isRangeValid = inputs.every((input) => {
-    if (input.trim() === "") return true;
-    const number = parseFloat(input.replace(",", "."));
-    return number >= 0 && number <= 20;
-  });
-
-  return isFormatValid && isRangeValid;
-}
-
-function validateNotes(notes) {
-  return notes.every((note) => note === null || (note >= 0 && note <= 20));
 }
 
 function checkAndTriggerConfetti(specialty) {
