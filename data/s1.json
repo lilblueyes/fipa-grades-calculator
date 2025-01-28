@@ -58,16 +58,16 @@
             { "name": "Note 3", "coef": 0.5 }
           ]
         },
+        { "name": "Métiers de l'ingénieur", "coef": 1, "isFC": true },
         {
-          "name": "Métiers de l'ingénieur",
+          "name": "Ingénierie et transitions",
           "coef": 1,
           "grades": [
             { "name": "Note 1", "coef": 0.5 },
             { "name": "Note 2", "coef": 0.5 }
           ],
           "isFC": true
-        },
-        { "name": "Ingénierie et transitions", "coef": 1, "isFC": true }
+        }
       ]
     },
     {
