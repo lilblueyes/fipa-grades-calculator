@@ -16,14 +16,29 @@
         { "name": "Ingénierie Système", "coef": 1 },
         { "name": "Introduction au Langage C", "coef": 1 },
         { "name": "Projet prototypage de cartes électroniques", "coef": 1 },
-        { "name": "Systèmes de transmission RF", "coef": 1 },
+        {
+          "name": "Systèmes de transmission RF",
+          "coef": 1,
+          "grades": [
+            { "name": "Exam", "coef": 0.75 },
+            { "name": "BE", "coef": 0.25 }
+          ]
+        },
         { "name": "Systèmes embarqués d'interfaçage et prototypage électronique", "coef": 1 }
       ]
     },
     {
       "ue": "UE 2.3 - Sciences Humaines et Sociales et langues",
       "courses": [
-        { "name": "Anglais", "coef": 1 },
+        {
+          "name": "Anglais",
+          "coef": 2,
+          "grades": [
+            { "name": "Note 1", "coef": 0.5 },
+            { "name": "Note 2", "coef": 0.25 },
+            { "name": "Tuto", "coef": 0.25 }
+          ]
+        },
         { "name": "Communication orale", "coef": 1 },
         { "name": "Analyse du cycle de vie", "coef": 1 },
         { "name": "Enjeux de la défense", "coef": 1 }
