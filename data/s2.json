@@ -6,7 +6,6 @@
         { "name": "Algorithmique fondamentale avec Python", "coef": 1 },
         { "name": "Analyse numérique", "coef": 1 },
         { "name": "Caractérisation des Processus aléatoires", "coef": 1 },
-        { "name": "Introduction aux réseaux", "coef": 1 },
         {
           "name": "Introduction aux réseaux",
           "coef": 1,
