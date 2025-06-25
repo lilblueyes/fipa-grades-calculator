@@ -3,8 +3,8 @@
     {
       "ue": "UE 2.1 - Modélisation des systèmes",
       "courses": [
-        { "name": "Algorithmique fondamentale avec Python", "coef": 1 },
-        { "name": "Analyse numérique", "coef": 1 },
+        { "name": "Algorithmique fondamentale", "coef": 1 },
+        { "name": "Analyse numérique", "coef": 1, "isFC": true},
         { "name": "Caractérisation des Processus aléatoires", "coef": 1 },
         {
           "name": "Introduction aux réseaux",
@@ -36,7 +36,8 @@
           "grades": [
             { "name": "Exam", "coef": 0.75 },
             { "name": "BE", "coef": 0.25 }
-          ]
+          ],
+          "isFC": true
         },
         { "name": "Systèmes embarqués d'interfaçage et prototypage électronique", "coef": 1 }
       ]
@@ -53,9 +54,9 @@
             { "name": "Tuto", "coef": 0.25 }
           ]
         },
-        { "name": "Communication orale", "coef": 1 },
+        { "name": "Communication orale", "coef": 1, "isFC": true},
         { "name": "Analyse du cycle de vie", "coef": 1 },
-        { "name": "Enjeux de la défense", "coef": 1 }
+        { "name": "Enjeux de la défense", "coef": 1, "isFC": true}
       ]
     },
     {
