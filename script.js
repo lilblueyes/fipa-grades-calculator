@@ -1,10 +1,18 @@
 let specialties = {};
 
 function getHash() {
-  return window.location.hash ? window.location.hash.substring(1) : "S1";
+  const hash = window.location.hash ? window.location.hash.substring(1) : null;
+  if (hash) return hash;
+  const stored = localStorage.getItem("selectedSemester");
+  if (stored) {
+    window.location.hash = `#${stored}`;
+    return stored;
+  }
+  return "S2";
 }
 
 let currentSemester = getHash();
+localStorage.setItem("selectedSemester", currentSemester);
 
 function updatePageTitle(semester) {
   const pageTitle = document.getElementById("page-title");
@@ -29,7 +37,9 @@ function loadSpecialties(semester) {
     .catch((error) => {
       console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
       const ueContainer = document.getElementById("ue-container");
-      ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">Erreur lors du chargement des données pour le semestre ${semester}</p>`;
+      ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">
+        Erreur lors du chargement des données pour le semestre ${semester}
+      </p>`;
       updatePageTitle(semester);
       setActiveNav(semester);
     });
@@ -49,7 +59,6 @@ function setActiveNav(semester) {
 function populateSpecialtySelect() {
   const specialtySelect = document.getElementById("specialty");
   specialtySelect.innerHTML = "";
-
   Object.keys(specialties).forEach((specialty) => {
     const option = document.createElement("option");
     option.value = specialty;
@@ -107,15 +116,11 @@ function renderSpecialty(specialty) {
   }
 
   specialties[specialty].forEach((ue, index) => {
+    const ueId = sanitizeString(ue.ue);
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
-
     const hasMultipleNotes = ue.courses.some((course) => course.grades && course.grades.length > 1);
-    if (hasMultipleNotes) {
-      ueBlock.classList.add("multiple-notes");
-    }
-
-    const ueId = sanitizeString(ue.ue);
+    if (hasMultipleNotes) ueBlock.classList.add("multiple-notes");
     ueBlock.setAttribute("data-ue-id", ueId);
 
     const ueTitle = document.createElement("h2");
@@ -127,9 +132,7 @@ function renderSpecialty(specialty) {
 
     const ueInputs = document.createElement("div");
     ueInputs.classList.add("ue-inputs");
-
     const form = document.createElement("form");
-
     const showFC = checkboxFC && checkboxFC.checked;
 
     const specialtySelectDiv = document.querySelector(".specialty-select");
@@ -142,41 +145,33 @@ function renderSpecialty(specialty) {
     }
 
     ue.courses
-      .filter((course) => {
-        return !showFC || !course.isFC;
-      })
-      .forEach((course) => {
+      .filter((course) => !showFC || !course.isFC)
+      .forEach((course, i) => {
         const div = document.createElement("div");
         div.classList.add("course-row");
+        const name = sanitizeString(course.name);
 
         if (course.grades) {
-          let gradeInputs = course.grades
+          const gradeInputs = course.grades
             .map(
-              (grade, i) => `
-                <input type="text" id="grade-${index}-${sanitizeString(course.name)}-${i}" 
+              (grade, j) => `
+                <input type="text" id="grade-${index}-${name}-${j}" 
                   name="grades[]" placeholder="${grade.name}" class="styled-input"/>
                 <input type="hidden" name="gradeCoeffs[]" value="${course.coef * grade.coef}" />
               `
             )
             .join("");
-
           div.innerHTML = `
-            <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
-            course.coef
-          }) :</label>
-            <div style="display: flex; align-items: center;">${gradeInputs}</div>
+            <label for="note-${index}-${name}">${course.name} (coef ${course.coef}) :</label>
+            <div style="display:flex; align-items:center;">${gradeInputs}</div>
           `;
         } else {
           div.innerHTML = `
-            <label for="note-${index}-${sanitizeString(course.name)}">${course.name} (coef ${
-            course.coef
-          }) :</label>
-            <input type="text" id="note-${index}-${sanitizeString(course.name)}" name="notes[]" 
-              placeholder="Note" class="styled-input"/>
+            <label for="note-${index}-${name}">${course.name} (coef ${course.coef}) :</label>
+            <input type="text" id="note-${index}-${name}" name="notes[]" placeholder="Note" class="styled-input"/>
             <input type="hidden" name="coeffs[]" value="${course.coef}" />
           `;
         }
-
         form.appendChild(div);
       });
 
@@ -203,9 +198,11 @@ function renderSpecialty(specialty) {
     }
 
     ueInputs.appendChild(form);
+    ueContent.appendChild(ueInputs);
 
     const separator = document.createElement("div");
     separator.classList.add("separator");
+    ueContent.appendChild(separator);
 
     const ueRight = document.createElement("div");
     ueRight.classList.add("ue-right");
@@ -233,8 +230,7 @@ function renderSpecialty(specialty) {
       <p>Notes nécessaires pour valider : -</p>
     `;
     ueRight.appendChild(ueResults);
-    ueContent.appendChild(ueInputs);
-    ueContent.appendChild(separator);
+
     ueContent.appendChild(ueRight);
     ueBlock.appendChild(ueContent);
     ueContainer.appendChild(ueBlock);
@@ -257,6 +253,7 @@ document.getElementById("specialty").addEventListener("change", (event) => {
 
 window.addEventListener("hashchange", () => {
   currentSemester = getHash();
+  localStorage.setItem("selectedSemester", currentSemester);
   loadSpecialties(currentSemester);
 });
 
