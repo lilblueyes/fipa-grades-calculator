@@ -5,7 +5,14 @@
       "courses": [
         { "name": "Algorithmique fondamentale", "coef": 1 },
         { "name": "Analyse numérique", "coef": 1, "isFC": true},
-        { "name": "Caractérisation des Processus aléatoires", "coef": 1 },
+        {
+          "name": "Caractérisation des Processus aléatoires",
+          "coef": 1,
+          "grades": [
+            { "name": "TP", "coef": 0.5 },
+            { "name": "Exam", "coef": 0.5 }
+          ]
+        },
         {
           "name": "Introduction aux réseaux",
           "coef": 1,
