@@ -41,8 +41,8 @@
           "name": "Systèmes de transmission RF",
           "coef": 1,
           "grades": [
-            { "name": "Exam", "coef": 0.75 },
-            { "name": "BE", "coef": 0.25 }
+            { "name": "Exam", "coef": 0.5 },
+            { "name": "BE", "coef": 0.5 }
           ],
           "isFC": true
         },
