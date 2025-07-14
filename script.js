@@ -387,9 +387,13 @@ function calculateSingleUE(ueBlock, index) {
 }
 
 const metaTheme = document.getElementById("theme-color-meta");
+const appleMeta = document.getElementById("apple-status-bar-meta");
 function updateThemeColor() {
-  const color = getComputedStyle(document.documentElement).getPropertyValue("--theme-color").trim();
-  metaTheme.setAttribute("content", color);
+  const themeColor = getComputedStyle(document.documentElement)
+    .getPropertyValue("--theme-color")
+    .trim();
+  metaTheme.setAttribute("content", themeColor);
+  appleMeta.setAttribute("content", themeColor);
 }
 
 function checkAndTriggerConfetti(specialty) {
