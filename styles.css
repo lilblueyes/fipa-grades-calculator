@@ -6,6 +6,7 @@
 
 :root {
   --background: radial-gradient(circle, #1c2421, #121212);
+  --theme-color: #121212;
   --text-color: #fff;
   --primary-color: #fff;
   --secondary-color: #1abc9c;
@@ -39,6 +40,7 @@
 
 body.light-theme {
   --background: radial-gradient(circle at center 80%, #6630bd 1%, #ffffff 95%);
+  --theme-color: #ffffff;
   --text-color: #000000;
   --primary-color: #000000;
   --secondary-color: #8a2be2;
