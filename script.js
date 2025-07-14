@@ -386,6 +386,12 @@ function calculateSingleUE(ueBlock, index) {
   }
 }
 
+const metaTheme = document.getElementById("theme-color-meta");
+function updateThemeColor() {
+  const color = getComputedStyle(document.documentElement).getPropertyValue("--theme-color").trim();
+  metaTheme.setAttribute("content", color);
+}
+
 function checkAndTriggerConfetti(specialty) {
   const spAcadInputs = document.querySelectorAll('input[id*="sp-acad-"]');
   let allValidated = true;
@@ -584,6 +590,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isLight = document.body.classList.contains("light-theme");
     localStorage.setItem("theme", isLight ? "light" : "dark");
     updateLogo(isLight ? "light" : "dark");
+    updateThemeColor();
 
     if (isLight) {
       icon.classList.remove("fa-moon");
@@ -610,6 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   updateLogo(savedTheme);
+  updateThemeColor();
 
   if (savedTheme === "light") {
     icon.classList.remove("fa-moon");
