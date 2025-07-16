@@ -108,7 +108,7 @@
             { "name": "L & R", "coef": 0.25 },
             { "name": "Tuto", "coef": 0.25 }
           ]
-        },,
+        },
         { "name": "Communication orale", "coef": 1 },
         { "name": "Analyse du cycle de vie", "coef": 1 }
       ]
