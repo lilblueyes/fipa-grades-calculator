@@ -21,14 +21,7 @@
             { "name": "Note 2", "coef": 0.75 }
           ]
         },
-        {
-          "name": "Vecteurs et approximations aléatoires",
-          "coef": 1,
-          "grades": [
-            { "name": "QCM", "coef": 0.2 },
-            { "name": "Exam", "coef": 0.8 }
-          ]
-        }
+        { "name": "Vecteurs et approximations aléatoires", "coef": 1 },
       ]
     },
     {
