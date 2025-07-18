@@ -74,6 +74,7 @@ body.light-theme {
 html,
 body {
   background: var(--background);
+  background-color: var(--theme-color);
   color: var(--text-color);
   font-family: "Cabinet Grotesk", sans-serif;
   margin: 0;
