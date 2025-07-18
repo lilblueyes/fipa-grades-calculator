@@ -777,6 +777,16 @@ footer a.github-link:hover {
   }
 }
 
+@media (max-width: 768px) {
+  .theme-toggle-btn {
+    right: 20px;
+  }
+
+  .hamburger {
+    left: 20px;
+  }
+}
+
 @media (min-width: 1300px) {
   .theme-toggle-btn {
     right: 45px;
