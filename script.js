@@ -35,7 +35,10 @@ function loadSpecialties(semester) {
       setActiveNav(semester);
     })
     .catch((error) => {
-      console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
+      console.error(
+        `Erreur lors du chargement des spécialités pour ${semester}:`,
+        error
+      );
       const ueContainer = document.getElementById("ue-container");
       ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">
         Erreur lors du chargement des données pour le semestre ${semester}
@@ -48,11 +51,10 @@ function loadSpecialties(semester) {
 function setActiveNav(semester) {
   const navLinks = document.querySelectorAll("nav a");
   navLinks.forEach((link) => {
-    if (link.getAttribute("href") === `#${semester}`) {
-      link.classList.add("active");
-    } else {
-      link.classList.remove("active");
-    }
+    link.classList.toggle(
+      "active",
+      link.getAttribute("href") === `#${semester}`
+    );
   });
 }
 
@@ -96,9 +98,9 @@ function applySelectedSpecialty() {
 }
 
 function updateFCVisibility() {
-  const checkboxFCContainer = document.getElementById("checkboxFCContainer");
-  const specialtySelect = document.getElementById("specialty");
-  checkboxFCContainer.style.display = specialtySelect.value === "SE" ? "inline-block" : "none";
+  const container = document.getElementById("checkboxFCContainer");
+  const specialty = document.getElementById("specialty").value;
+  container.style.display = specialty === "SE" ? "inline-block" : "none";
 }
 
 const checkboxFC = document.getElementById("checkboxFC");
@@ -119,9 +121,11 @@ function renderSpecialty(specialty) {
     const ueId = sanitizeString(ue.ue);
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
-    const hasMultipleNotes = ue.courses.some((course) => course.grades && course.grades.length > 1);
+    const hasMultipleNotes = ue.courses.some(
+      (c) => c.grades && c.grades.length > 1
+    );
     if (hasMultipleNotes) ueBlock.classList.add("multiple-notes");
-    ueBlock.setAttribute("data-ue-id", ueId);
+    ueBlock.dataset.ueId = ueId;
 
     const ueTitle = document.createElement("h2");
     ueTitle.textContent = ue.ue;
@@ -137,16 +141,12 @@ function renderSpecialty(specialty) {
 
     const specialtySelectDiv = document.querySelector(".specialty-select");
     specialtySelectDiv.classList.remove("se", "meca");
-
-    if (specialty === "SE") {
-      specialtySelectDiv.classList.add("se");
-    } else if (specialty === "MECA") {
-      specialtySelectDiv.classList.add("meca");
-    }
+    if (specialty === "SE") specialtySelectDiv.classList.add("se");
+    if (specialty === "MECA") specialtySelectDiv.classList.add("meca");
 
     ue.courses
       .filter((course) => !showFC || !course.isFC)
-      .forEach((course, i) => {
+      .forEach((course) => {
         const div = document.createElement("div");
         div.classList.add("course-row");
         const name = sanitizeString(course.name);
@@ -154,43 +154,38 @@ function renderSpecialty(specialty) {
         if (course.grades) {
           const gradeInputs = course.grades
             .map(
-              (grade, j) => `
-                <input type="text" id="grade-${index}-${name}-${j}" 
-                  name="grades[]" placeholder="${grade.name}" class="styled-input"/>
-                <input type="hidden" name="gradeCoeffs[]" value="${course.coef * grade.coef}" />
-              `
+              (g, j) => `
+                <input type="text" id="grade-${index}-${name}-${j}"
+                  name="grades[]" placeholder="${g.name}" class="styled-input"/>
+                <input type="hidden" name="gradeCoeffs[]" value="${
+                  course.coef * g.coef
+                }" />`
             )
             .join("");
           div.innerHTML = `
             <label for="note-${index}-${name}">${course.name} (coef ${course.coef}) :</label>
-            <div style="display:flex; align-items:center;">${gradeInputs}</div>
-          `;
+            <div style="display:flex; align-items:center;">${gradeInputs}</div>`;
         } else {
           div.innerHTML = `
             <label for="note-${index}-${name}">${course.name} (coef ${course.coef}) :</label>
             <input type="text" id="note-${index}-${name}" name="notes[]" placeholder="Note" class="styled-input"/>
-            <input type="hidden" name="coeffs[]" value="${course.coef}" />
-          `;
+            <input type="hidden" name="coeffs[]" value="${course.coef}" />`;
         }
         form.appendChild(div);
       });
 
-    const savedNotesKey = `notes-${currentSemester}-${specialty}-${ueId}`;
-    let savedNotes = localStorage.getItem(savedNotesKey);
-    if (savedNotes) {
+    const savedKey = `notes-${currentSemester}-${specialty}-${ueId}`;
+    let saved = localStorage.getItem(savedKey);
+    if (saved) {
       try {
-        savedNotes = JSON.parse(savedNotes);
-        const noteInputs = form.querySelectorAll('input[name="notes[]"]');
-        savedNotes.notes.forEach((val, i) => {
-          if (val !== null && noteInputs[i]) {
-            noteInputs[i].value = val;
-          }
+        saved = JSON.parse(saved);
+        form.querySelectorAll('input[name="notes[]"]').forEach((inp, i) => {
+          const val = saved.notes[i];
+          if (val !== null) inp.value = val;
         });
-        const gradeInputs = form.querySelectorAll('input[name="grades[]"]');
-        savedNotes.grades.forEach((val, i) => {
-          if (val !== null && gradeInputs[i]) {
-            gradeInputs[i].value = val;
-          }
+        form.querySelectorAll('input[name="grades[]"]').forEach((inp, i) => {
+          const val = saved.grades[i];
+          if (val !== null) inp.value = val;
         });
       } catch (e) {
         console.error("Erreur parsing notes sauvegardées :", e);
@@ -214,10 +209,9 @@ function renderSpecialty(specialty) {
         <label for="moyenneCible-${index}">Moyenne cible :</label>
         <input type="text" id="moyenneCible-${index}" value="10" class="styled-input" />
       </div>
-      <button class="calculate-btn">Calculer</button>
-    `;
-    ueActions.querySelector(".calculate-btn").addEventListener("click", (event) => {
-      event.preventDefault();
+      <button class="calculate-btn">Calculer</button>`;
+    ueActions.querySelector(".calculate-btn").addEventListener("click", (e) => {
+      e.preventDefault();
       calculateSingleUE(ueBlock, index);
     });
     ueRight.appendChild(ueActions);
@@ -227,8 +221,7 @@ function renderSpecialty(specialty) {
     ueResults.innerHTML = `
       <h3>Résultats :</h3>
       <p>Moyenne actuelle : -</p>
-      <p>Notes nécessaires pour valider : -</p>
-    `;
+      <p>Notes nécessaires pour valider : -</p>`;
     ueRight.appendChild(ueResults);
 
     ueContent.appendChild(ueRight);
@@ -244,11 +237,10 @@ function sanitizeString(str) {
     .toLowerCase();
 }
 
-document.getElementById("specialty").addEventListener("change", (event) => {
-  const selectedSpecialty = event.target.value;
-  localStorage.setItem("selectedSpecialty", selectedSpecialty);
+document.getElementById("specialty").addEventListener("change", (e) => {
+  localStorage.setItem("selectedSpecialty", e.target.value);
   updateFCVisibility();
-  renderSpecialty(selectedSpecialty);
+  renderSpecialty(e.target.value);
 });
 
 window.addEventListener("hashchange", () => {
@@ -260,134 +252,154 @@ window.addEventListener("hashchange", () => {
 loadSpecialties(currentSemester);
 
 function calculateSingleUE(ueBlock, index) {
-  const targetAverageInput = document.getElementById(`moyenneCible-${index}`).value;
-  const targetAverage = parseFloat(targetAverageInput.replace(",", "."));
+  const targetAverage = parseFloat(
+    document.getElementById(`moyenneCible-${index}`).value.replace(",", ".")
+  );
   const form = ueBlock.querySelector("form");
 
   const noteInputs = form.querySelectorAll('input[type="text"]');
   for (let input of noteInputs) {
-    let value = input.value.trim().replace(",", ".");
-    if (value !== "") {
-      const num = parseFloat(value);
-      if (isNaN(num) || num < 0 || num > 20) {
-        alert("Veuillez saisir des notes comprises entre 0 et 20");
-        return;
-      }
+    const val = input.value.trim().replace(",", ".");
+    if (val !== "" && (isNaN(val) || val < 0 || val > 20)) {
+      alert("Veuillez saisir des notes comprises entre 0 et 20");
+      return;
     }
   }
 
   const specialty = document.getElementById("specialty").value;
-  const ueId = ueBlock.getAttribute("data-ue-id");
+  const ueId = ueBlock.dataset.ueId;
   const ueData = specialties[specialty][index];
-  let totalWeightedSum = 0;
-  let totalCoefficients = 0;
-  let missingNotesCount = 0;
-  let remainingCoefficients = 0;
+
+  let totalWeighted = 0,
+    totalCoeff = 0,
+    missing = 0,
+    remainingCoeff = 0;
 
   ueData.courses.forEach((course) => {
     if (course.grades) {
-      let courseWeightedSum = 0;
-      const totalInternalCoef = course.grades.reduce((sum, grade) => sum + grade.coef, 0);
-      course.grades.forEach((grade, i) => {
-        const input = form.querySelector(`input[id$="${sanitizeString(course.name)}-${i}"]`);
-        if (input) {
-          const value = input.value.trim().replace(",", ".");
-          if (value !== "") {
-            const noteValue = parseFloat(value);
-            if (!isNaN(noteValue) && noteValue >= 0 && noteValue <= 20) {
-              courseWeightedSum += noteValue * grade.coef;
-            }
-          } else {
-            missingNotesCount++;
-            remainingCoefficients += (grade.coef / totalInternalCoef) * course.coef;
+      let courseSum = 0;
+      const internalTotal = course.grades.reduce((s, g) => s + g.coef, 0);
+      course.grades.forEach((g, i) => {
+        const inp = form.querySelector(
+          `input[id$="${sanitizeString(course.name)}-${i}"]`
+        );
+        if (inp) {
+          const val = inp.value.trim().replace(",", ".");
+          if (val !== "") courseSum += parseFloat(val) * g.coef;
+          else {
+            missing++;
+            remainingCoeff += (g.coef / internalTotal) * course.coef;
           }
         }
       });
-      totalWeightedSum += (courseWeightedSum / totalInternalCoef) * course.coef;
-      totalCoefficients += course.coef;
+      totalWeighted += (courseSum / internalTotal) * course.coef;
+      totalCoeff += course.coef;
     } else {
-      const input = form.querySelector(`input[id$="${sanitizeString(course.name)}"]`);
-      if (input) {
-        const value = input.value.trim().replace(",", ".");
-        if (value !== "") {
-          const noteValue = parseFloat(value);
-          if (!isNaN(noteValue) && noteValue >= 0 && noteValue <= 20) {
-            totalWeightedSum += noteValue * course.coef;
-            totalCoefficients += course.coef;
-          }
+      const inp = form.querySelector(
+        `input[id$="${sanitizeString(course.name)}"]`
+      );
+      if (inp) {
+        const val = inp.value.trim().replace(",", ".");
+        if (val !== "") {
+          totalWeighted += parseFloat(val) * course.coef;
         } else {
-          missingNotesCount++;
-          remainingCoefficients += course.coef;
-          totalWeightedSum += 0;
-          totalCoefficients += course.coef;
+          missing++;
+          remainingCoeff += course.coef;
         }
+        totalCoeff += course.coef;
       }
     }
   });
 
+  /* Sauvegarde */
   const notesData = { notes: [], grades: [] };
-  form.querySelectorAll('input[name="notes[]"]').forEach((input) => {
-    notesData.notes.push(input.value === "" ? null : parseFloat(input.value.replace(",", ".")));
-  });
-  form.querySelectorAll('input[name="grades[]"]').forEach((input) => {
-    notesData.grades.push(input.value === "" ? null : parseFloat(input.value.replace(",", ".")));
-  });
-  localStorage.setItem(`notes-${currentSemester}-${specialty}-${ueId}`, JSON.stringify(notesData));
+  form
+    .querySelectorAll('input[name="notes[]"]')
+    .forEach((i) =>
+      notesData.notes.push(
+        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
+      )
+    );
+  form
+    .querySelectorAll('input[name="grades[]"]')
+    .forEach((i) =>
+      notesData.grades.push(
+        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
+      )
+    );
+  localStorage.setItem(
+    `notes-${currentSemester}-${specialty}-${ueId}`,
+    JSON.stringify(notesData)
+  );
 
-  const currentAverage = totalCoefficients > 0 ? totalWeightedSum / totalCoefficients : 0;
-
+  const currentAverage = totalCoeff ? totalWeighted / totalCoeff : 0;
   let neededGrade = null;
-  if (remainingCoefficients > 0) {
-    const totalTargetPoints = targetAverage * totalCoefficients;
-    const neededPoints = totalTargetPoints - totalWeightedSum;
-    neededGrade = neededPoints / remainingCoefficients;
+  if (remainingCoeff > 0) {
+    const neededPoints = targetAverage * totalCoeff - totalWeighted;
+    neededGrade = neededPoints / remainingCoeff;
   }
 
-  const ueResults = ueBlock.querySelector(".ue-results");
-  ueResults.innerHTML = `<h3>Résultats :</h3>`;
-  ueResults.innerHTML += `<p>Moyenne actuelle : ${
-    isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2).replace(".", ",")
-  }</p>`;
+  /* Affichage résultats */
+  const results = ueBlock.querySelector(".ue-results");
+  results.innerHTML = `<h3>Résultats :</h3>
+    <p>Moyenne actuelle : ${
+      isNaN(currentAverage)
+        ? "Aucune note saisie"
+        : currentAverage.toFixed(2).replace(".", ",")
+    }</p>`;
 
-  if (missingNotesCount > 0) {
+  if (missing > 0) {
+    ueBlock.classList.remove("validated");
     if (neededGrade !== null) {
       if (neededGrade <= 0) {
-        ueResults.innerHTML += `<p style="color: green; font-weight: bold;">La moyenne cible est déjà atteinte !</p>`;
+        results.innerHTML += `<p style="color: green; font-weight: bold;">La moyenne cible est déjà atteinte !</p>`;
       } else if (neededGrade > 20) {
-        ueResults.innerHTML += `<p style="color: red; font-weight: bold;">Impossible d'atteindre la moyenne cible...</p>`;
+        results.innerHTML += `<p style="color: red; font-weight: bold;">Impossible d'atteindre la moyenne cible...</p>`;
       } else {
-        const message = missingNotesCount > 1 ? "Notes nécessaires" : "Note nécessaire";
-        ueResults.innerHTML += `<p>${message} pour valider : ${neededGrade
+        results.innerHTML += `<p>Note${
+          missing > 1 ? "s" : ""
+        } nécessaires pour valider : ${neededGrade
           .toFixed(2)
           .replace(".", ",")}</p>`;
       }
-    } else {
-      ueResults.innerHTML += `<p>Toutes les notes sont déjà renseignées.</p>`;
     }
   } else {
     if (currentAverage >= targetAverage) {
-      ueResults.innerHTML += `<p style="color: green; font-weight: bold;">Bravo, l'UE est validée !</p>`;
-      if (ueId.toLowerCase().match(/ue\s*\d+\.4/)) {
-        triggerConfetti();
-        const ueContainer = document.getElementById("ue-container");
-        const existingMessage = ueContainer.querySelector("#semester-valid-message");
-        if (!existingMessage) {
-          const semesterMessage = document.createElement("p");
-          semesterMessage.id = "semester-valid-message";
-          semesterMessage.textContent = "LE SEMESTRE EST VALIDÉ !";
-          semesterMessage.style.cssText =
-            "text-align: center; color: white; font-size: 1.5em; font-weight: bold; margin-top: 20px;";
-          ueContainer.appendChild(semesterMessage);
-        }
-      }
+      results.innerHTML += `<p style="color: green; font-weight: bold;">Bravo, l'UE est validée !</p>`;
+      ueBlock.classList.add("validated");
     } else {
-      ueResults.innerHTML += `<p style="color: red; font-weight: bold;">L'UE n'est pas validée, team rattrapage...</p>`;
+      results.innerHTML += `<p style="color: red; font-weight: bold;">L'UE n'est pas validée, team rattrapage...</p>`;
+      ueBlock.classList.remove("validated");
     }
+  }
+
+  /* Vérification globale du semestre */
+  const allBlocks = document.querySelectorAll(".ue-block");
+  const validatedBlocks = document.querySelectorAll(".ue-block.validated");
+
+  const ueContainer = document.getElementById("ue-container");
+  const existingMsg = document.getElementById("semester-valid-message");
+
+  if (allBlocks.length && validatedBlocks.length === allBlocks.length) {
+    if (!existingMsg) {
+      const msg = document.createElement("p");
+      msg.id = "semester-valid-message";
+      msg.textContent = "LE SEMESTRE EST VALIDÉ !";
+      msg.style.cssText =
+        "text-align: center; color: white; font-size: 1.5em; font-weight: bold; margin-top: 20px;";
+      ueContainer.appendChild(msg);
+    }
+    triggerConfetti();
+  } else if (existingMsg) {
+    existingMsg.remove();
   }
 }
 
+/* ---------------- Thème & UI divers ---------------- */
+
 const metaTheme = document.getElementById("theme-color-meta");
 const appleMeta = document.getElementById("apple-status-bar-meta");
+
 function updateThemeColor() {
   const themeColor = getComputedStyle(document.documentElement)
     .getPropertyValue("--theme-color")
@@ -396,25 +408,7 @@ function updateThemeColor() {
   appleMeta.setAttribute("content", themeColor);
 }
 
-function checkAndTriggerConfetti(specialty) {
-  const spAcadInputs = document.querySelectorAll('input[id*="sp-acad-"]');
-  let allValidated = true;
-
-  spAcadInputs.forEach((spInput) => {
-    const spMatch = spInput.id.match(/sp-acad-(\d+)/i);
-    const spNumber = spMatch ? spMatch[1] : null;
-    if (spNumber) {
-      const average = parseFloat(spInput.value.replace(",", "."));
-      if (isNaN(average) || average < 10) {
-        allValidated = false;
-      }
-    }
-  });
-
-  if (allValidated && spAcadInputs.length > 0) {
-    triggerConfetti();
-  }
-}
+/* ----------------- Confettis ----------------- */
 
 class ConfettiGenerator {
   constructor() {
@@ -435,128 +429,86 @@ class ConfettiGenerator {
     this.maxCount = 300;
     this.speed = 2;
     this.frameInterval = 15;
-    this.gradient = false;
-    this.supportsAnimationFrame =
-      window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame ||
-      window.oRequestAnimationFrame ||
-      window.msRequestAnimationFrame ||
-      null;
-    this.runningAnimation = false;
-    this.animationTimer = null;
-    this.lastFrameTime = Date.now();
     this.particles = [];
+    this.runningAnimation = false;
     this.waveAngle = 0;
-    this.context = null;
-    this.canvas = null;
-
     this.initCanvas();
   }
 
   initCanvas() {
     this.canvas = document.createElement("canvas");
+    Object.assign(this.canvas.style, {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      pointerEvents: "none",
+      zIndex: 10000,
+    });
+    document.body.appendChild(this.canvas);
+    this.context = this.canvas.getContext("2d");
+    this.resize();
+    window.addEventListener("resize", () => this.resize());
+  }
+
+  resize() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    this.canvas.style.position = "fixed";
-    this.canvas.style.top = "0";
-    this.canvas.style.left = "0";
-    this.canvas.style.pointerEvents = "none";
-    this.canvas.style.zIndex = "10000";
-    document.body.appendChild(this.canvas);
-
-    this.context = this.canvas.getContext("2d");
-
-    window.addEventListener("resize", () => {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-    });
   }
 
-  resetParticle(particle) {
-    particle.color = this.colors[Math.floor(Math.random() * this.colors.length)];
-    particle.x = Math.random() * window.innerWidth;
-    particle.y = Math.random() * window.innerHeight - window.innerHeight;
-    particle.diameter = Math.random() * 10 + 5;
-    particle.tilt = Math.random() * 10 - 10;
-    particle.tiltAngleIncrement = Math.random() * 0.07 + 0.05;
-    particle.tiltAngle = Math.random() * Math.PI;
-    return particle;
+  resetParticle(p) {
+    p.color = this.colors[(Math.random() * this.colors.length) | 0];
+    p.x = Math.random() * window.innerWidth;
+    p.y = Math.random() * -window.innerHeight;
+    p.diameter = Math.random() * 10 + 5;
+    p.tilt = Math.random() * 20 - 10;
+    p.tiltAngleIncrement = Math.random() * 0.07 + 0.05;
+    p.tiltAngle = Math.random() * Math.PI;
+    return p;
   }
 
-  start(timeout) {
-    while (this.particles.length < this.maxCount) this.particles.push(this.resetParticle({}));
-
-    this.runningAnimation = true;
-    this.runAnimation();
-
-    if (timeout) {
-      setTimeout(() => this.stop(), timeout);
+  start(timeout = 1500) {
+    while (this.particles.length < this.maxCount) {
+      this.particles.push(this.resetParticle({}));
     }
+    this.runningAnimation = true;
+    this.animate();
+    setTimeout(() => this.stop(), timeout);
   }
 
   stop() {
     this.runningAnimation = false;
   }
 
-  runAnimation() {
+  animate() {
     if (!this.runningAnimation && this.particles.length === 0) {
-      this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      this.animationTimer = null;
-    } else {
-      let now = Date.now();
-      let delta = now - this.lastFrameTime;
-      if (!this.supportsAnimationFrame || delta > this.frameInterval) {
-        this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        this.updateParticles();
-        this.drawParticles();
-        this.lastFrameTime = now - (delta % this.frameInterval);
-      }
-      this.animationTimer = requestAnimationFrame(this.runAnimation.bind(this));
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      return;
     }
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.update();
+    this.draw();
+    requestAnimationFrame(this.animate.bind(this));
   }
 
-  drawParticles() {
-    this.particles.forEach((particle) => {
-      this.context.beginPath();
-      this.context.lineWidth = particle.diameter;
-      let x2 = particle.x + particle.tilt;
-      let x = x2 + particle.diameter / 2;
-      let y2 = particle.y + particle.tilt + particle.diameter / 2;
-      if (this.gradient) {
-        let gradient = this.context.createLinearGradient(x, particle.y, x2, y2);
-        gradient.addColorStop("0", particle.color);
-        gradient.addColorStop("1.0", particle.color2);
-        this.context.strokeStyle = gradient;
-      } else {
-        this.context.strokeStyle = particle.color;
-      }
-      this.context.moveTo(x, particle.y);
-      this.context.lineTo(x2, y2);
-      this.context.stroke();
-    });
-  }
-
-  updateParticles() {
+  update() {
     this.waveAngle += 0.01;
     for (let i = 0; i < this.particles.length; i++) {
-      let particle = this.particles[i];
-      if (!this.runningAnimation && particle.y < -15) {
-        particle.y = window.innerHeight + 100;
+      const p = this.particles[i];
+      if (!this.runningAnimation && p.y < -15) {
+        p.y = this.canvas.height + 100;
       } else {
-        particle.tiltAngle += particle.tiltAngleIncrement;
-        particle.x += Math.sin(this.waveAngle) - 0.5;
-        particle.y += (Math.cos(this.waveAngle) + particle.diameter + this.speed) * 0.5;
-        particle.tilt = Math.sin(particle.tiltAngle) * 15;
+        p.tiltAngle += p.tiltAngleIncrement;
+        p.x += Math.sin(this.waveAngle) - 0.5;
+        p.y += (Math.cos(this.waveAngle) + p.diameter + this.speed) * 0.5;
+        p.tilt = Math.sin(p.tiltAngle) * 15;
       }
-
       if (
-        particle.x > window.innerWidth + 20 ||
-        particle.x < -20 ||
-        particle.y > window.innerHeight
+        p.x > this.canvas.width + 20 ||
+        p.x < -20 ||
+        p.y > this.canvas.height
       ) {
         if (this.runningAnimation && this.particles.length <= this.maxCount) {
-          this.resetParticle(particle);
+          this.resetParticle(p);
         } else {
           this.particles.splice(i, 1);
           i--;
@@ -564,29 +516,41 @@ class ConfettiGenerator {
       }
     }
   }
+
+  draw() {
+    this.particles.forEach((p) => {
+      this.context.beginPath();
+      this.context.lineWidth = p.diameter;
+      const x2 = p.x + p.tilt;
+      this.context.strokeStyle = p.color;
+      this.context.moveTo(p.x + p.diameter / 2 + p.tilt, p.y);
+      this.context.lineTo(x2, p.y + p.tilt + p.diameter / 2);
+      this.context.stroke();
+    });
+  }
 }
 
 const confettiGenerator = new ConfettiGenerator();
-
 function triggerConfetti() {
-  confettiGenerator.start(1500); // ms
+  confettiGenerator.start(1500);
 }
+
+/* ----------------- DOMContentLoaded ----------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const logo = document.getElementById("logo");
   const hamburger = document.getElementById("hamburger");
   const navMenu = document.getElementById("nav-menu");
-  const hamburgerIcon = hamburger.querySelector("i");
-  const icon = themeToggleBtn.querySelector("i");
   const overlay = document.getElementById("overlay");
+  const themeIcon = themeToggleBtn.querySelector("i");
+  const hamburgerIcon = hamburger.querySelector("i");
 
   function updateLogo(theme) {
-    if (theme === "light") {
-      logo.src = "assets/logo_ensta_dark.png";
-    } else {
-      logo.src = "assets/logo_ensta.png";
-    }
+    logo.src =
+      theme === "light"
+        ? "assets/logo_ensta_dark.png"
+        : "assets/logo_ensta.png";
   }
 
   function toggleTheme() {
@@ -595,90 +559,66 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("theme", isLight ? "light" : "dark");
     updateLogo(isLight ? "light" : "dark");
     updateThemeColor();
-
-    if (isLight) {
-      icon.classList.remove("fa-moon");
-      icon.classList.add("fa-sun");
-    } else {
-      icon.classList.remove("fa-sun");
-      icon.classList.add("fa-moon");
-    }
-  }
-
-  function updateToggleZIndex() {
-    if (overlay.classList.contains("active")) {
-      themeToggleBtn.style.zIndex = "800";
-    } else {
-      themeToggleBtn.style.zIndex = "";
-    }
+    themeIcon.classList.toggle("fa-sun", isLight);
+    themeIcon.classList.toggle("fa-moon", !isLight);
   }
 
   const savedTheme = localStorage.getItem("theme") || "dark";
-  if (savedTheme === "light") {
-    document.body.classList.add("light-theme");
-  } else {
-    document.body.classList.remove("light-theme");
-  }
-
+  if (savedTheme === "light") document.body.classList.add("light-theme");
   updateLogo(savedTheme);
   updateThemeColor();
-
-  if (savedTheme === "light") {
-    icon.classList.remove("fa-moon");
-    icon.classList.add("fa-sun");
-  } else {
-    icon.classList.remove("fa-sun");
-    icon.classList.add("fa-moon");
-  }
+  themeIcon.classList.toggle("fa-sun", savedTheme === "light");
+  themeIcon.classList.toggle("fa-moon", savedTheme !== "light");
 
   themeToggleBtn.addEventListener("click", toggleTheme);
 
+  function updateZIndex() {
+    themeToggleBtn.style.zIndex = overlay.classList.contains("active")
+      ? "800"
+      : "";
+  }
+
   hamburger.addEventListener("click", (e) => {
     e.stopPropagation();
-    const isActive = navMenu.classList.toggle("active");
-    hamburger.setAttribute("aria-expanded", isActive);
-    document.body.classList.toggle("menu-open", isActive);
-    overlay.classList.toggle("active", isActive);
-    updateToggleZIndex();
+    const active = navMenu.classList.toggle("active");
+    hamburger.setAttribute("aria-expanded", active);
+    document.body.classList.toggle("menu-open", active);
+    overlay.classList.toggle("active", active);
+    updateZIndex();
   });
 
-  const navLinks = navMenu.querySelectorAll("a");
-  navLinks.forEach((link) => {
+  navMenu.querySelectorAll("a").forEach((link) =>
     link.addEventListener("click", () => {
       navMenu.classList.remove("active");
       hamburger.setAttribute("aria-expanded", false);
       document.body.classList.remove("menu-open");
       overlay.classList.remove("active");
-      updateToggleZIndex();
-    });
-  });
+      updateZIndex();
+    })
+  );
 
   overlay.addEventListener("click", () => {
     navMenu.classList.remove("active");
     hamburger.setAttribute("aria-expanded", false);
     document.body.classList.remove("menu-open");
     overlay.classList.remove("active");
-    updateToggleZIndex();
+    updateZIndex();
   });
 
-  document.addEventListener("click", (event) => {
-    if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
-      const wasActive = navMenu.classList.contains("active");
-      if (wasActive) {
+  document.addEventListener("click", (e) => {
+    if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+      if (navMenu.classList.contains("active")) {
         navMenu.classList.remove("active");
         hamburger.setAttribute("aria-expanded", false);
         document.body.classList.remove("menu-open");
         overlay.classList.remove("active");
-        updateToggleZIndex();
+        updateZIndex();
       }
     }
   });
 
-  updateToggleZIndex();
-
-  const checkboxFC = document.getElementById("checkboxFC");
+  updateZIndex();
   checkboxFC.checked = localStorage.getItem("checkboxFC") === "true";
-
   checkboxFC.addEventListener("change", () => {
     localStorage.setItem("checkboxFC", checkboxFC.checked);
     renderSpecialty(document.getElementById("specialty").value);
