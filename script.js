@@ -404,8 +404,12 @@ function updateThemeColor() {
   const themeColor = getComputedStyle(document.documentElement)
     .getPropertyValue("--theme-color")
     .trim();
+
   metaTheme.setAttribute("content", themeColor);
   appleMeta.setAttribute("content", themeColor);
+
+  document.documentElement.style.backgroundColor = themeColor;
+  document.body.style.backgroundColor = themeColor;
 }
 
 /* ----------------- Confettis ----------------- */
