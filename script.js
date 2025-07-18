@@ -35,10 +35,7 @@ function loadSpecialties(semester) {
       setActiveNav(semester);
     })
     .catch((error) => {
-      console.error(
-        `Erreur lors du chargement des spécialités pour ${semester}:`,
-        error
-      );
+      console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
       const ueContainer = document.getElementById("ue-container");
       ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">
         Erreur lors du chargement des données pour le semestre ${semester}
@@ -51,10 +48,7 @@ function loadSpecialties(semester) {
 function setActiveNav(semester) {
   const navLinks = document.querySelectorAll("nav a");
   navLinks.forEach((link) => {
-    link.classList.toggle(
-      "active",
-      link.getAttribute("href") === `#${semester}`
-    );
+    link.classList.toggle("active", link.getAttribute("href") === `#${semester}`);
   });
 }
 
@@ -121,9 +115,7 @@ function renderSpecialty(specialty) {
     const ueId = sanitizeString(ue.ue);
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
-    const hasMultipleNotes = ue.courses.some(
-      (c) => c.grades && c.grades.length > 1
-    );
+    const hasMultipleNotes = ue.courses.some((c) => c.grades && c.grades.length > 1);
     if (hasMultipleNotes) ueBlock.classList.add("multiple-notes");
     ueBlock.dataset.ueId = ueId;
 
@@ -157,9 +149,7 @@ function renderSpecialty(specialty) {
               (g, j) => `
                 <input type="text" id="grade-${index}-${name}-${j}"
                   name="grades[]" placeholder="${g.name}" class="styled-input"/>
-                <input type="hidden" name="gradeCoeffs[]" value="${
-                  course.coef * g.coef
-                }" />`
+                <input type="hidden" name="gradeCoeffs[]" value="${course.coef * g.coef}" />`
             )
             .join("");
           div.innerHTML = `
@@ -280,9 +270,7 @@ function calculateSingleUE(ueBlock, index) {
       let courseSum = 0;
       const internalTotal = course.grades.reduce((s, g) => s + g.coef, 0);
       course.grades.forEach((g, i) => {
-        const inp = form.querySelector(
-          `input[id$="${sanitizeString(course.name)}-${i}"]`
-        );
+        const inp = form.querySelector(`input[id$="${sanitizeString(course.name)}-${i}"]`);
         if (inp) {
           const val = inp.value.trim().replace(",", ".");
           if (val !== "") courseSum += parseFloat(val) * g.coef;
@@ -295,9 +283,7 @@ function calculateSingleUE(ueBlock, index) {
       totalWeighted += (courseSum / internalTotal) * course.coef;
       totalCoeff += course.coef;
     } else {
-      const inp = form.querySelector(
-        `input[id$="${sanitizeString(course.name)}"]`
-      );
+      const inp = form.querySelector(`input[id$="${sanitizeString(course.name)}"]`);
       if (inp) {
         const val = inp.value.trim().replace(",", ".");
         if (val !== "") {
@@ -316,21 +302,14 @@ function calculateSingleUE(ueBlock, index) {
   form
     .querySelectorAll('input[name="notes[]"]')
     .forEach((i) =>
-      notesData.notes.push(
-        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
-      )
+      notesData.notes.push(i.value === "" ? null : parseFloat(i.value.replace(",", ".")))
     );
   form
     .querySelectorAll('input[name="grades[]"]')
     .forEach((i) =>
-      notesData.grades.push(
-        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
-      )
+      notesData.grades.push(i.value === "" ? null : parseFloat(i.value.replace(",", ".")))
     );
-  localStorage.setItem(
-    `notes-${currentSemester}-${specialty}-${ueId}`,
-    JSON.stringify(notesData)
-  );
+  localStorage.setItem(`notes-${currentSemester}-${specialty}-${ueId}`, JSON.stringify(notesData));
 
   const currentAverage = totalCoeff ? totalWeighted / totalCoeff : 0;
   let neededGrade = null;
@@ -343,9 +322,7 @@ function calculateSingleUE(ueBlock, index) {
   const results = ueBlock.querySelector(".ue-results");
   results.innerHTML = `<h3>Résultats :</h3>
     <p>Moyenne actuelle : ${
-      isNaN(currentAverage)
-        ? "Aucune note saisie"
-        : currentAverage.toFixed(2).replace(".", ",")
+      isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2).replace(".", ",")
     }</p>`;
 
   if (missing > 0) {
@@ -358,9 +335,7 @@ function calculateSingleUE(ueBlock, index) {
       } else {
         results.innerHTML += `<p>Note${
           missing > 1 ? "s" : ""
-        } nécessaires pour valider : ${neededGrade
-          .toFixed(2)
-          .replace(".", ",")}</p>`;
+        } nécessaires pour valider : ${neededGrade.toFixed(2).replace(".", ",")}</p>`;
       }
     }
   } else {
@@ -401,9 +376,7 @@ const metaTheme = document.getElementById("theme-color-meta");
 const appleMeta = document.getElementById("apple-status-bar-meta");
 
 function updateThemeColor() {
-  const themeColor = getComputedStyle(document.documentElement)
-    .getPropertyValue("--theme-color")
-    .trim();
+  const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
 
   metaTheme.setAttribute("content", themeColor);
   appleMeta.setAttribute("content", themeColor);
@@ -506,11 +479,7 @@ class ConfettiGenerator {
         p.y += (Math.cos(this.waveAngle) + p.diameter + this.speed) * 0.5;
         p.tilt = Math.sin(p.tiltAngle) * 15;
       }
-      if (
-        p.x > this.canvas.width + 20 ||
-        p.x < -20 ||
-        p.y > this.canvas.height
-      ) {
+      if (p.x > this.canvas.width + 20 || p.x < -20 || p.y > this.canvas.height) {
         if (this.runningAnimation && this.particles.length <= this.maxCount) {
           this.resetParticle(p);
         } else {
@@ -551,10 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hamburgerIcon = hamburger.querySelector("i");
 
   function updateLogo(theme) {
-    logo.src =
-      theme === "light"
-        ? "assets/logo_ensta_dark.png"
-        : "assets/logo_ensta.png";
+    logo.src = theme === "light" ? "assets/logo_ensta_dark.png" : "assets/logo_ensta.png";
   }
 
   function toggleTheme() {
@@ -577,9 +543,7 @@ document.addEventListener("DOMContentLoaded", () => {
   themeToggleBtn.addEventListener("click", toggleTheme);
 
   function updateZIndex() {
-    themeToggleBtn.style.zIndex = overlay.classList.contains("active")
-      ? "800"
-      : "";
+    themeToggleBtn.style.zIndex = overlay.classList.contains("active") ? "800" : "";
   }
 
   hamburger.addEventListener("click", (e) => {
