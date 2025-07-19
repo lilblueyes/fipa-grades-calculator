@@ -779,11 +779,12 @@ footer a.github-link:hover {
 
 @media (max-width: 768px) {
   .theme-toggle-btn {
-    right: 20px;
+    right: 10px;
   }
 
   .hamburger {
-    left: 20px;
+    left: 10px;
+    position: relative;
   }
 }
 
