@@ -2,7 +2,7 @@
 
 Application web destinée aux étudiants de la Formation d’Ingénieur par Alternance (FIPA) de l’ENSTA campus de Brest, permettant de calculer rapidement leurs moyennes semestrielles, fonctionnalité non prise en charge par le logiciel officiel de l'école.
 
-<img width="3840" height="1689" alt="mockup" src="https://github.com/user-attachments/assets/c8f610fd-09a7-451a-b599-e12d85085c3b" />
+<img width="1920" height="845" alt="mockup" src="https://github.com/user-attachments/assets/9b7e7ab6-ed62-49c6-a0d4-a08a07842ae2" />
 
 ## Fonctionnalités
 
