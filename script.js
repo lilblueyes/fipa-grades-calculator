@@ -153,11 +153,11 @@ function renderSpecialty(specialty) {
             )
             .join("");
           div.innerHTML = `
-            <label for="note-${index}-${name}">${course.name} (coef ${course.coef}) :</label>
+            <label for="note-${index}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
             <div style="display:flex; align-items:center;">${gradeInputs}</div>`;
         } else {
           div.innerHTML = `
-            <label for="note-${index}-${name}">${course.name} (coef ${course.coef}) :</label>
+            <label for="note-${index}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
             <input type="text" id="note-${index}-${name}" name="notes[]" placeholder="Note" class="styled-input"/>
             <input type="hidden" name="coeffs[]" value="${course.coef}" />`;
         }
