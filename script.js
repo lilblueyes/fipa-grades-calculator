@@ -1,4 +1,5 @@
 let specialties = {};
+let checkboxFC = null;
 
 function getHash() {
   const hash = window.location.hash ? window.location.hash.substring(1) : null;
@@ -16,7 +17,9 @@ localStorage.setItem("selectedSemester", currentSemester);
 
 function updatePageTitle(semester) {
   const pageTitle = document.getElementById("page-title");
-  pageTitle.textContent = `Calcul des moyennes pour le semestre ${semester.substring(1)}`;
+  pageTitle.textContent = `Calcul des moyennes pour le semestre ${semester.substring(
+    1
+  )}`;
 }
 
 function loadSpecialties(semester) {
@@ -35,7 +38,10 @@ function loadSpecialties(semester) {
       setActiveNav(semester);
     })
     .catch((error) => {
-      console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
+      console.error(
+        `Erreur lors du chargement des spécialités pour ${semester}:`,
+        error
+      );
       const ueContainer = document.getElementById("ue-container");
       ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">
         Erreur lors du chargement des données pour le semestre ${semester}
@@ -48,7 +54,10 @@ function loadSpecialties(semester) {
 function setActiveNav(semester) {
   const navLinks = document.querySelectorAll("nav a");
   navLinks.forEach((link) => {
-    link.classList.toggle("active", link.getAttribute("href") === `#${semester}`);
+    link.classList.toggle(
+      "active",
+      link.getAttribute("href") === `#${semester}`
+    );
   });
 }
 
@@ -97,11 +106,6 @@ function updateFCVisibility() {
   container.style.display = specialty === "SE" ? "inline-block" : "none";
 }
 
-const checkboxFC = document.getElementById("checkboxFC");
-checkboxFC.addEventListener("change", () => {
-  renderSpecialty(document.getElementById("specialty").value);
-});
-
 function renderSpecialty(specialty) {
   const ueContainer = document.getElementById("ue-container");
   ueContainer.innerHTML = "";
@@ -115,7 +119,9 @@ function renderSpecialty(specialty) {
     const ueId = sanitizeString(ue.ue);
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
-    const hasMultipleNotes = ue.courses.some((c) => c.grades && c.grades.length > 1);
+    const hasMultipleNotes = ue.courses.some(
+      (c) => c.grades && c.grades.length > 1
+    );
     if (hasMultipleNotes) ueBlock.classList.add("multiple-notes");
     ueBlock.dataset.ueId = ueId;
 
@@ -132,13 +138,15 @@ function renderSpecialty(specialty) {
     const showFC = checkboxFC && checkboxFC.checked;
 
     const specialtySelectDiv = document.querySelector(".specialty-select");
-    specialtySelectDiv.classList.remove("se", "meca");
-    if (specialty === "SE") specialtySelectDiv.classList.add("se");
-    if (specialty === "MECA") specialtySelectDiv.classList.add("meca");
+    if (specialtySelectDiv) {
+      specialtySelectDiv.classList.remove("se", "meca");
+      if (specialty === "SE") specialtySelectDiv.classList.add("se");
+      if (specialty === "MECA") specialtySelectDiv.classList.add("meca");
+    }
 
     ue.courses
       .filter((course) => !showFC || !course.isFC)
-      .forEach((course) => {
+      .forEach((course, k) => {
         const div = document.createElement("div");
         div.classList.add("course-row");
         const name = sanitizeString(course.name);
@@ -147,18 +155,20 @@ function renderSpecialty(specialty) {
           const gradeInputs = course.grades
             .map(
               (g, j) => `
-                <input type="text" id="grade-${index}-${name}-${j}"
+                <input type="text" id="grade-${index}-${k}-${name}-${j}"
                   name="grades[]" placeholder="${g.name}" class="styled-input"/>
-                <input type="hidden" name="gradeCoeffs[]" value="${course.coef * g.coef}" />`
+                <input type="hidden" name="gradeCoeffs[]" value="${
+                  course.coef * g.coef
+                }" />`
             )
             .join("");
           div.innerHTML = `
-            <label for="note-${index}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
+            <label for="note-${index}-${k}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
             <div style="display:flex; align-items:center;">${gradeInputs}</div>`;
         } else {
           div.innerHTML = `
-            <label for="note-${index}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
-            <input type="text" id="note-${index}-${name}" name="notes[]" placeholder="Note" class="styled-input"/>
+            <label for="note-${index}-${k}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
+            <input type="text" id="note-${index}-${k}-${name}" name="notes[]" placeholder="Note" class="styled-input"/>
             <input type="hidden" name="coeffs[]" value="${course.coef}" />`;
         }
         form.appendChild(div);
@@ -171,11 +181,11 @@ function renderSpecialty(specialty) {
         saved = JSON.parse(saved);
         form.querySelectorAll('input[name="notes[]"]').forEach((inp, i) => {
           const val = saved.notes[i];
-          if (val !== null) inp.value = val;
+          if (val != null) inp.value = String(val);
         });
         form.querySelectorAll('input[name="grades[]"]').forEach((inp, i) => {
           const val = saved.grades[i];
-          if (val !== null) inp.value = val;
+          if (val != null) inp.value = String(val);
         });
       } catch (e) {
         console.error("Erreur parsing notes sauvegardées :", e);
@@ -245,6 +255,12 @@ function calculateSingleUE(ueBlock, index) {
   const targetAverage = parseFloat(
     document.getElementById(`moyenneCible-${index}`).value.replace(",", ".")
   );
+
+  if (isNaN(targetAverage) || targetAverage < 0 || targetAverage > 20) {
+    alert("Veuillez saisir une moyenne cible entre 0 et 20");
+    return;
+  }
+
   const form = ueBlock.querySelector("form");
 
   const noteInputs = form.querySelectorAll('input[type="text"]');
@@ -260,40 +276,54 @@ function calculateSingleUE(ueBlock, index) {
   const ueId = ueBlock.dataset.ueId;
   const ueData = specialties[specialty][index];
 
-  let totalWeighted = 0,
-    totalCoeff = 0,
-    missing = 0,
-    remainingCoeff = 0;
+  let S_saisis = 0; // somme pondérée des éléments remplis
+  let C_saisis = 0; // somme des poids des éléments remplis
+  let C_total = 0; // somme de tous les poids
+  let R = 0; // poids restant (éléments manquants)
+  let missing = 0; // compteur d'éléments manquants
 
-  ueData.courses.forEach((course) => {
+  ueData.courses.forEach((course, k) => {
+    const sname = sanitizeString(course.name);
     if (course.grades) {
-      let courseSum = 0;
       const internalTotal = course.grades.reduce((s, g) => s + g.coef, 0);
+
+      if (!internalTotal || internalTotal <= 0) {
+        console.warn(
+          `Somme des coefs internes nulle pour le cours "${course.name}", ignoré`
+        );
+        return;
+      }
+
       course.grades.forEach((g, i) => {
-        const inp = form.querySelector(`input[id$="${sanitizeString(course.name)}-${i}"]`);
-        if (inp) {
-          const val = inp.value.trim().replace(",", ".");
-          if (val !== "") courseSum += parseFloat(val) * g.coef;
-          else {
-            missing++;
-            remainingCoeff += (g.coef / internalTotal) * course.coef;
-          }
+        const wj = (g.coef / internalTotal) * course.coef;
+        const inp = form.querySelector(`#grade-${index}-${k}-${sname}-${i}`);
+        if (!inp) return;
+        const raw = inp.value.trim();
+        if (raw !== "") {
+          const val = parseFloat(raw.replace(",", "."));
+          S_saisis += val * wj;
+          C_saisis += wj;
+        } else {
+          R += wj;
+          missing++;
         }
       });
-      totalWeighted += (courseSum / internalTotal) * course.coef;
-      totalCoeff += course.coef;
+
+      C_total += course.coef;
     } else {
-      const inp = form.querySelector(`input[id$="${sanitizeString(course.name)}"]`);
-      if (inp) {
-        const val = inp.value.trim().replace(",", ".");
-        if (val !== "") {
-          totalWeighted += parseFloat(val) * course.coef;
-        } else {
-          missing++;
-          remainingCoeff += course.coef;
-        }
-        totalCoeff += course.coef;
+      const w = course.coef;
+      const inp = form.querySelector(`#note-${index}-${k}-${sname}`);
+      if (!inp) return;
+      const raw = inp.value.trim();
+      if (raw !== "") {
+        const val = parseFloat(raw.replace(",", "."));
+        S_saisis += val * w;
+        C_saisis += w;
+      } else {
+        R += w;
+        missing++;
       }
+      C_total += w;
     }
   });
 
@@ -302,31 +332,41 @@ function calculateSingleUE(ueBlock, index) {
   form
     .querySelectorAll('input[name="notes[]"]')
     .forEach((i) =>
-      notesData.notes.push(i.value === "" ? null : parseFloat(i.value.replace(",", ".")))
+      notesData.notes.push(
+        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
+      )
     );
   form
     .querySelectorAll('input[name="grades[]"]')
     .forEach((i) =>
-      notesData.grades.push(i.value === "" ? null : parseFloat(i.value.replace(",", ".")))
+      notesData.grades.push(
+        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
+      )
     );
-  localStorage.setItem(`notes-${currentSemester}-${specialty}-${ueId}`, JSON.stringify(notesData));
+  localStorage.setItem(
+    `notes-${currentSemester}-${specialty}-${ueId}`,
+    JSON.stringify(notesData)
+  );
 
-  const currentAverage = totalCoeff ? totalWeighted / totalCoeff : 0;
+  const currentAverage = C_saisis > 0 ? S_saisis / C_saisis : NaN;
+
   let neededGrade = null;
-  if (remainingCoeff > 0) {
-    const neededPoints = targetAverage * totalCoeff - totalWeighted;
-    neededGrade = neededPoints / remainingCoeff;
+  if (R > 0 && isFinite(targetAverage)) {
+    neededGrade = (targetAverage * C_total - S_saisis) / R;
   }
 
   /* Affichage résultats */
   const results = ueBlock.querySelector(".ue-results");
   results.innerHTML = `<h3>Résultats :</h3>
     <p>Moyenne actuelle : ${
-      isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2).replace(".", ",")
+      isNaN(currentAverage)
+        ? "Aucune note saisie"
+        : currentAverage.toFixed(2).replace(".", ",")
     }</p>`;
 
   if (missing > 0) {
     ueBlock.classList.remove("validated");
+
     if (neededGrade !== null) {
       if (neededGrade <= 0) {
         results.innerHTML += `<p style="color: green; font-weight: bold;">La moyenne cible est déjà atteinte !</p>`;
@@ -335,11 +375,14 @@ function calculateSingleUE(ueBlock, index) {
       } else {
         results.innerHTML += `<p>Note${
           missing > 1 ? "s" : ""
-        } nécessaires pour valider : ${neededGrade.toFixed(2).replace(".", ",")}</p>`;
+        } nécessaires pour valider : ${neededGrade
+          .toFixed(2)
+          .replace(".", ",")}</p>`;
       }
     }
   } else {
-    if (currentAverage >= targetAverage) {
+    const finalAverage = C_total > 0 ? S_saisis / C_total : NaN;
+    if (!isNaN(finalAverage) && finalAverage >= targetAverage) {
       results.innerHTML += `<p style="color: green; font-weight: bold;">Bravo, l'UE est validée !</p>`;
       ueBlock.classList.add("validated");
     } else {
@@ -376,7 +419,9 @@ const metaTheme = document.getElementById("theme-color-meta");
 const appleMeta = document.getElementById("apple-status-bar-meta");
 
 function updateThemeColor() {
-  const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
+  const themeColor = getComputedStyle(document.body)
+    .getPropertyValue("--theme-color")
+    .trim();
 
   metaTheme.setAttribute("content", themeColor);
   appleMeta.setAttribute("content", themeColor);
@@ -479,7 +524,11 @@ class ConfettiGenerator {
         p.y += (Math.cos(this.waveAngle) + p.diameter + this.speed) * 0.5;
         p.tilt = Math.sin(p.tiltAngle) * 15;
       }
-      if (p.x > this.canvas.width + 20 || p.x < -20 || p.y > this.canvas.height) {
+      if (
+        p.x > this.canvas.width + 20 ||
+        p.x < -20 ||
+        p.y > this.canvas.height
+      ) {
         if (this.runningAnimation && this.particles.length <= this.maxCount) {
           this.resetParticle(p);
         } else {
@@ -519,8 +568,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeIcon = themeToggleBtn.querySelector("i");
   const hamburgerIcon = hamburger.querySelector("i");
 
+  checkboxFC = document.getElementById("checkboxFC");
+  checkboxFC.checked = localStorage.getItem("checkboxFC") === "true";
+  checkboxFC.addEventListener("change", () => {
+    localStorage.setItem("checkboxFC", checkboxFC.checked);
+    renderSpecialty(document.getElementById("specialty").value);
+  });
+
   function updateLogo(theme) {
-    logo.src = theme === "light" ? "assets/logo_ensta_dark.png" : "assets/logo_ensta.png";
+    logo.src =
+      theme === "light"
+        ? "assets/logo_ensta_dark.png"
+        : "assets/logo_ensta.png";
   }
 
   function toggleTheme() {
@@ -543,7 +602,9 @@ document.addEventListener("DOMContentLoaded", () => {
   themeToggleBtn.addEventListener("click", toggleTheme);
 
   function updateZIndex() {
-    themeToggleBtn.style.zIndex = overlay.classList.contains("active") ? "800" : "";
+    themeToggleBtn.style.zIndex = overlay.classList.contains("active")
+      ? "800"
+      : "";
   }
 
   hamburger.addEventListener("click", (e) => {
@@ -586,9 +647,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateZIndex();
-  checkboxFC.checked = localStorage.getItem("checkboxFC") === "true";
-  checkboxFC.addEventListener("change", () => {
-    localStorage.setItem("checkboxFC", checkboxFC.checked);
-    renderSpecialty(document.getElementById("specialty").value);
-  });
 });
