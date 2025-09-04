@@ -39,34 +39,34 @@
 }
 
 body.light-theme {
-  --background: radial-gradient(circle at center 80%, #6630bd 1%, #ffffff 95%);
+  --background: radial-gradient(circle at center 80%, #d2b48c 1%, #ffffff 95%);
   --theme-color: #ffffff;
   --text-color: #000000;
   --primary-color: #000000;
-  --secondary-color: #8a2be2;
-  --link-hover-color: #8a2be2;
-  --info-bulle-bg: rgba(138, 43, 226, 0.9);
-  --button-bg: #8a2be2;
-  --button-hover-bg: #7a1fc2;
+  --secondary-color: #d2b48c;
+  --link-hover-color: #d2b48c;
+  --info-bulle-bg: rgba(210, 180, 140, 0.9);
+  --button-bg: #d2b48c;
+  --button-hover-bg: #b29977;
   --input-bg: #f0f0f0;
   --border-color: #ccc;
-  --active-bg-color: rgba(129, 40, 212, 0.116);
+  --active-bg-color: rgba(187, 169, 145, 0.11);
   --ue-block-bg: #f0f0f0;
   --ue-block-border-bottom: #ddd;
   --ue-results-border-color: #ddd;
   --calculate-btn-bg: #ccc;
   --calculate-btn-hover-bg: var(--secondary-color);
   --info-bulle-color: #fff;
-  --footer-link-bg-hover: rgba(97, 17, 172, 0.795);
-  --nav-hover-bg: rgba(138, 43, 226, 0.1);
+  --footer-link-bg-hover: rgba(146, 115, 74, 0.151);
+  --nav-hover-bg: rgba(210, 180, 140, 0.1);
   --footer-text-color: var(--text-color);
-  --footer-link-color: #cfb2e2;
-  --footer-link-hover-bg: rgba(138, 43, 226, 0.1);
+  --footer-link-color: #7c705f;
+  --footer-link-hover-bg: rgba(210, 180, 140, 0.1);
   --math-formula-color: var(--text-color);
   --button-text-color: #ffffff;
   --box-shadow-main: 0 0 10px rgba(112, 111, 111, 0.3);
   --box-shadow-result: 0 0 2px rgba(0, 0, 0, 0.1);
-  --box-shadow-hover: 0 0 5px rgba(138, 43, 226, 0.5);
+  --box-shadow-hover: 0 0 5px rgba(210, 180, 140, 0.5);
   --box-shadow-info: 0 0 10px rgba(0, 0, 0, 0.3);
   --hamburger-color: var(--text-color);
 }
@@ -785,6 +785,10 @@ footer a.github-link:hover {
   .hamburger {
     left: 10px;
     position: relative;
+  }
+
+  body.light-theme {
+    background: #ffffff !important;
   }
 }
 
