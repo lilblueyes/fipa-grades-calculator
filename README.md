@@ -9,8 +9,11 @@ Application web destinée aux étudiants de la Formation d’Ingénieur par Alte
 * **Support des différentes spécialités proposées en FIPA :**
   * Systèmes Embarqués (SE)
   * Mécanique (MECA 1A)
-  * Architecture Navale (ANO)
+  * Architecture Navale & Offshore (ANO)
   * Architecture de Véhicules (AV)
+
+* **Prise en charge des promotions actuelles :**
+  * Gestion des promotions FIPA27 et FIPA28.
 
 * **Calcul instantané des moyennes pondérées** :
 
@@ -34,22 +37,25 @@ Application web destinée aux étudiants de la Formation d’Ingénieur par Alte
 
 ## Structure des données
 
-Les données des spécialités et des notes sont structurées sous forme de fichiers JSON distincts pour chaque semestre. Chaque fichier contient les cours, coefficients et détails spécifiques aux spécialités concernées.
+Les données sont organisées par promotion, sous forme de fichiers JSON distincts pour chaque semestre. Chaque fichier `sX.json` contient les cours, coefficients et détails spécifiques aux spécialités concernées.
 
 ```
 data/
-├── s1.json
-├── s2.json
-├── s3.json
-├── s4.json
-├── s5.json
-└── s6.json
+├── 27/
+│   ├── s1.json
+│   ├── sX.json
+│   └── s6.json
+└── 28/
+    ├── s1.json
+    ├── sX.json
+    └── s6.json
 ```
 
 ## Utilisation
 
 * Rendez-vous directement à l’URL : [fipa-grades-calculator](https://lilblueyes.github.io/fipa-grades-calculator/)
 * Sélectionnez le semestre depuis le menu latéral.
+* Renseignez votre promotion dans la liste déroulante.
 * Choisissez votre spécialité dans la liste déroulante.
 * Cochez la case « Formation Continue » si vous êtes concerné.
 * Saisissez vos notes dans les champs dédiés.
@@ -65,4 +71,4 @@ Ce projet est sous licence MIT. Consultez le fichier [LICENSE](LICENSE) pour plu
 
 ## Contact
 
-jocelyn.deleuil@ensta.fr
+jocelyn.deleuil@ensta.fr (FIPA27 SE)
