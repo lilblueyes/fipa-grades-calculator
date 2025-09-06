@@ -1,19 +1,43 @@
 let specialties = {};
 let checkboxFC = null;
 
+let currentPromotion = getPromotion();
+
+function getPromotion() {
+  const params = new URLSearchParams(window.location.search);
+  const urlP = params.get("p");
+  if (urlP === "27" || urlP === "28") {
+    localStorage.setItem("selectedPromotion", urlP);
+    return urlP;
+  }
+  const saved = localStorage.getItem("selectedPromotion");
+  return saved === "27" || saved === "28" ? saved : "27";
+}
+
+function lsKeySelectedSemester() {
+  return `selectedSemester-${currentPromotion}`;
+}
+function lsKeySelectedSpecialty() {
+  return `selectedSpecialty-${currentPromotion}`;
+}
+function lsKeyNotes(specialty, ueId) {
+  return `notes-${currentPromotion}-${currentSemester}-${specialty}-${ueId}`;
+}
+
 function getHash() {
   const hash = window.location.hash ? window.location.hash.substring(1) : null;
   if (hash) return hash;
-  const stored = localStorage.getItem("selectedSemester");
+
+  const stored = localStorage.getItem(lsKeySelectedSemester());
   if (stored) {
     window.location.hash = `#${stored}`;
     return stored;
   }
-  return "S2";
+  return currentPromotion === "28" ? "S1" : "S3";
 }
 
 let currentSemester = getHash();
-localStorage.setItem("selectedSemester", currentSemester);
+localStorage.setItem(lsKeySelectedSemester(), currentSemester);
 
 function updatePageTitle(semester) {
   const pageTitle = document.getElementById("page-title");
@@ -23,10 +47,12 @@ function updatePageTitle(semester) {
 }
 
 function loadSpecialties(semester) {
-  fetch(`data/${semester.toLowerCase()}.json`)
+  const url = `data/${currentPromotion}/${semester.toLowerCase()}.json`;
+
+  fetch(url, { cache: "no-store" })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Fichier ${semester.toLowerCase()}.json non trouvé.`);
+        throw new Error(`Fichier ${url} non trouvé.`);
       }
       return response.json();
     })
@@ -38,13 +64,10 @@ function loadSpecialties(semester) {
       setActiveNav(semester);
     })
     .catch((error) => {
-      console.error(
-        `Erreur lors du chargement des spécialités pour ${semester}:`,
-        error
-      );
+      console.error(`Erreur lors du chargement des spécialités pour ${semester}:`, error);
       const ueContainer = document.getElementById("ue-container");
       ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">
-        Erreur lors du chargement des données pour le semestre ${semester}
+        Erreur lors du chargement des données pour le semestre ${semester} en FIPA${currentPromotion}
       </p>`;
       updatePageTitle(semester);
       setActiveNav(semester);
@@ -54,10 +77,7 @@ function loadSpecialties(semester) {
 function setActiveNav(semester) {
   const navLinks = document.querySelectorAll("nav a");
   navLinks.forEach((link) => {
-    link.classList.toggle(
-      "active",
-      link.getAttribute("href") === `#${semester}`
-    );
+    link.classList.toggle("active", link.getAttribute("href") === `#${semester}`);
   });
 }
 
@@ -84,7 +104,7 @@ function formatSpecialtyName(specialty) {
 
 function applySelectedSpecialty() {
   const specialtySelect = document.getElementById("specialty");
-  let selectedSpecialty = localStorage.getItem("selectedSpecialty");
+  let selectedSpecialty = localStorage.getItem(lsKeySelectedSpecialty());
 
   if (selectedSpecialty && specialties[selectedSpecialty]) {
     specialtySelect.value = selectedSpecialty;
@@ -92,7 +112,7 @@ function applySelectedSpecialty() {
     const firstSpecialty = Object.keys(specialties)[0];
     specialtySelect.value = firstSpecialty || "";
     if (firstSpecialty) {
-      localStorage.setItem("selectedSpecialty", firstSpecialty);
+      localStorage.setItem(lsKeySelectedSpecialty(), firstSpecialty);
     }
   }
 
@@ -119,9 +139,7 @@ function renderSpecialty(specialty) {
     const ueId = sanitizeString(ue.ue);
     const ueBlock = document.createElement("div");
     ueBlock.classList.add("ue-block");
-    const hasMultipleNotes = ue.courses.some(
-      (c) => c.grades && c.grades.length > 1
-    );
+    const hasMultipleNotes = ue.courses.some((c) => c.grades && c.grades.length > 1);
     if (hasMultipleNotes) ueBlock.classList.add("multiple-notes");
     ueBlock.dataset.ueId = ueId;
 
@@ -157,9 +175,7 @@ function renderSpecialty(specialty) {
               (g, j) => `
                 <input type="text" id="grade-${index}-${k}-${name}-${j}"
                   name="grades[]" placeholder="${g.name}" class="styled-input"/>
-                <input type="hidden" name="gradeCoeffs[]" value="${
-                  course.coef * g.coef
-                }" />`
+                <input type="hidden" name="gradeCoeffs[]" value="${course.coef * g.coef}" />`
             )
             .join("");
           div.innerHTML = `
@@ -174,17 +190,17 @@ function renderSpecialty(specialty) {
         form.appendChild(div);
       });
 
-    const savedKey = `notes-${currentSemester}-${specialty}-${ueId}`;
+    const savedKey = lsKeyNotes(specialty, ueId);
     let saved = localStorage.getItem(savedKey);
     if (saved) {
       try {
         saved = JSON.parse(saved);
         form.querySelectorAll('input[name="notes[]"]').forEach((inp, i) => {
-          const val = saved.notes[i];
+          const val = saved.notes && saved.notes[i];
           if (val != null) inp.value = String(val);
         });
         form.querySelectorAll('input[name="grades[]"]').forEach((inp, i) => {
-          const val = saved.grades[i];
+          const val = saved.grades && saved.grades[i];
           if (val != null) inp.value = String(val);
         });
       } catch (e) {
@@ -238,14 +254,26 @@ function sanitizeString(str) {
 }
 
 document.getElementById("specialty").addEventListener("change", (e) => {
-  localStorage.setItem("selectedSpecialty", e.target.value);
+  localStorage.setItem(lsKeySelectedSpecialty(), e.target.value);
   updateFCVisibility();
   renderSpecialty(e.target.value);
 });
 
+const promoSelectEl = document.getElementById("promotion");
+if (promoSelectEl) {
+  if (promoSelectEl.value !== currentPromotion) promoSelectEl.value = currentPromotion;
+  promoSelectEl.addEventListener("change", (e) => {
+    currentPromotion = e.target.value;
+    localStorage.setItem("selectedPromotion", currentPromotion);
+    currentSemester = getHash();
+    localStorage.setItem(lsKeySelectedSemester(), currentSemester);
+    loadSpecialties(currentSemester);
+  });
+}
+
 window.addEventListener("hashchange", () => {
   currentSemester = getHash();
-  localStorage.setItem("selectedSemester", currentSemester);
+  localStorage.setItem(lsKeySelectedSemester(), currentSemester);
   loadSpecialties(currentSemester);
 });
 
@@ -288,9 +316,7 @@ function calculateSingleUE(ueBlock, index) {
       const internalTotal = course.grades.reduce((s, g) => s + g.coef, 0);
 
       if (!internalTotal || internalTotal <= 0) {
-        console.warn(
-          `Somme des coefs internes nulle pour le cours "${course.name}", ignoré`
-        );
+        console.warn(`Somme des coefs internes nulle pour le cours "${course.name}", ignoré`);
         return;
       }
 
@@ -332,21 +358,14 @@ function calculateSingleUE(ueBlock, index) {
   form
     .querySelectorAll('input[name="notes[]"]')
     .forEach((i) =>
-      notesData.notes.push(
-        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
-      )
+      notesData.notes.push(i.value === "" ? null : parseFloat(i.value.replace(",", ".")))
     );
   form
     .querySelectorAll('input[name="grades[]"]')
     .forEach((i) =>
-      notesData.grades.push(
-        i.value === "" ? null : parseFloat(i.value.replace(",", "."))
-      )
+      notesData.grades.push(i.value === "" ? null : parseFloat(i.value.replace(",", ".")))
     );
-  localStorage.setItem(
-    `notes-${currentSemester}-${specialty}-${ueId}`,
-    JSON.stringify(notesData)
-  );
+  localStorage.setItem(lsKeyNotes(specialty, ueId), JSON.stringify(notesData));
 
   const currentAverage = C_saisis > 0 ? S_saisis / C_saisis : NaN;
 
@@ -359,9 +378,7 @@ function calculateSingleUE(ueBlock, index) {
   const results = ueBlock.querySelector(".ue-results");
   results.innerHTML = `<h3>Résultats :</h3>
     <p>Moyenne actuelle : ${
-      isNaN(currentAverage)
-        ? "Aucune note saisie"
-        : currentAverage.toFixed(2).replace(".", ",")
+      isNaN(currentAverage) ? "Aucune note saisie" : currentAverage.toFixed(2).replace(".", ",")
     }</p>`;
 
   if (missing > 0) {
@@ -375,9 +392,7 @@ function calculateSingleUE(ueBlock, index) {
       } else {
         results.innerHTML += `<p>Note${
           missing > 1 ? "s" : ""
-        } nécessaires pour valider : ${neededGrade
-          .toFixed(2)
-          .replace(".", ",")}</p>`;
+        } nécessaires pour valider : ${neededGrade.toFixed(2).replace(".", ",")}</p>`;
       }
     }
   } else {
@@ -419,9 +434,7 @@ const metaTheme = document.getElementById("theme-color-meta");
 const appleMeta = document.getElementById("apple-status-bar-meta");
 
 function updateThemeColor() {
-  const themeColor = getComputedStyle(document.body)
-    .getPropertyValue("--theme-color")
-    .trim();
+  const themeColor = getComputedStyle(document.body).getPropertyValue("--theme-color").trim();
 
   metaTheme.setAttribute("content", themeColor);
   appleMeta.setAttribute("content", themeColor);
@@ -524,11 +537,7 @@ class ConfettiGenerator {
         p.y += (Math.cos(this.waveAngle) + p.diameter + this.speed) * 0.5;
         p.tilt = Math.sin(p.tiltAngle) * 15;
       }
-      if (
-        p.x > this.canvas.width + 20 ||
-        p.x < -20 ||
-        p.y > this.canvas.height
-      ) {
+      if (p.x > this.canvas.width + 20 || p.x < -20 || p.y > this.canvas.height) {
         if (this.runningAnimation && this.particles.length <= this.maxCount) {
           this.resetParticle(p);
         } else {
@@ -576,10 +585,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function updateLogo(theme) {
-    logo.src =
-      theme === "light"
-        ? "assets/logo_ensta_dark.png"
-        : "assets/logo_ensta.png";
+    logo.src = theme === "light" ? "assets/logo_ensta_dark.png" : "assets/logo_ensta.png";
   }
 
   function toggleTheme() {
@@ -602,9 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
   themeToggleBtn.addEventListener("click", toggleTheme);
 
   function updateZIndex() {
-    themeToggleBtn.style.zIndex = overlay.classList.contains("active")
-      ? "800"
-      : "";
+    themeToggleBtn.style.zIndex = overlay.classList.contains("active") ? "800" : "";
   }
 
   hamburger.addEventListener("click", (e) => {

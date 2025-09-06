@@ -190,14 +190,27 @@ h1 {
 }
 
 .specialty-select.se {
-  padding: 50px 0 5px 0;
+  padding: 20px 0 5px 0;
 }
 
 .specialty-select.meca {
-  padding: 50px 0 80px 0;
+  padding: 20px 0 80px 0;
 }
 
 .specialty-select label {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.promotion-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  padding: 50px 0 5px 0;
+}
+
+.promotion-select label {
   margin-right: 10px;
   font-size: 16px;
 }
@@ -703,6 +716,19 @@ footer a.github-link:hover {
   }
 
   .specialty-select label {
+    margin-right: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+
+  .promotion-select {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 15px 0;
+  }
+
+  .promotion-select label {
     margin-right: 0;
     margin-bottom: 10px;
     font-size: 1.1em;
