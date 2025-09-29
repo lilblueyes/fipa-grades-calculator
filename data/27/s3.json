@@ -12,7 +12,6 @@
       "ue": "UE 3.2 - Sciences et Technologies",
       "courses": [
         { "name": "Conception et réalisation des interfaces RF", "coef": 1 },
-        { "name": "C pour l'embarqué", "coef": 1 },
         { "name": "Systèmes d'exploitation", "coef": 1 },
         { "name": "VHDL 1 : langage et synthèse FPGA", "coef": 1 }
       ]
@@ -21,9 +20,7 @@
       "ue": "UE 3.3 - Sciences Humaines et Sociales et langues",
       "courses": [
         { "name": "Anglais", "coef": 2 },
-        { "name": "Mécanismes de l'innovation et leviers de la réussite", "coef": 1 },
         { "name": "Droit du travail", "coef": 1 },
-        { "name": "Energie et Climat", "coef": 1 },
         { "name": "Management d'équipes sportives", "coef": 1 }
       ]
     },
@@ -57,8 +54,6 @@
       "courses": [
         { "name": "Anglais", "coef": 2 },
         { "name": "Droit du travail", "coef": 1 },
-        { "name": "Energie et Climat", "coef": 1 },
-        { "name": "Mécanismes de l'innovation et leviers de la réussite", "coef": 1 },
         { "name": "Management d'équipes sportives", "coef": 1 }
       ]
     },
@@ -91,8 +86,6 @@
       "courses": [
         { "name": "Anglais", "coef": 2 },
         { "name": "Droit du travail", "coef": 1 },
-        { "name": "Mécanismes de l'innovation et leviers de la réussite", "coef": 1 },
-        { "name": "Energie et Climat", "coef": 1 },
         { "name": "Management d'équipes sportives", "coef": 1 }
       ]
     },
