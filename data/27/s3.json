@@ -4,14 +4,29 @@
       "ue": "UE 3.1 - Modélisation des systèmes",
       "courses": [
         { "name": "Analyse statistique de données", "coef": 1 },
-        { "name": "Filtrage linéaire", "coef": 1 },
+        {
+          "name": "Filtrage linéaire",
+          "coef": 1,
+          "grades": [
+            { "name": "Exam", "coef": 0.5 },
+            { "name": "BE", "coef": 0.5 }
+          ]
+        },
         { "name": "Génie Logiciel pour les systèmes embarqués", "coef": 1 }
       ]
     },
     {
       "ue": "UE 3.2 - Sciences et Technologies",
       "courses": [
-        { "name": "Conception et réalisation des interfaces RF", "coef": 1 },
+        {
+          "name": "Conception et réalisation des interfaces RF",
+          "coef": 1,
+          "grades": [
+            { "name": "Exam", "coef": 0.5 },
+            { "name": "TP", "coef": 0.5 }
+          ],
+          "isFC": true
+        },
         { "name": "Systèmes d'exploitation", "coef": 1 },
         { "name": "VHDL 1 : langage et synthèse FPGA", "coef": 1 }
       ]
@@ -21,7 +36,7 @@
       "courses": [
         { "name": "Anglais", "coef": 2 },
         { "name": "Droit du travail", "coef": 1 },
-        { "name": "Management d'équipes sportives", "coef": 1 }
+        { "name": "Management d'équipes sportives", "coef": 1, "isFC": true }
       ]
     },
     {
