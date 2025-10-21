@@ -27,7 +27,14 @@
           ],
           "isFC": true
         },
-        { "name": "Systèmes d'exploitation", "coef": 1 },
+        {
+          "name": "Systèmes d'exploitation",
+          "coef": 1,
+          "grades": [
+            { "name": "Exam", "coef": 0.5 },
+            { "name": "TP", "coef": 0.5 }
+          ]
+        },
         { "name": "VHDL 1 : langage et synthèse FPGA", "coef": 1 }
       ]
     },
