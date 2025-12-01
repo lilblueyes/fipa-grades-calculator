@@ -3,7 +3,14 @@
     {
       "ue": "UE 3.1 - Modélisation des systèmes",
       "courses": [
-        { "name": "Analyse statistique de données", "coef": 1 },
+        {
+          "name": "Analyse statistique de données",
+          "coef": 1,
+          "grades": [
+            { "name": "Exam", "coef": 2 },
+            { "name": "BE", "coef": 1 }
+          ]
+        },
         {
           "name": "Filtrage linéaire",
           "coef": 1,
@@ -54,7 +61,14 @@
     {
       "ue": "UE 3.1 - Modélisation des systèmes",
       "courses": [
-        { "name": "Analyse statistique de données", "coef": 2.5 },
+        {
+          "name": "Analyse statistique de données",
+          "coef": 2.5,
+          "grades": [
+            { "name": "Exam", "coef": 2 },
+            { "name": "BE", "coef": 1 }
+          ]
+        },
         { "name": "Eléments finis", "coef": 2.5 },
         { "name": "Matériaux", "coef": 2.5 },
         { "name": "Thermique et thermodynamique", "coef": 2.5 }
@@ -87,7 +101,14 @@
     {
       "ue": "UE 3.1 - Modélisation des systèmes",
       "courses": [
-        { "name": "Analyse statistique de données", "coef": 3.25 },
+        {
+          "name": "Analyse statistique de données",
+          "coef": 3.25,
+          "grades": [
+            { "name": "Exam", "coef": 2 },
+            { "name": "BE", "coef": 1 }
+          ]
+        },
         { "name": "Eléments finis", "coef": 3.75 }
       ]
     },
