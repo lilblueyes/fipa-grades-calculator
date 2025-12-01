@@ -44,7 +44,15 @@
     {
       "ue": "UE 3.3 - Sciences Humaines et Sociales et langues",
       "courses": [
-        { "name": "Anglais", "coef": 2 },
+        {
+          "name": "Anglais",
+          "coef": 2,
+          "grades": [
+            { "name": "Tech T", "coef": 0.75 },
+            { "name": "Tuto", "coef": 0.25 },
+            { "name": "Mod 3", "coef": 1 }
+          ]
+        },
         { "name": "Droit du travail", "coef": 1 },
         { "name": "Management d'équipes sportives", "coef": 1, "isFC": true }
       ]
@@ -84,7 +92,15 @@
     {
       "ue": "UE 3.3 - Sciences Humaines et Sociales et langues",
       "courses": [
-        { "name": "Anglais", "coef": 2 },
+        {
+          "name": "Anglais",
+          "coef": 2,
+          "grades": [
+            { "name": "Tech T", "coef": 0.75 },
+            { "name": "Tuto", "coef": 0.25 },
+            { "name": "Mod 3", "coef": 1 }
+          ]
+        },
         { "name": "Droit du travail", "coef": 1 },
         { "name": "Management d'équipes sportives", "coef": 1 }
       ]
@@ -123,7 +139,15 @@
     {
       "ue": "UE 3.3 - Sciences Humaines et Sociales et langues",
       "courses": [
-        { "name": "Anglais", "coef": 2 },
+        {
+          "name": "Anglais",
+          "coef": 2,
+          "grades": [
+            { "name": "Tech T", "coef": 0.75 },
+            { "name": "Tuto", "coef": 0.25 },
+            { "name": "Mod 3", "coef": 1 }
+          ]
+        },
         { "name": "Droit du travail", "coef": 1 },
         { "name": "Management d'équipes sportives", "coef": 1 }
       ]
