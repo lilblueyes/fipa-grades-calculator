@@ -9,9 +9,8 @@
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 3,
           "grades": [
-            { "name": "Note 1", "coef": 0.25 },
-            { "name": "Note 2", "coef": 1 },
-            { "name": "Note 3", "coef": 1.25 }
+            { "name": "Note 1", "coef": 0.5 },
+            { "name": "Note 2", "coef": 0.5 }
           ]
         },
         { "name": "Outils numériques pour l'ingénieur", "coef": 1, "isFC": true },
