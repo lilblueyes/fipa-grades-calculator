@@ -9,9 +9,8 @@
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 3,
           "grades": [
-            { "name": "Note 1", "coef": 0.25 },
-            { "name": "Note 2", "coef": 1 },
-            { "name": "Note 3", "coef": 1.25 }
+            { "name": "Note 1", "coef": 0.5 },
+            { "name": "Note 2", "coef": 0.5 }
           ]
         },
         { "name": "Outils numériques pour l'ingénieur", "coef": 1, "isFC": true },
@@ -84,24 +83,23 @@
         { "name": "Modélisation des systèmes dynamiques", "coef": 2 },
         {
           "name": "Outils mathématiques pour l'ingénieur",
-          "coef": 2.5,
+          "coef": 3,
           "grades": [
-            { "name": "Note 1", "coef": 0.25 },
-            { "name": "Note 2", "coef": 1 },
-            { "name": "Note 3", "coef": 1.25 }
+            { "name": "Note 1", "coef": 0.5 },
+            { "name": "Note 2", "coef": 0.5 }
           ]
         },
         { "name": "Outils numériques pour l'ingénieur", "coef": 1 },
-        { "name": "Python I - Langage et algorithmique", "coef": 1.5 }
+        { "name": "Python I - Langage et algorithmique", "coef": 1 }
       ]
     },
     {
       "ue": "UE 1.2 - Sciences et Technologies",
       "courses": [
-        { "name": "Capteurs et systèmes de mesure", "coef": 1.25 },
-        { "name": "Électrotechnique", "coef": 1.25 },
-        { "name": "MSI (Mécanique du Solide Indéformable)", "coef": 2.25 },
-        { "name": "Technologie I - Mécanismes et procédés", "coef": 2.25 }
+        { "name": "Capteurs et systèmes de mesure", "coef": 1 },
+        { "name": "Électrotechnique", "coef": 1 },
+        { "name": "MSI (Mécanique du Solide Indéformable)", "coef": 2 },
+        { "name": "Technologie I - Mécanismes et procédés", "coef": 3 }
       ]
     },
     {
@@ -109,18 +107,17 @@
       "courses": [
         {
           "name": "Anglais",
-          "coef": 2,
+          "coef": 3,
           "grades": [
             { "name": "Note 1", "coef": 0.5 },
             { "name": "Note 2", "coef": 1 },
             { "name": "Note 3", "coef": 0.5 }
           ]
         },
-        { "name": "Métiers de l'ingénieur", "coef": 1 },
-        { "name": "Enjeux de la défense", "coef": 1 },
+        { "name": "Métiers de l'ingénieur", "coef": 1.5 },
         {
           "name": "Ingénierie et transitions",
-          "coef": 1,
+          "coef": 1.5,
           "grades": [
             { "name": "Note 1", "coef": 0.5 },
             { "name": "Note 2", "coef": 0.5 }
