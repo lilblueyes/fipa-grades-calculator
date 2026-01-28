@@ -1,0 +1,136 @@
+{
+  "SE": [
+    {
+      "ue": "UE 4.1 - Modélisation des systèmes",
+      "courses": [
+        {
+          "name": "Arithmétique pour l'électronique et la sécurité",
+          "coef": 1
+        },
+        { "name": "Compilation", "coef": 1 },
+        { "name": "Observateurs et filtre de Kalman", "coef": 1 },
+        { "name": "Recherche opérationnelle", "coef": 1 },
+        {
+          "name": "Théorie de l'information appliquée : du codage à la modulation",
+          "coef": 1
+        }
+      ]
+    },
+    {
+      "ue": "UE 4.2 - Sciences et Technologies",
+      "courses": [
+        { "name": "C pour l'embarqué", "coef": 1 },
+        { "name": "Calcul intensif pour l'embarqué", "coef": 1 },
+        { "name": "Microprocesseurs", "coef": 1 },
+        { "name": "Projet Systèmes embarqués", "coef": 1 },
+        { "name": "Traitement Numérique des Images", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 4.3 - Sciences humaines et sociales et langues",
+      "courses": [
+        { "name": "Anglais", "coef": 2 },
+        { "name": "Consommation durable et Innovation responsable", "coef": 1 },
+        {
+          "name": "Ingénierie des Relations Humaines et des Coopérations",
+          "coef": 1
+        },
+        { "name": "Gestion financière : jeu d'entreprise", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 4.4 - SP5 : Technique II (ou international)",
+      "courses": [
+        { "name": "SP5 - Académique", "coef": 1 },
+        { "name": "SP5 - Professionnelle", "coef": 1 }
+      ]
+    }
+  ],
+  "ANO": [
+    {
+      "ue": "UE 4.1 - Fondamentaux de Mécanique II",
+      "courses": [
+        { "name": "Vibrations et Dynamique des structures", "coef": 0.75 },
+        { "name": "Mécanique des Fluides Incompressible I", "coef": 1.25 },
+        { "name": "Matériaux et structures", "coef": 0.5 },
+        { "name": "Éléments de traitement du signal", "coef": 0.75 }
+      ]
+    },
+    {
+      "ue": "UE 4.2 - Bases en Architecture Navale II",
+      "courses": [
+        { "name": "Conception de systèmes", "coef": 1.5 },
+        { "name": "Conception en fabrication additive", "coef": 0.5 },
+        {
+          "name": "Projet RORO 3 - Arrangement général, stabilité, coupe au maître",
+          "coef": 1
+        },
+        {
+          "name": "Mécanique des Fluides Incompressible II - Théorie des ailes",
+          "coef": 0.5
+        },
+        { "name": "Matériaux Composites II", "coef": 0.25 },
+        { "name": "Fatigue uniaxiale", "coef": 0.25 }
+      ]
+    },
+    {
+      "ue": "UE 4.3 - Sciences humaines et sociales et langues",
+      "courses": [
+        { "name": "Anglais", "coef": 2 },
+        { "name": "Consommation durable et Innovation responsable", "coef": 1 },
+        {
+          "name": "Ingénierie des Relations Humaines et des Coopérations",
+          "coef": 1
+        },
+        { "name": "Gestion financière : jeu d'entreprise", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 4.4 - SP5 : Technique II (ou international)",
+      "courses": [
+        { "name": "SP5 - Académique", "coef": 1 },
+        { "name": "SP5 - Professionnelle", "coef": 1 }
+      ]
+    }
+  ],
+  "AV": [
+    {
+      "ue": "UE 4.1 - Fondamentaux de Mécanique II",
+      "courses": [
+        { "name": "Vibrations et Dynamique des structures", "coef": 0.75 },
+        { "name": "Mécanique des Fluides Incompressible I", "coef": 1.25 },
+        { "name": "Matériaux et structures", "coef": 0.5 },
+        { "name": "Éléments de traitement du signal", "coef": 0.75 },
+        { "name": "Thermique et thermodynamique", "coef": 0.75 }
+      ]
+    },
+    {
+      "ue": "UE 4.2 - Bases en Architecture Navale II",
+      "courses": [
+        { "name": "Conception de systèmes", "coef": 1.5 },
+        { "name": "Conception en fabrication additive", "coef": 0.5 },
+        { "name": "Dynamique du véhicule", "coef": 1.5 },
+        { "name": "Motorisation Thermique - Bases", "coef": 0.5 }
+      ]
+    },
+    {
+      "ue": "UE 4.3 - Sciences humaines et sociales et langues",
+      "courses": [
+        { "name": "Anglais", "coef": 2 },
+        { "name": "Consommation durable et Innovation responsable", "coef": 1 },
+        {
+          "name": "Ingénierie des Relations Humaines et des Coopérations",
+          "coef": 1
+        },
+        { "name": "Gestion financière : jeu d'entreprise", "coef": 1 }
+      ]
+    },
+    {
+      "ue": "UE 4.4 - SP5 : Technique II (ou international)",
+      "courses": [
+        { "name": "SP5 - Académique", "coef": 1 },
+        { "name": "SP5 - Professionnelle", "coef": 1 }
+      ]
+    }
+  ]
+}
