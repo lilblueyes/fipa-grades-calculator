@@ -16,7 +16,6 @@ class ConfettiGenerator {
     ];
     this.maxCount = 300;
     this.speed = 2;
-    this.frameInterval = 15;
     this.particles = [];
     this.runningAnimation = false;
     this.waveAngle = 0;

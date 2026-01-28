@@ -452,7 +452,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const navMenu = document.getElementById("nav-menu");
   const overlay = document.getElementById("overlay");
   const themeIcon = themeToggleBtn.querySelector("i");
-  const hamburgerIcon = hamburger.querySelector("i");
 
   checkboxFC = document.getElementById("checkboxFC");
   checkboxFC.checked = localStorage.getItem("checkboxFC") === "true";
