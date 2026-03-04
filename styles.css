@@ -189,14 +189,6 @@ h1 {
   margin: 10px;
 }
 
-.specialty-select.se {
-  padding: 20px 0 5px 0;
-}
-
-.specialty-select.meca {
-  padding: 20px 0 80px 0;
-}
-
 .specialty-select label {
   margin-right: 10px;
   font-size: 16px;
@@ -259,42 +251,6 @@ h1 {
   -moz-appearance: textfield;
   -webkit-appearance: none;
   appearance: none;
-}
-
-#checkboxFCContainer {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin: 15px 0;
-  padding: 0px 0 80px 0;
-}
-
-#checkboxFCContainer label {
-  display: inline-flex;
-  align-items: center;
-  font-size: 16px;
-  color: var(--text-color);
-  cursor: pointer;
-  background: none;
-  border-radius: 4px;
-  padding: 6px 10px;
-  transition: background-color 0.3s;
-}
-
-#checkboxFCContainer label:hover {
-  background-color: var(--nav-hover-bg);
-}
-
-#checkboxFCContainer input[type="checkbox"] {
-  accent-color: var(--secondary-color);
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-  cursor: pointer;
 }
 
 .ue-block {

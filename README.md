@@ -27,10 +27,6 @@ Application web destinée aux étudiants de la Formation d’Ingénieur par Alte
   * Design adaptatif (responsive) compatible sur mobile, tablette et desktop.
   * Mode sombre et clair.
 
-* **Prise en compte des étudiants en Formation Continue** :
-
-  * Option à cocher spécifiquement pour afficher les cours dédiés à la formation continue.
- 
 * **Sauvegarde automatique des notes** :
 
   * Utilisation du stockage local (`localStorage`) dans le navigateur pour conserver les notes saisies par l'utilisateur entre les sessions.
@@ -57,7 +53,6 @@ data/
 * Sélectionnez le semestre depuis le menu latéral.
 * Renseignez votre promotion dans la liste déroulante.
 * Choisissez votre spécialité dans la liste déroulante.
-* Cochez la case « Formation Continue » si vous êtes concerné.
 * Saisissez vos notes dans les champs dédiés.
 * Cliquez sur le bouton « Calculer » pour afficher les résultats.
 

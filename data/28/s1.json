@@ -3,18 +3,36 @@
     {
       "ue": "UE 1.1 - Modélisation des systèmes",
       "courses": [
-        { "name": "Événements et variables aléatoires", "coef": 1 },
-        { "name": "Introduction langage C", "coef": 1 },
+        {
+          "name": "Événements et variables aléatoires",
+          "coef": 1
+        },
+        {
+          "name": "Introduction langage C",
+          "coef": 1
+        },
         {
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 3,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 0.5
+            }
           ]
         },
-        { "name": "Outils numériques pour l'ingénieur", "coef": 1, "isFC": true },
-        { "name": "Python I - Langage et algorithmique", "coef": 1 }
+        {
+          "name": "Outils numériques pour l'ingénieur",
+          "coef": 1
+        },
+        {
+          "name": "Python I - Langage et algorithmique",
+          "coef": 1
+        }
       ]
     },
     {
@@ -24,24 +42,42 @@
           "name": "Administration Système",
           "coef": 1,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 0.5
+            }
           ]
         },
-        { "name": "Capteurs et systèmes de mesure", "coef": 1 },
+        {
+          "name": "Capteurs et systèmes de mesure",
+          "coef": 1
+        },
         {
           "name": "Fondements du traitement du signal analogique",
           "coef": 1,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 0.5
+            }
           ]
         },
         {
           "name": "Logique, systèmes numériques et description électronique",
           "coef": 1
         },
-        { "name": "Prototypage de cartes électroniques", "coef": 1 }
+        {
+          "name": "Prototypage de cartes électroniques",
+          "coef": 1
+        }
       ]
     },
     {
@@ -51,28 +87,51 @@
           "name": "Anglais",
           "coef": 2,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 1 },
-            { "name": "Note 3", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 1
+            },
+            {
+              "name": "Note 3",
+              "coef": 0.5
+            }
           ]
         },
-        { "name": "Métiers de l'ingénieur", "coef": 1.5, "isFC": true },
+        {
+          "name": "Métiers de l'ingénieur",
+          "coef": 1.5
+        },
         {
           "name": "Ingénierie et transitions",
           "coef": 1.5,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 0.5 }
-          ],
-          "isFC": true
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 0.5
+            }
+          ]
         }
       ]
     },
     {
       "ue": "UE 1.4 - SP1 : Intégration",
       "courses": [
-        { "name": "SP1 - Académique", "coef": 1 },
-        { "name": "SP1 - Professionnelle", "coef": 1 }
+        {
+          "name": "SP1 - Académique",
+          "coef": 1
+        },
+        {
+          "name": "SP1 - Professionnelle",
+          "coef": 1
+        }
       ]
     }
   ],
@@ -80,26 +139,53 @@
     {
       "ue": "UE 1.1 - Modélisation des systèmes",
       "courses": [
-        { "name": "Modélisation des systèmes dynamiques", "coef": 2 },
+        {
+          "name": "Modélisation des systèmes dynamiques",
+          "coef": 2
+        },
         {
           "name": "Outils mathématiques pour l'ingénieur",
           "coef": 3,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 0.5
+            }
           ]
         },
-        { "name": "Outils numériques pour l'ingénieur", "coef": 1 },
-        { "name": "Python I - Langage et algorithmique", "coef": 1 }
+        {
+          "name": "Outils numériques pour l'ingénieur",
+          "coef": 1
+        },
+        {
+          "name": "Python I - Langage et algorithmique",
+          "coef": 1
+        }
       ]
     },
     {
       "ue": "UE 1.2 - Sciences et Technologies",
       "courses": [
-        { "name": "Capteurs et systèmes de mesure", "coef": 1 },
-        { "name": "Électrotechnique", "coef": 1 },
-        { "name": "MSI (Mécanique du Solide Indéformable)", "coef": 2 },
-        { "name": "Technologie I - Mécanismes et procédés", "coef": 3 }
+        {
+          "name": "Capteurs et systèmes de mesure",
+          "coef": 1
+        },
+        {
+          "name": "Électrotechnique",
+          "coef": 1
+        },
+        {
+          "name": "MSI (Mécanique du Solide Indéformable)",
+          "coef": 2
+        },
+        {
+          "name": "Technologie I - Mécanismes et procédés",
+          "coef": 3
+        }
       ]
     },
     {
@@ -109,18 +195,36 @@
           "name": "Anglais",
           "coef": 3,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 1 },
-            { "name": "Note 3", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 1
+            },
+            {
+              "name": "Note 3",
+              "coef": 0.5
+            }
           ]
         },
-        { "name": "Métiers de l'ingénieur", "coef": 1.5 },
+        {
+          "name": "Métiers de l'ingénieur",
+          "coef": 1.5
+        },
         {
           "name": "Ingénierie et transitions",
           "coef": 1.5,
           "grades": [
-            { "name": "Note 1", "coef": 0.5 },
-            { "name": "Note 2", "coef": 0.5 }
+            {
+              "name": "Note 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Note 2",
+              "coef": 0.5
+            }
           ]
         }
       ]
@@ -128,8 +232,14 @@
     {
       "ue": "UE 1.4 - SP1 : Intégration",
       "courses": [
-        { "name": "SP1 - Académique", "coef": 1 },
-        { "name": "SP1 - Professionnelle", "coef": 1 }
+        {
+          "name": "SP1 - Académique",
+          "coef": 1
+        },
+        {
+          "name": "SP1 - Professionnelle",
+          "coef": 1
+        }
       ]
     }
   ]

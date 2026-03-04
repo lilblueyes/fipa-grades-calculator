@@ -1,5 +1,4 @@
 let specialties = {};
-let checkboxFC = null;
 
 let currentPromotion = getPromotion();
 
@@ -115,15 +114,7 @@ function applySelectedSpecialty() {
       localStorage.setItem(lsKeySelectedSpecialty(), firstSpecialty);
     }
   }
-
-  updateFCVisibility();
   renderSpecialty(specialtySelect.value);
-}
-
-function updateFCVisibility() {
-  const container = document.getElementById("checkboxFCContainer");
-  const specialty = document.getElementById("specialty").value;
-  container.style.display = specialty === "SE" ? "inline-block" : "none";
 }
 
 function renderSpecialty(specialty) {
@@ -153,18 +144,7 @@ function renderSpecialty(specialty) {
     const ueInputs = document.createElement("div");
     ueInputs.classList.add("ue-inputs");
     const form = document.createElement("form");
-    const showFC = checkboxFC && checkboxFC.checked;
-
-    const specialtySelectDiv = document.querySelector(".specialty-select");
-    if (specialtySelectDiv) {
-      specialtySelectDiv.classList.remove("se", "meca");
-      if (specialty === "SE") specialtySelectDiv.classList.add("se");
-      if (specialty === "MECA") specialtySelectDiv.classList.add("meca");
-    }
-
-    ue.courses
-      .filter((course) => !showFC || !course.isFC)
-      .forEach((course, k) => {
+    ue.courses.forEach((course, k) => {
         const div = document.createElement("div");
         div.classList.add("course-row");
         const name = sanitizeString(course.name);
@@ -255,7 +235,6 @@ function sanitizeString(str) {
 
 document.getElementById("specialty").addEventListener("change", (e) => {
   localStorage.setItem(lsKeySelectedSpecialty(), e.target.value);
-  updateFCVisibility();
   renderSpecialty(e.target.value);
 });
 
@@ -452,13 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const navMenu = document.getElementById("nav-menu");
   const overlay = document.getElementById("overlay");
   const themeIcon = themeToggleBtn.querySelector("i");
-
-  checkboxFC = document.getElementById("checkboxFC");
-  checkboxFC.checked = localStorage.getItem("checkboxFC") === "true";
-  checkboxFC.addEventListener("change", () => {
-    localStorage.setItem("checkboxFC", checkboxFC.checked);
-    renderSpecialty(document.getElementById("specialty").value);
-  });
 
   function updateLogo(theme) {
     logo.src = theme === "light" ? "assets/logo_ensta_dark.png" : "assets/logo_ensta.png";
