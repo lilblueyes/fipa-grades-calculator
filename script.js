@@ -1,5 +1,10 @@
 let specialties = {};
 
+const semestersByPromotion = {
+  "27": ["S1", "S2", "S3", "S4"],
+  "28": ["S1", "S2", "S3"],
+};
+
 let currentPromotion = getPromotion();
 
 function getPromotion() {
@@ -23,16 +28,27 @@ function lsKeyNotes(specialty, ueId) {
   return `notes-${currentPromotion}-${currentSemester}-${specialty}-${ueId}`;
 }
 
+function defaultSemesterForPromotion(promotion) {
+  return promotion === "28" ? "S1" : "S3";
+}
+
+function normalizeSemester(semester, promotion = currentPromotion) {
+  const allowedSemesters = semestersByPromotion[promotion] || [];
+  if (allowedSemesters.includes(semester)) return semester;
+  return defaultSemesterForPromotion(promotion);
+}
+
 function getHash() {
   const hash = window.location.hash ? window.location.hash.substring(1) : null;
-  if (hash) return hash;
-
   const stored = localStorage.getItem(lsKeySelectedSemester());
-  if (stored) {
-    window.location.hash = `#${stored}`;
-    return stored;
+  const preferredSemester = hash || stored || defaultSemesterForPromotion(currentPromotion);
+  const semester = normalizeSemester(preferredSemester);
+
+  if (window.location.hash !== `#${semester}`) {
+    window.location.hash = `#${semester}`;
   }
-  return currentPromotion === "28" ? "S1" : "S3";
+
+  return semester;
 }
 
 let currentSemester = getHash();
@@ -242,16 +258,23 @@ const promoSelectEl = document.getElementById("promotion");
 if (promoSelectEl) {
   if (promoSelectEl.value !== currentPromotion) promoSelectEl.value = currentPromotion;
   promoSelectEl.addEventListener("change", (e) => {
+    const previousHash = window.location.hash ? window.location.hash.substring(1) : null;
     currentPromotion = e.target.value;
     localStorage.setItem("selectedPromotion", currentPromotion);
-    currentSemester = getHash();
+    const nextSemester = getHash();
+    if (previousHash !== nextSemester) {
+      return;
+    }
+    currentSemester = nextSemester;
     localStorage.setItem(lsKeySelectedSemester(), currentSemester);
     loadSpecialties(currentSemester);
   });
 }
 
 window.addEventListener("hashchange", () => {
-  currentSemester = getHash();
+  const nextSemester = getHash();
+  if (nextSemester === currentSemester) return;
+  currentSemester = nextSemester;
   localStorage.setItem(lsKeySelectedSemester(), currentSemester);
   loadSpecialties(currentSemester);
 });
