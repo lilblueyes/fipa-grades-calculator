@@ -16,6 +16,12 @@ import {
 } from "./js/state.js";
 import { initThemeAndNavigation } from "./js/theme-nav.js";
 
+function initFooterYear() {
+  const yearEl = document.getElementById("current-year");
+  if (!yearEl) return;
+  yearEl.textContent = String(new Date().getFullYear());
+}
+
 function renderCurrentSpecialty(specialty) {
   renderSpecialty(specialty, calculateSingleUE);
 }
@@ -88,3 +94,4 @@ window.addEventListener("hashchange", () => {
 
 loadAndRender(state.currentSemester);
 initThemeAndNavigation();
+initFooterYear();
