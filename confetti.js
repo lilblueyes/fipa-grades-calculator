@@ -18,6 +18,8 @@ class ConfettiGenerator {
     this.speed = 2;
     this.particles = [];
     this.runningAnimation = false;
+    this.animationFrameId = null;
+    this.stopTimeoutId = null;
     this.waveAngle = 0;
     this.initCanvas();
   }
@@ -58,23 +60,36 @@ class ConfettiGenerator {
       this.particles.push(this.resetParticle({}));
     }
     this.runningAnimation = true;
-    this.animate();
-    setTimeout(() => this.stop(), timeout);
+    if (this.animationFrameId === null) {
+      this.animate();
+    }
+    if (this.stopTimeoutId !== null) {
+      clearTimeout(this.stopTimeoutId);
+    }
+    this.stopTimeoutId = setTimeout(() => {
+      this.stopTimeoutId = null;
+      this.stop();
+    }, timeout);
   }
 
   stop() {
+    if (this.stopTimeoutId !== null) {
+      clearTimeout(this.stopTimeoutId);
+      this.stopTimeoutId = null;
+    }
     this.runningAnimation = false;
   }
 
   animate() {
     if (!this.runningAnimation && this.particles.length === 0) {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.animationFrameId = null;
       return;
     }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.update();
     this.draw();
-    requestAnimationFrame(this.animate.bind(this));
+    this.animationFrameId = requestAnimationFrame(() => this.animate());
   }
 
   update() {
