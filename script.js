@@ -161,30 +161,61 @@ function renderSpecialty(specialty) {
     ueInputs.classList.add("ue-inputs");
     const form = document.createElement("form");
     ue.courses.forEach((course, k) => {
-        const div = document.createElement("div");
-        div.classList.add("course-row");
-        const name = sanitizeString(course.name);
+      const row = document.createElement("div");
+      row.classList.add("course-row");
+      const name = sanitizeString(course.name);
+      const noteInputId = `note-${index}-${k}-${name}`;
 
-        if (course.grades) {
-          const gradeInputs = course.grades
-            .map(
-              (g, j) => `
-                <input type="text" id="grade-${index}-${k}-${name}-${j}"
-                  name="grades[]" placeholder="${g.name}" class="styled-input"/>
-                <input type="hidden" name="gradeCoeffs[]" value="${course.coef * g.coef}" />`
-            )
-            .join("");
-          div.innerHTML = `
-            <label for="note-${index}-${k}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
-            <div style="display:flex; align-items:center;">${gradeInputs}</div>`;
-        } else {
-          div.innerHTML = `
-            <label for="note-${index}-${k}-${name}">${course.name} (coef&nbsp;${course.coef})&nbsp;:</label>
-            <input type="text" id="note-${index}-${k}-${name}" name="notes[]" placeholder="Note" class="styled-input"/>
-            <input type="hidden" name="coeffs[]" value="${course.coef}" />`;
-        }
-        form.appendChild(div);
-      });
+      const label = document.createElement("label");
+      label.setAttribute("for", noteInputId);
+      label.textContent = `${course.name} (coef ${course.coef}) :`;
+      row.appendChild(label);
+
+      if (course.grades) {
+        const gradesWrap = document.createElement("div");
+        gradesWrap.style.display = "flex";
+        gradesWrap.style.alignItems = "center";
+
+        course.grades.forEach((g, j) => {
+          const gradeInputId = `grade-${index}-${k}-${name}-${j}`;
+          if (j === 0) {
+            label.setAttribute("for", gradeInputId);
+          }
+
+          const gradeInput = document.createElement("input");
+          gradeInput.type = "text";
+          gradeInput.id = gradeInputId;
+          gradeInput.name = "grades[]";
+          gradeInput.placeholder = g.name;
+          gradeInput.classList.add("styled-input");
+          gradesWrap.appendChild(gradeInput);
+
+          const hiddenCoeffInput = document.createElement("input");
+          hiddenCoeffInput.type = "hidden";
+          hiddenCoeffInput.name = "gradeCoeffs[]";
+          hiddenCoeffInput.value = String(course.coef * g.coef);
+          gradesWrap.appendChild(hiddenCoeffInput);
+        });
+
+        row.appendChild(gradesWrap);
+      } else {
+        const noteInput = document.createElement("input");
+        noteInput.type = "text";
+        noteInput.id = noteInputId;
+        noteInput.name = "notes[]";
+        noteInput.placeholder = "Note";
+        noteInput.classList.add("styled-input");
+        row.appendChild(noteInput);
+
+        const hiddenCoeffInput = document.createElement("input");
+        hiddenCoeffInput.type = "hidden";
+        hiddenCoeffInput.name = "coeffs[]";
+        hiddenCoeffInput.value = String(course.coef);
+        row.appendChild(hiddenCoeffInput);
+      }
+
+      form.appendChild(row);
+    });
 
     const savedKey = lsKeyNotes(specialty, ueId);
     let saved = localStorage.getItem(savedKey);
