@@ -178,7 +178,8 @@ export function calculateSingleUE(ueBlock, index) {
   }
 
   const specialty = document.getElementById("specialty").value;
-  const ueData = state.specialties[specialty]?.[index];
+  const specialtyData = state.specialties[specialty];
+  const ueData = specialtyData ? specialtyData[index] : null;
   if (!ueData) {
     return;
   }

@@ -1,0 +1,8 @@
+{
+  "name": "fipa-grades-calculator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/calc.test.js"
+  }
+}
