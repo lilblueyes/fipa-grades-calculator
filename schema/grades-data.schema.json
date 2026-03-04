@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FIPA Grades Data",
+  "type": "object",
+  "minProperties": 1,
+  "patternProperties": {
+    "^[A-Z0-9]+$": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/ue"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "ue": {
+      "type": "object",
+      "required": ["ue", "courses"],
+      "properties": {
+        "ue": {
+          "type": "string",
+          "minLength": 1
+        },
+        "courses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/course"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "course": {
+      "type": "object",
+      "required": ["name", "coef"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coef": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "grades": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/grade"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "grade": {
+      "type": "object",
+      "required": ["name", "coef"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coef": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/calc.test.js"
+    "test": "node tests/calc.test.js",
+    "validate:data": "node scripts/validate-data-schema.cjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1"
   }
 }
