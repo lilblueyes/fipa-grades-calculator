@@ -4,8 +4,18 @@
       "ue": "UE 4.1 - Modélisation des systèmes",
       "courses": [
         {
-          "name": "Arithmétique pour l'électronique et la sécurité",
-          "coef": 1
+          "name": "Arithmétiques et algorithmes pour l'électronique",
+          "coef": 1,
+          "grades": [
+            {
+              "name": "Exam 1",
+              "coef": 0.5
+            },
+            {
+              "name": "Exam 2",
+              "coef": 0.5
+            }
+          ]
         },
         {
           "name": "Compilation",
