@@ -114,6 +114,10 @@
         {
           "name": "Éléments de traitement du signal",
           "coef": 0.75
+        },
+        {
+          "name": "Thermique et thermodynamique",
+          "coef": 0.75
         }
       ]
     },
