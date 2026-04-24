@@ -31,7 +31,17 @@
         },
         {
           "name": "Théorie de l'information appliquée : du codage à la modulation",
-          "coef": 1
+          "coef": 1,
+          "grades": [
+            {
+              "name": "CE",
+              "coef": 0.5
+            },
+            {
+              "name": "BE",
+              "coef": 0.5
+            }
+          ]
         }
       ]
     },
