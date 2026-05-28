@@ -5,7 +5,21 @@
       "courses": [
         {
           "name": "Arithmétiques et algorithmes pour l'électronique",
-          "coef": 1
+          "coef": 1,
+          "grades": [
+            {
+              "name": "CE1",
+              "coef": 0.33
+            },
+            {
+              "name": "CE2",
+              "coef": 0.33
+            },
+            {
+              "name": "TP",
+              "coef": 0.33
+            }
+          ]
         },
         {
           "name": "Compilation",
