@@ -25,10 +25,6 @@
           "coef": 1
         },
         {
-          "name": "C pour l'embarqué",
-          "coef": 1
-        },
-        {
           "name": "Systèmes d'exploitation",
           "coef": 1
         },
@@ -54,7 +50,7 @@
           "coef": 1
         },
         {
-          "name": "Ingénierie et relations humaines",
+          "name": "Ingénierie des relations humaines et des coopérations",
           "coef": 1
         }
       ]
@@ -90,7 +86,7 @@
           "coef": 2.5
         },
         {
-          "name": "Thermique et thermodynamique",
+          "name": "Matériaux composites",
           "coef": 2.5
         }
       ]
@@ -120,11 +116,7 @@
           "coef": 1
         },
         {
-          "name": "Energie et Climat",
-          "coef": 1
-        },
-        {
-          "name": "Mécanismes de l'innovation et leviers de la réussite",
+          "name": "Ingénierie des relations humaines et des coopérations",
           "coef": 1
         },
         {
@@ -153,11 +145,11 @@
       "courses": [
         {
           "name": "Analyse statistique de données",
-          "coef": 3.25
+          "coef": 3
         },
         {
           "name": "Eléments finis",
-          "coef": 3.75
+          "coef": 3
         }
       ]
     },
@@ -166,11 +158,11 @@
       "courses": [
         {
           "name": "Matériaux",
-          "coef": 2.5
+          "coef": 3
         },
         {
-          "name": "Thermique et thermodynamique",
-          "coef": 2.5
+          "name": "Matériaux composites",
+          "coef": 3
         },
         {
           "name": "Transmission de puissance mécanique",
@@ -190,11 +182,7 @@
           "coef": 1
         },
         {
-          "name": "Mécanismes de l'innovation et leviers de la réussite",
-          "coef": 1
-        },
-        {
-          "name": "Energie et Climat",
+          "name": "Ingénierie des relations humaines et des coopérations",
           "coef": 1
         },
         {
