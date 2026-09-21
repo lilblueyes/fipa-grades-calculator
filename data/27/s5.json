@@ -1,0 +1,346 @@
+{
+  "SE": [
+    {
+      "ue": "UE 5.1 - Modélisation des systèmes",
+      "courses": [
+        {
+          "name": "Electronique et sécurité",
+          "coef": 2
+        },
+        {
+          "name": "Machine learning",
+          "coef": 5
+        },
+        {
+          "name": "Embedded Machine Learning",
+          "coef": 1
+        },
+        {
+          "name": "Vérification formelle",
+          "coef": 2
+        },
+        {
+          "name": "VHDL 2 : langage et synthèse FPGA",
+          "coef": 2
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.2 - Sciences et Technologies",
+      "courses": [
+        {
+          "name": "Modélisation et implémentation des réseaux de capteurs",
+          "coef": 1
+        },
+        {
+          "name": "Système d'exploitation avancé et embarqué",
+          "coef": 2.5
+        },
+        {
+          "name": "Physique des Systèmes de transmission",
+          "coef": 3
+        },
+        {
+          "name": "Réseau de capteurs : Radio-Logicielle",
+          "coef": 2.5
+        },
+        {
+          "name": "Réseaux de capteurs sans fil : protocoles et multiplexage",
+          "coef": 1
+        },
+        {
+          "name": "System-on-chip",
+          "coef": 2
+        },
+        {
+          "name": "Technologies mémoire et gestion de la donnée : du capteur au centre de données",
+          "coef": 1
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.3 - Sciences Humaines, Économiques et Sociales",
+      "courses": [
+        {
+          "name": "Langues",
+          "coef": 2
+        },
+        {
+          "name": "Leadership",
+          "coef": 1.5
+        },
+        {
+          "name": "Sport V",
+          "coef": 1.5
+        }
+      ]
+    }
+  ],
+  "ISE": [
+    {
+      "ue": "UE 5.1 - Ecosystèmes technologiques : contrôle et stratégie",
+      "courses": [
+        {
+          "name": "Ecosystèmes technologiques : environnements économiques, politique et juridique",
+          "coef": 4
+        },
+        {
+          "name": "Etudes de Marchés technologiques et gestion des ressources humaines",
+          "coef": 2
+        },
+        {
+          "name": "Stratégie, organisation et pilotage de la performance projet",
+          "coef": 5
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.2 - Stratégie, organisation et pilotage de la performance projet",
+      "courses": [
+        {
+          "name": "Fondamentaux de gestion de projet",
+          "coef": 3
+        },
+        {
+          "name": "Déploiement de projets (Management des industries)",
+          "coef": 1
+        },
+        {
+          "name": "Management de l'innovation et ingénierie d'affaires",
+          "coef": 3
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.3 - Sciences Humaines, Économiques et Sociales",
+      "courses": [
+        {
+          "name": "Langues",
+          "coef": 2
+        },
+        {
+          "name": "Leadership",
+          "coef": 1.5
+        },
+        {
+          "name": "Sport V",
+          "coef": 1.5
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.4 - Intrapreneuriat et pilotage de la performance / Entrepreneuriat",
+      "courses": [
+        {
+          "name": "Business development",
+          "coef": 1
+        }
+      ]
+    }
+  ],
+  "ANSNA": [
+    {
+      "ue": "UE 5.1 - Connaissances et pratiques métiers",
+      "courses": [
+        {
+          "name": "Projet - Boucle navire",
+          "coef": 3.5
+        },
+        {
+          "name": "Mode de propulsion alternative",
+          "coef": 1
+        },
+        {
+          "name": "Motorisation",
+          "coef": 1
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.2 - Fondamentaux architecture navale et offshore",
+      "courses": [
+        {
+          "name": "Manœuvrabilité",
+          "coef": 0.5
+        },
+        {
+          "name": "Résistance et propulsion",
+          "coef": 1.5
+        },
+        {
+          "name": "Tenue à la mer",
+          "coef": 1.75
+        },
+        {
+          "name": "Structure navale",
+          "coef": 1.75
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.3 - Sciences Humaines, Économiques et Sociales",
+      "courses": [
+        {
+          "name": "Langues",
+          "coef": 2
+        },
+        {
+          "name": "Leadership",
+          "coef": 1.5
+        },
+        {
+          "name": "Sport V",
+          "coef": 1.5
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.4 - Profils",
+      "courses": [
+        {
+          "name": "Tronc commun en structure navale",
+          "coef": 3.5
+        },
+        {
+          "name": "Structure navale avancée (SNA)",
+          "coef": 3.5
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.5 - Partie spécifique FISA",
+      "courses": [
+        {
+          "name": "Droit maritime international",
+          "coef": 0.75
+        },
+        {
+          "name": "Production & maintenance des navires",
+          "coef": 0.75
+        },
+        {
+          "name": "TP soudage et stabilité",
+          "coef": 0.75
+        },
+        {
+          "name": "Mode de propulsion alternatifs",
+          "coef": 0.5
+        },
+        {
+          "name": "Motorisation et équipements",
+          "coef": 1.75
+        }
+      ]
+    }
+  ],
+  "ANSNV": [
+    {
+      "ue": "UE 5.1 - Connaissances et pratiques métiers",
+      "courses": [
+        {
+          "name": "Projet - Boucle navire",
+          "coef": 3.5
+        },
+        {
+          "name": "Mode de propulsion alternative",
+          "coef": 1
+        },
+        {
+          "name": "Motorisation",
+          "coef": 1
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.2 - Fondamentaux architecture navale et offshore",
+      "courses": [
+        {
+          "name": "Manœuvrabilité",
+          "coef": 0.5
+        },
+        {
+          "name": "Résistance et propulsion",
+          "coef": 1.5
+        },
+        {
+          "name": "Tenue à la mer",
+          "coef": 1.75
+        },
+        {
+          "name": "Structure navale",
+          "coef": 1.75
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.3 - Sciences Humaines, Économiques et Sociales",
+      "courses": [
+        {
+          "name": "Langues",
+          "coef": 2
+        },
+        {
+          "name": "Leadership",
+          "coef": 1.5
+        },
+        {
+          "name": "Sport V",
+          "coef": 1.5
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.4 - Profils",
+      "courses": [
+        {
+          "name": "Tronc commun en structure navale",
+          "coef": 3.5
+        },
+        {
+          "name": "Conception de voiliers (SNV)",
+          "coef": 3.5
+        }
+      ]
+    }
+  ],
+  "ANOFFWIND": [
+    {
+      "ue": "UE 5.1 - Connaissances et pratiques métiers",
+      "courses": [
+        {
+          "name": "Projet - Boucle navire",
+          "coef": 3.5
+        },
+        {
+          "name": "Mode de propulsion alternative",
+          "coef": 1
+        },
+        {
+          "name": "Motorisation",
+          "coef": 1
+        }
+      ]
+    },
+    {
+      "ue": "UE 5.2 - Fondamentaux architecture navale et offshore",
+      "courses": [
+        {
+          "name": "Manœuvrabilité",
+          "coef": 0.5
+        },
+        {
+          "name": "Résistance et propulsion",
+          "coef": 1.5
+        },
+        {
+          "name": "Tenue à la mer",
+          "coef": 1.75
+        },
+        {
+          "name": "Structure navale",
+          "coef": 1.75
+        }
+      ]
+    }
+  ]
+}
