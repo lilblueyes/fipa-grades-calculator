@@ -1,4 +1,4 @@
-import { lsKeyNotes, lsKeySelectedSpecialty, state } from "./state.js";
+import { isSemesterAvailable, lsKeyNotes, lsKeySelectedSpecialty, state } from "./state.js";
 import { sanitizeString } from "./utils.js";
 
 export function updatePageTitle(semester) {
@@ -10,6 +10,21 @@ export function setActiveNav(semester) {
   const navLinks = document.querySelectorAll("nav a");
   navLinks.forEach((link) => {
     link.classList.toggle("active", link.getAttribute("href") === `#${semester}`);
+  });
+}
+
+export function updateNavAvailability() {
+  const navLinks = document.querySelectorAll("nav a");
+  navLinks.forEach((link) => {
+    const semester = link.textContent.trim();
+    const available = isSemesterAvailable(semester);
+
+    link.classList.toggle("disabled", !available);
+    if (available) {
+      link.setAttribute("href", `#${semester}`);
+    } else {
+      link.removeAttribute("href");
+    }
   });
 }
 

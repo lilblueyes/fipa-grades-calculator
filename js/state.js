@@ -38,9 +38,12 @@ export function defaultSemesterForPromotion(promotion) {
   return promotion === "28" ? "S1" : "S3";
 }
 
+export function isSemesterAvailable(semester, promotion = state.currentPromotion) {
+  return (semestersByPromotion[promotion] || []).includes(semester);
+}
+
 export function normalizeSemester(semester, promotion = state.currentPromotion) {
-  const allowedSemesters = semestersByPromotion[promotion] || [];
-  if (allowedSemesters.includes(semester)) return semester;
+  if (isSemesterAvailable(semester, promotion)) return semester;
   return defaultSemesterForPromotion(promotion);
 }
 

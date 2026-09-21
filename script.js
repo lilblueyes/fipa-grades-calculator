@@ -5,6 +5,7 @@ import {
   populateSpecialtySelect,
   renderSpecialty,
   setActiveNav,
+  updateNavAvailability,
   updatePageTitle,
 } from "./js/render.js";
 import {
@@ -27,6 +28,8 @@ function renderCurrentSpecialty(specialty) {
 }
 
 async function loadAndRender(semester) {
+  updateNavAvailability();
+
   try {
     state.specialties = await loadSpecialties(semester);
     populateSpecialtySelect();
