@@ -1,5 +1,5 @@
 export const semestersByPromotion = {
-  "27": ["S1", "S2", "S3", "S4"],
+  "27": ["S1", "S2", "S3", "S4", "S5"],
   "28": ["S1", "S2", "S3"],
 };
 

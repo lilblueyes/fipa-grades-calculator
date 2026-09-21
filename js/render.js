@@ -19,6 +19,9 @@ export function formatSpecialtyName(specialty) {
     MECA: "Mécanique (MECA)",
     ANO: "Architecture Navale (ANO)",
     AV: "Architecture de Véhicules (AV)",
+    ANSNA: "AN - profil SNA",
+    ANSNV: "AN - profil SNV",
+    ANOFFWIND: "AN - profil Offwind",
   };
 
   return names[specialty] || specialty;
