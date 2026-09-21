@@ -46,7 +46,8 @@ export function lsKeyNotes(specialty, ueId) {
 }
 
 export function defaultSemesterForPromotion(promotion) {
-  return promotion === "27" ? "S3" : "S1";
+  const semesters = semestersByPromotion[promotion] || [];
+  return semesters[semesters.length - 1] || "S1";
 }
 
 export function normalizeSemester(semester, promotion = state.currentPromotion) {
