@@ -13,7 +13,7 @@ Application web destinée aux étudiants de la Formation d’Ingénieur par Alte
   * Architecture de Véhicules (AV)
 
 * **Prise en charge des promotions actuelles :**
-  * Gestion des promotions FIPA27 et FIPA28.
+  * Gestion des promotions FIPA27, FIPA28 et FISA29.
 
 * **Calcul instantané des moyennes pondérées** :
 
@@ -41,10 +41,12 @@ data/
 │   ├── s1.json
 │   ├── sX.json
 │   └── s6.json
-└── 28/
-    ├── s1.json
-    ├── sX.json
-    └── s6.json
+├── 28/
+│   ├── s1.json
+│   ├── sX.json
+│   └── s6.json
+└── 29/
+    └── s1.json
 ```
 
 ## Utilisation

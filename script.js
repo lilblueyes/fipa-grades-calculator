@@ -11,6 +11,7 @@ import {
   getPromotion,
   lsKeySelectedSemester,
   lsKeySelectedSpecialty,
+  promotionLabels,
   resolveSemesterFromLocation,
   state,
 } from "./js/state.js";
@@ -38,7 +39,7 @@ async function loadAndRender(semester) {
 
     const ueContainer = document.getElementById("ue-container");
     ueContainer.innerHTML = `<p style="text-align: center; padding: 150px;">
-      Erreur lors du chargement des données pour le semestre ${semester} en FIPA${state.currentPromotion}
+      Erreur lors du chargement des données pour le semestre ${semester} en ${promotionLabels[state.currentPromotion]}
     </p>`;
 
     updatePageTitle(semester);
