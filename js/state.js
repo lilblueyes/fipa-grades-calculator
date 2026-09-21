@@ -1,6 +1,13 @@
 export const semestersByPromotion = {
   "27": ["S1", "S2", "S3", "S4"],
   "28": ["S1", "S2", "S3"],
+  "29": ["S1"],
+};
+
+export const promotionLabels = {
+  "27": "FIPA27",
+  "28": "FIPA28",
+  "29": "FISA29",
 };
 
 export const state = {
@@ -9,17 +16,21 @@ export const state = {
   currentSemester: "S1",
 };
 
+function isKnownPromotion(promotion) {
+  return Object.keys(semestersByPromotion).includes(promotion);
+}
+
 export function getPromotion() {
   const params = new URLSearchParams(window.location.search);
   const urlPromotion = params.get("p");
 
-  if (urlPromotion === "27" || urlPromotion === "28") {
+  if (isKnownPromotion(urlPromotion)) {
     localStorage.setItem("selectedPromotion", urlPromotion);
     return urlPromotion;
   }
 
   const saved = localStorage.getItem("selectedPromotion");
-  return saved === "27" || saved === "28" ? saved : "27";
+  return isKnownPromotion(saved) ? saved : "27";
 }
 
 export function lsKeySelectedSemester() {
@@ -35,7 +46,7 @@ export function lsKeyNotes(specialty, ueId) {
 }
 
 export function defaultSemesterForPromotion(promotion) {
-  return promotion === "28" ? "S1" : "S3";
+  return promotion === "27" ? "S3" : "S1";
 }
 
 export function normalizeSemester(semester, promotion = state.currentPromotion) {
