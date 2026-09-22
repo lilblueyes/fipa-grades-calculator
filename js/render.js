@@ -1,4 +1,10 @@
-import { isSemesterAvailable, lsKeyNotes, lsKeySelectedSpecialty, state } from "./state.js";
+import {
+  isSemesterAvailable,
+  lsKeyLegacySelectedSpecialty,
+  lsKeyNotes,
+  lsKeySelectedSpecialty,
+  state,
+} from "./state.js";
 import { sanitizeString } from "./utils.js";
 
 export function updatePageTitle(semester) {
@@ -57,15 +63,18 @@ export function populateSpecialtySelect() {
 export function applySelectedSpecialty(onSpecialtySelected) {
   const specialtySelect = document.getElementById("specialty");
   const availableSpecialties = Object.keys(state.specialties);
-  const savedSpecialty = localStorage.getItem(lsKeySelectedSpecialty());
+  const specialtyKey = lsKeySelectedSpecialty();
+  const savedSpecialty =
+    localStorage.getItem(specialtyKey) || localStorage.getItem(lsKeyLegacySelectedSpecialty());
 
   if (savedSpecialty && state.specialties[savedSpecialty]) {
     specialtySelect.value = savedSpecialty;
+    localStorage.setItem(specialtyKey, savedSpecialty);
   } else {
     const firstSpecialty = availableSpecialties[0] || "";
     specialtySelect.value = firstSpecialty;
     if (firstSpecialty) {
-      localStorage.setItem(lsKeySelectedSpecialty(), firstSpecialty);
+      localStorage.setItem(specialtyKey, firstSpecialty);
     }
   }
 

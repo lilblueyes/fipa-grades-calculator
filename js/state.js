@@ -38,6 +38,10 @@ export function lsKeySelectedSemester() {
 }
 
 export function lsKeySelectedSpecialty() {
+  return `selectedSpecialty-${state.currentPromotion}-${state.currentSemester}`;
+}
+
+export function lsKeyLegacySelectedSpecialty() {
   return `selectedSpecialty-${state.currentPromotion}`;
 }
 
