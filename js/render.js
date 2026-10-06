@@ -273,11 +273,9 @@ function buildGradeDialog({ course, index, courseIndex, courseId }) {
     const inputsWrap = document.createElement("div");
     inputsWrap.classList.add("grade-group-inputs");
     group.gradeIndexes.forEach((gradeIndex) => {
-      const [gradeInput, hiddenCoeffInput] = createGradeInput(
-        course,
-        course.grades[gradeIndex],
-        `${baseId}-${gradeIndex}`
-      );
+      // Même identifiant que celui attendu par calculateSingleUE (js/calc.js) pour lire la note.
+      const inputId = `grade-${index}-${courseIndex}-${courseId}-${gradeIndex}`;
+      const [gradeInput, hiddenCoeffInput] = createGradeInput(course, course.grades[gradeIndex], inputId);
       inputs.push(gradeInput);
       inputsWrap.append(gradeInput, hiddenCoeffInput);
     });
