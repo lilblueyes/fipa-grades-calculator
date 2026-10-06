@@ -69,8 +69,38 @@
           ]
         },
         {
-          "name": "VHDL 1 : langage et synthèse FPGA",
-          "coef": 1
+          "name": "Observateurs et filtre de Kalman",
+          "coef": 1,
+          "grades": [
+            {
+              "name": "QCM1",
+              "coef": 1.25,
+              "group": "Mini-QCM",
+              "max": 5
+            },
+            {
+              "name": "QCM2",
+              "coef": 1.25,
+              "group": "Mini-QCM",
+              "max": 5
+            },
+            {
+              "name": "QCM3",
+              "coef": 1.25,
+              "group": "Mini-QCM",
+              "max": 5
+            },
+            {
+              "name": "QCM4",
+              "coef": 1.25,
+              "group": "Mini-QCM",
+              "max": 5
+            },
+            {
+              "name": "QCM",
+              "coef": 15
+            }
+          ]
         }
       ]
     },
