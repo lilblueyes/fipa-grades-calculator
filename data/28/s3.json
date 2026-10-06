@@ -33,31 +33,31 @@
               "coef": 4
             },
             {
-              "name": "Q1",
+              "name": "QCM1",
               "coef": 1.2,
               "group": "Mini-quiz",
               "max": 5
             },
             {
-              "name": "Q2",
+              "name": "QCM2",
               "coef": 1.2,
               "group": "Mini-quiz",
               "max": 5
             },
             {
-              "name": "Q3",
+              "name": "QCM3",
               "coef": 1.2,
               "group": "Mini-quiz",
               "max": 5
             },
             {
-              "name": "Q4",
+              "name": "QCM4",
               "coef": 1.2,
               "group": "Mini-quiz",
               "max": 5
             },
             {
-              "name": "Q5",
+              "name": "QCM5",
               "coef": 1.2,
               "group": "Mini-quiz",
               "max": 5
