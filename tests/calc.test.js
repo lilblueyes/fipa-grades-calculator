@@ -2,6 +2,7 @@ import assert from "assert";
 
 import {
   buildWeightedItems,
+  computeCourseAverage,
   computeWeightedOutcome,
   groupGrades,
   isGradeValid,
@@ -172,6 +173,28 @@ const tests = [
       assert.equal(isGradeValid(5.5, 5), false);
       assert.equal(isGradeValid(18), true);
       assert.equal(isGradeValid(21), false);
+    },
+  },
+  {
+    name: "compute a course average out of 20 from its grades",
+    run() {
+      const grades = [
+        { name: "TP", coef: 4 },
+        { name: "Q1", coef: 1.2, group: "Mini-quiz", max: 5 },
+        { name: "QCM", coef: 10 },
+      ];
+
+      const complete = computeCourseAverage(grades, [14, 4, 12]);
+      // (4 × 14 + 1.2 × 4 × 4 + 10 × 12) / 15.2
+      approxEqual(complete.average, (56 + 19.2 + 120) / 15.2);
+      assert.equal(complete.entered, 3);
+
+      const partial = computeCourseAverage(grades, [14, null, null]);
+      approxEqual(partial.average, 14);
+      assert.equal(partial.entered, 1);
+      assert.equal(partial.total, 3);
+
+      assert.equal(computeCourseAverage(grades, [null, null, null]).average, null);
     },
   },
   {

@@ -313,22 +313,72 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* Notes regroupées sous le libellé du cours (ex. TP / mini-quiz / QCM) */
-.course-row.has-grade-groups {
-  flex-wrap: wrap;
-  align-items: flex-start;
+/* Cours à notes multiples : case de moyenne sur 20 et fenêtre de saisie */
+.grade-summary {
+  min-width: 96px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--input-bg);
+  color: var(--secondary-color);
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.ue-inputs form .course-row.has-grade-groups label {
-  flex: 0 0 100%;
+.grade-open-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.grade-groups {
-  flex: 0 0 100%;
+.grade-open-btn:hover {
+  border-color: var(--secondary-color);
+  box-shadow: var(--box-shadow-hover);
+}
+
+.grade-dialog {
+  width: min(460px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--ue-block-bg);
+  color: var(--text-color);
+  box-shadow: var(--box-shadow-main);
+}
+
+.grade-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.grade-dialog h3 {
+  margin: 0 0 12px;
+  color: var(--secondary-color);
+  border-bottom: 1px solid var(--ue-block-border-bottom);
+  padding-bottom: 8px;
+}
+
+.grade-dialog-body {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px 28px;
-  padding-left: 12px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grade-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.grade-dialog-result {
+  margin: 0;
+  font-weight: bold;
 }
 
 .grade-group {
@@ -344,12 +394,17 @@ h1 {
 
 .ue-inputs .grade-group-inputs {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
 }
 
 .ue-inputs .grade-group-inputs input {
   margin-left: 0;
+}
+
+.grade-dialog .grade-group-inputs input {
+  width: 84px;
 }
 
 .ue-inputs form label {

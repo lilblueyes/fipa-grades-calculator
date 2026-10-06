@@ -5,8 +5,8 @@ import {
   lsKeySelectedSpecialty,
   state,
 } from "./state.js";
-import { groupGrades } from "./calc.js";
-import { sanitizeString } from "./utils.js";
+import { computeCourseAverage, groupGrades } from "./calc.js";
+import { formatDecimal, parseDecimal, sanitizeString } from "./utils.js";
 
 export function updatePageTitle(semester) {
   const pageTitle = document.getElementById("page-title");
@@ -113,6 +113,7 @@ export function renderSpecialty(specialty, onCalculateUE) {
     ueInputs.classList.add("ue-inputs");
 
     const form = document.createElement("form");
+    const summaryRefreshers = [];
     ue.courses.forEach((course, courseIndex) => {
       const row = document.createElement("div");
       row.classList.add("course-row");
@@ -125,64 +126,26 @@ export function renderSpecialty(specialty, onCalculateUE) {
       label.textContent = `${course.name} (coef ${course.coef}) :`;
       row.appendChild(label);
 
-      if (Array.isArray(course.grades) && course.grades.length > 0) {
+      const hasGrades = Array.isArray(course.grades) && course.grades.length > 0;
+
+      if (hasGrades && course.grades.some((grade) => grade.group)) {
+        const gradeDialog = buildGradeDialog({ course, index, courseIndex, courseId });
+        label.setAttribute("for", gradeDialog.trigger.id);
+        row.append(gradeDialog.summary, gradeDialog.trigger);
+        form.appendChild(gradeDialog.dialog);
+        summaryRefreshers.push(gradeDialog.refresh);
+      } else if (hasGrades) {
         const gradesWrap = document.createElement("div");
-        const grouped = course.grades.some((grade) => grade.group);
+        gradesWrap.style.display = "flex";
+        gradesWrap.style.alignItems = "center";
 
-        if (grouped) {
-          row.classList.add("has-grade-groups");
-          gradesWrap.classList.add("grade-groups");
-        } else {
-          gradesWrap.style.display = "flex";
-          gradesWrap.style.alignItems = "center";
-        }
-
-        const appendGradeInputs = (container, grade, gradeIndex) => {
+        course.grades.forEach((grade, gradeIndex) => {
           const gradeInputId = `grade-${index}-${courseIndex}-${courseId}-${gradeIndex}`;
           if (gradeIndex === 0) {
             label.setAttribute("for", gradeInputId);
           }
-
-          const gradeInput = document.createElement("input");
-          gradeInput.type = "text";
-          gradeInput.id = gradeInputId;
-          gradeInput.name = "grades[]";
-          gradeInput.placeholder = grade.name;
-          gradeInput.dataset.max = String(grade.max || 20);
-          gradeInput.classList.add("styled-input");
-          container.appendChild(gradeInput);
-
-          const hiddenCoeffInput = document.createElement("input");
-          hiddenCoeffInput.type = "hidden";
-          hiddenCoeffInput.name = "gradeCoeffs[]";
-          hiddenCoeffInput.value = String(Number(course.coef) * Number(grade.coef));
-          container.appendChild(hiddenCoeffInput);
-        };
-
-        if (grouped) {
-          groupGrades(course.grades).forEach((group) => {
-            const groupEl = document.createElement("div");
-            groupEl.classList.add("grade-group");
-
-            const title = document.createElement("span");
-            title.classList.add("grade-group-title");
-            const points = Number(group.coef.toFixed(2));
-            title.textContent =
-              `${group.name} · ${points} pts` +
-              (group.max && Number(group.max) !== 20 ? ` · notes sur ${group.max}` : "");
-
-            const inputsWrap = document.createElement("div");
-            inputsWrap.classList.add("grade-group-inputs");
-            group.gradeIndexes.forEach((gradeIndex) =>
-              appendGradeInputs(inputsWrap, course.grades[gradeIndex], gradeIndex)
-            );
-
-            groupEl.append(title, inputsWrap);
-            gradesWrap.appendChild(groupEl);
-          });
-        } else {
-          course.grades.forEach((grade, gradeIndex) => appendGradeInputs(gradesWrap, grade, gradeIndex));
-        }
+          gradesWrap.append(...createGradeInput(course, grade, gradeInputId));
+        });
 
         row.appendChild(gradesWrap);
       } else {
@@ -223,6 +186,7 @@ export function renderSpecialty(specialty, onCalculateUE) {
         console.error("Erreur parsing notes sauvegardées :", error);
       }
     }
+    summaryRefreshers.forEach((refresh) => refresh());
 
     ueInputs.appendChild(form);
     ueContent.appendChild(ueInputs);
@@ -261,4 +225,110 @@ export function renderSpecialty(specialty, onCalculateUE) {
     ueBlock.appendChild(ueContent);
     ueContainer.appendChild(ueBlock);
   });
+}
+
+function createGradeInput(course, grade, inputId) {
+  const gradeInput = document.createElement("input");
+  gradeInput.type = "text";
+  gradeInput.id = inputId;
+  gradeInput.name = "grades[]";
+  gradeInput.placeholder = grade.name;
+  gradeInput.dataset.max = String(grade.max || 20);
+  gradeInput.classList.add("styled-input");
+
+  const hiddenCoeffInput = document.createElement("input");
+  hiddenCoeffInput.type = "hidden";
+  hiddenCoeffInput.name = "gradeCoeffs[]";
+  hiddenCoeffInput.value = String(Number(course.coef) * Number(grade.coef));
+
+  return [gradeInput, hiddenCoeffInput];
+}
+
+// Cours à notes multiples : la saisie se fait dans une fenêtre modale, la fiche du cours affiche la moyenne sur 20.
+function buildGradeDialog({ course, index, courseIndex, courseId }) {
+  const baseId = `grades-${index}-${courseIndex}-${courseId}`;
+  const inputs = [];
+
+  const dialog = document.createElement("dialog");
+  dialog.classList.add("grade-dialog");
+  dialog.setAttribute("aria-labelledby", `${baseId}-title`);
+
+  const title = document.createElement("h3");
+  title.id = `${baseId}-title`;
+  title.textContent = course.name;
+
+  const body = document.createElement("div");
+  body.classList.add("grade-dialog-body");
+
+  groupGrades(course.grades).forEach((group) => {
+    const groupEl = document.createElement("div");
+    groupEl.classList.add("grade-group");
+
+    const groupTitle = document.createElement("span");
+    groupTitle.classList.add("grade-group-title");
+    const points = Number(group.coef.toFixed(2));
+    groupTitle.textContent =
+      `${group.name} · ${points} pts` + (group.max && Number(group.max) !== 20 ? ` · notes sur ${group.max}` : "");
+
+    const inputsWrap = document.createElement("div");
+    inputsWrap.classList.add("grade-group-inputs");
+    group.gradeIndexes.forEach((gradeIndex) => {
+      const [gradeInput, hiddenCoeffInput] = createGradeInput(
+        course,
+        course.grades[gradeIndex],
+        `${baseId}-${gradeIndex}`
+      );
+      inputs.push(gradeInput);
+      inputsWrap.append(gradeInput, hiddenCoeffInput);
+    });
+
+    groupEl.append(groupTitle, inputsWrap);
+    body.appendChild(groupEl);
+  });
+
+  const footer = document.createElement("div");
+  footer.classList.add("grade-dialog-footer");
+
+  const result = document.createElement("p");
+  result.classList.add("grade-dialog-result");
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.classList.add("calculate-btn");
+  closeBtn.textContent = "Fermer";
+  closeBtn.addEventListener("click", () => dialog.close());
+
+  footer.append(result, closeBtn);
+  dialog.append(title, body, footer);
+
+  const summary = document.createElement("output");
+  summary.classList.add("grade-summary");
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.id = `${baseId}-open`;
+  trigger.classList.add("grade-open-btn");
+  trigger.textContent = "Saisir les notes";
+  trigger.addEventListener("click", () => dialog.showModal());
+
+  const refresh = () => {
+    const values = inputs.map((input) => {
+      const raw = input.value.trim();
+      return raw === "" ? null : parseDecimal(raw);
+    });
+    const { average, entered, total } = computeCourseAverage(course.grades, values);
+
+    if (average === null) {
+      summary.textContent = "—";
+      result.textContent = `Moyenne sur 20 : — (0/${total} notes)`;
+      return;
+    }
+
+    const text = formatDecimal(average);
+    summary.textContent = entered < total ? `${text} / 20 (partiel)` : `${text} / 20`;
+    result.textContent = `Moyenne sur 20 : ${text} (${entered}/${total} notes)`;
+  };
+  dialog.addEventListener("input", refresh);
+
+  return { dialog, summary, trigger, refresh };
 }

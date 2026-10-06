@@ -35,6 +35,29 @@ export function groupGrades(grades) {
   return groups;
 }
 
+// Moyenne sur 20 d'un cours à notes multiples, à partir des notes saisies (null = non saisie).
+export function computeCourseAverage(grades, values) {
+  let weightedSum = 0;
+  let enteredCoef = 0;
+  let entered = 0;
+
+  grades.forEach((grade, gradeIndex) => {
+    const value = values[gradeIndex];
+    if (value === null || value === undefined || Number.isNaN(value)) return;
+
+    const coef = Number(grade.coef);
+    weightedSum += value * gradeScale(grade) * coef;
+    enteredCoef += coef;
+    entered += 1;
+  });
+
+  return {
+    average: enteredCoef > 0 ? weightedSum / enteredCoef : null,
+    entered,
+    total: grades.length,
+  };
+}
+
 function defaultItemIdBuilder({ courseIndex, gradeIndex }) {
   return gradeIndex === null ? `course-${courseIndex}` : `course-${courseIndex}-grade-${gradeIndex}`;
 }
