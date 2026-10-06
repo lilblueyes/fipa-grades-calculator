@@ -5,8 +5,57 @@ export function isTargetAverageValid(targetAverage) {
   return Number.isFinite(targetAverage) && targetAverage >= 0 && targetAverage <= 20;
 }
 
-export function isGradeValid(gradeValue) {
-  return Number.isFinite(gradeValue) && gradeValue >= 0 && gradeValue <= 20;
+export function isGradeValid(gradeValue, maxGrade = 20) {
+  return Number.isFinite(gradeValue) && gradeValue >= 0 && gradeValue <= maxGrade;
+}
+
+// Une note notée sur `max` (ex. un mini-QCM sur 5) compte pour sa valeur ramenée sur 20.
+export function gradeScale(grade) {
+  const max = Number(grade.max);
+  return Number.isFinite(max) && max > 0 ? 20 / max : 1;
+}
+
+// Regroupe les notes consécutives d'un même `group` (ou, à défaut, de même nom).
+export function groupGrades(grades) {
+  const groups = [];
+
+  grades.forEach((grade, gradeIndex) => {
+    const name = grade.group || grade.name;
+    const last = groups[groups.length - 1];
+
+    if (last && last.name === name) {
+      last.gradeIndexes.push(gradeIndex);
+      last.coef += Number(grade.coef);
+      return;
+    }
+
+    groups.push({ name, gradeIndexes: [gradeIndex], coef: Number(grade.coef), max: grade.max });
+  });
+
+  return groups;
+}
+
+// Moyenne sur 20 d'un cours à notes multiples, à partir des notes saisies (null = non saisie).
+export function computeCourseAverage(grades, values) {
+  let weightedSum = 0;
+  let enteredCoef = 0;
+  let entered = 0;
+
+  grades.forEach((grade, gradeIndex) => {
+    const value = values[gradeIndex];
+    if (value === null || value === undefined || Number.isNaN(value)) return;
+
+    const coef = Number(grade.coef);
+    weightedSum += value * gradeScale(grade) * coef;
+    enteredCoef += coef;
+    entered += 1;
+  });
+
+  return {
+    average: enteredCoef > 0 ? weightedSum / enteredCoef : null,
+    entered,
+    total: grades.length,
+  };
 }
 
 function defaultItemIdBuilder({ courseIndex, gradeIndex }) {
@@ -41,6 +90,7 @@ export function buildWeightedItems(courses, itemIdBuilder = defaultItemIdBuilder
         items.push({
           id: itemIdBuilder({ course, courseIndex, grade, gradeIndex, courseName: course.name }),
           weight,
+          scale: gradeScale(grade),
         });
       });
 
@@ -72,7 +122,7 @@ export function computeWeightedOutcome({ items, valuesById, totalWeight, targetA
       return;
     }
 
-    weightedSum += value * item.weight;
+    weightedSum += value * (item.scale ?? 1) * item.weight;
     enteredWeight += item.weight;
   });
 
@@ -170,9 +220,10 @@ export function calculateSingleUE(ueBlock, index) {
     const raw = input.value.trim();
     if (raw === "") continue;
 
+    const max = Number(input.dataset.max) || 20;
     const parsed = parseDecimal(raw);
-    if (!isGradeValid(parsed)) {
-      alert("Veuillez saisir des notes comprises entre 0 et 20");
+    if (!isGradeValid(parsed, max)) {
+      alert(`Veuillez saisir des notes comprises entre 0 et ${max}`);
       return;
     }
   }
@@ -223,9 +274,17 @@ export function calculateSingleUE(ueBlock, index) {
         results.innerHTML +=
           '<p style="color: red; font-weight: bold;">Impossible d\'atteindre la moyenne cible...</p>';
       } else {
+        // La note nécessaire est calculée sur 20 ; on la reconvertit si toutes les notes manquantes ont le même barème.
+        const missingScales = new Set(
+          items
+            .filter((item) => valuesById[item.id] === null || Number.isNaN(valuesById[item.id]))
+            .map((item) => item.scale ?? 1)
+        );
+        const neededScale = missingScales.size === 1 ? [...missingScales][0] : 1;
+
         results.innerHTML += `<p>Note${
           outcome.missingCount > 1 ? "s" : ""
-        } nécessaires pour valider : ${formatDecimal(outcome.neededGrade)}</p>`;
+        } nécessaires pour valider : ${formatDecimal(outcome.neededGrade / neededScale)}</p>`;
       }
     }
   } else if (!Number.isNaN(outcome.finalAverage) && outcome.finalAverage >= targetAverage) {
