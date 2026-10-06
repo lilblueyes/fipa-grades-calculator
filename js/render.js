@@ -5,6 +5,7 @@ import {
   lsKeySelectedSpecialty,
   state,
 } from "./state.js";
+import { groupGrades } from "./calc.js";
 import { sanitizeString } from "./utils.js";
 
 export function updatePageTitle(semester) {
@@ -126,10 +127,17 @@ export function renderSpecialty(specialty, onCalculateUE) {
 
       if (Array.isArray(course.grades) && course.grades.length > 0) {
         const gradesWrap = document.createElement("div");
-        gradesWrap.style.display = "flex";
-        gradesWrap.style.alignItems = "center";
+        const grouped = course.grades.some((grade) => grade.group);
 
-        course.grades.forEach((grade, gradeIndex) => {
+        if (grouped) {
+          row.classList.add("has-grade-groups");
+          gradesWrap.classList.add("grade-groups");
+        } else {
+          gradesWrap.style.display = "flex";
+          gradesWrap.style.alignItems = "center";
+        }
+
+        const appendGradeInputs = (container, grade, gradeIndex) => {
           const gradeInputId = `grade-${index}-${courseIndex}-${courseId}-${gradeIndex}`;
           if (gradeIndex === 0) {
             label.setAttribute("for", gradeInputId);
@@ -140,15 +148,41 @@ export function renderSpecialty(specialty, onCalculateUE) {
           gradeInput.id = gradeInputId;
           gradeInput.name = "grades[]";
           gradeInput.placeholder = grade.name;
+          gradeInput.dataset.max = String(grade.max || 20);
           gradeInput.classList.add("styled-input");
-          gradesWrap.appendChild(gradeInput);
+          container.appendChild(gradeInput);
 
           const hiddenCoeffInput = document.createElement("input");
           hiddenCoeffInput.type = "hidden";
           hiddenCoeffInput.name = "gradeCoeffs[]";
           hiddenCoeffInput.value = String(Number(course.coef) * Number(grade.coef));
-          gradesWrap.appendChild(hiddenCoeffInput);
-        });
+          container.appendChild(hiddenCoeffInput);
+        };
+
+        if (grouped) {
+          groupGrades(course.grades).forEach((group) => {
+            const groupEl = document.createElement("div");
+            groupEl.classList.add("grade-group");
+
+            const title = document.createElement("span");
+            title.classList.add("grade-group-title");
+            const points = Number(group.coef.toFixed(2));
+            title.textContent =
+              `${group.name} · ${points} pts` +
+              (group.max && Number(group.max) !== 20 ? ` · notes sur ${group.max}` : "");
+
+            const inputsWrap = document.createElement("div");
+            inputsWrap.classList.add("grade-group-inputs");
+            group.gradeIndexes.forEach((gradeIndex) =>
+              appendGradeInputs(inputsWrap, course.grades[gradeIndex], gradeIndex)
+            );
+
+            groupEl.append(title, inputsWrap);
+            gradesWrap.appendChild(groupEl);
+          });
+        } else {
+          course.grades.forEach((grade, gradeIndex) => appendGradeInputs(gradesWrap, grade, gradeIndex));
+        }
 
         row.appendChild(gradesWrap);
       } else {

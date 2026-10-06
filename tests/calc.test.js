@@ -3,6 +3,8 @@ import assert from "assert";
 import {
   buildWeightedItems,
   computeWeightedOutcome,
+  groupGrades,
+  isGradeValid,
   isTargetAverageValid,
 } from "../js/calc.js";
 
@@ -129,6 +131,65 @@ const tests = [
       assert.equal(outcome.missingCount, 0);
       approxEqual(outcome.finalAverage, 11.333333333333334);
       assert.equal(outcome.neededGrade, null);
+    },
+  },
+  {
+    name: "scale grades noted out of 5 to 20 (mini-quiz)",
+    run() {
+      const courses = [
+        {
+          name: "Systèmes d'exploitation",
+          coef: 1,
+          grades: [
+            { name: "TP", coef: 4 },
+            { name: "Q1", coef: 1.2, group: "Mini-quiz", max: 5 },
+            { name: "Q2", coef: 1.2, group: "Mini-quiz", max: 5 },
+            { name: "Q3", coef: 1.2, group: "Mini-quiz", max: 5 },
+            { name: "Q4", coef: 1.2, group: "Mini-quiz", max: 5 },
+            { name: "Q5", coef: 1.2, group: "Mini-quiz", max: 5 },
+            { name: "QCM", coef: 10 },
+          ],
+        },
+      ];
+
+      const { items, totalWeight } = buildWeightedItems(courses);
+      const valuesById = {};
+      items.forEach((item, position) => {
+        valuesById[item.id] = [14, 5, 5, 5, 5, 5, 12][position];
+      });
+
+      const outcome = computeWeightedOutcome({ items, valuesById, totalWeight, targetAverage: 10 });
+
+      // (4 × 14 + 6 × 20 + 10 × 12) / 20 : cinq mini-quiz à 5/5 valent 6 points sur 20
+      approxEqual(outcome.finalAverage, 14.8);
+      assert.equal(outcome.missingCount, 0);
+    },
+  },
+  {
+    name: "validate grades against their own maximum",
+    run() {
+      assert.equal(isGradeValid(5, 5), true);
+      assert.equal(isGradeValid(5.5, 5), false);
+      assert.equal(isGradeValid(18), true);
+      assert.equal(isGradeValid(21), false);
+    },
+  },
+  {
+    name: "group consecutive grades sharing the same group",
+    run() {
+      const grades = [
+        { name: "TP", coef: 4 },
+        { name: "Q1", coef: 1.2, group: "Mini-quiz", max: 5 },
+        { name: "Q2", coef: 1.2, group: "Mini-quiz", max: 5 },
+        { name: "QCM", coef: 10 },
+      ];
+
+      const groups = groupGrades(grades);
+      assert.equal(groups.length, 3);
+      assert.equal(groups[1].name, "Mini-quiz");
+      assert.deepEqual(groups[1].gradeIndexes, [1, 2]);
+      approxEqual(groups[1].coef, 2.4);
+      assert.equal(groups[2].name, "QCM");
     },
   },
 ];
