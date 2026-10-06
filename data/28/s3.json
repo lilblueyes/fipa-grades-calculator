@@ -26,7 +26,37 @@
         },
         {
           "name": "Systèmes d'exploitation",
-          "coef": 1
+          "coef": 1,
+          "grades": [
+            {
+              "name": "TP",
+              "coef": 4
+            },
+            {
+              "name": "Q1",
+              "coef": 1.2
+            },
+            {
+              "name": "Q2",
+              "coef": 1.2
+            },
+            {
+              "name": "Q3",
+              "coef": 1.2
+            },
+            {
+              "name": "Q4",
+              "coef": 1.2
+            },
+            {
+              "name": "Q5",
+              "coef": 1.2
+            },
+            {
+              "name": "QCM",
+              "coef": 10
+            }
+          ]
         },
         {
           "name": "VHDL 1 : langage et synthèse FPGA",
