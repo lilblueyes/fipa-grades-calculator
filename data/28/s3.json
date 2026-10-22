@@ -9,7 +9,17 @@
         },
         {
           "name": "Filtrage linéaire",
-          "coef": 1
+          "coef": 1,
+          "grades": [
+            {
+              "name": "DS",
+              "coef": 1
+            },
+            {
+              "name": "TP",
+              "coef": 1
+            }
+          ]
         },
         {
           "name": "Génie Logiciel pour les systèmes embarqués",
@@ -30,7 +40,8 @@
           "grades": [
             {
               "name": "TP",
-              "coef": 4
+              "coef": 4,
+              "max": 20
             },
             {
               "name": "QCM1",
@@ -64,7 +75,8 @@
             },
             {
               "name": "QCM",
-              "coef": 10
+              "coef": 10,
+              "max": 20
             }
           ]
         },
@@ -74,31 +86,32 @@
           "grades": [
             {
               "name": "QCM1",
-              "coef": 1.25,
+              "coef": 1.5,
               "group": "Mini-QCM",
               "max": 5
             },
             {
               "name": "QCM2",
-              "coef": 1.25,
+              "coef": 1.5,
               "group": "Mini-QCM",
               "max": 5
             },
             {
               "name": "QCM3",
-              "coef": 1.25,
+              "coef": 1.5,
               "group": "Mini-QCM",
               "max": 5
             },
             {
               "name": "QCM4",
-              "coef": 1.25,
+              "coef": 1.5,
               "group": "Mini-QCM",
               "max": 5
             },
             {
               "name": "QCM",
-              "coef": 15
+              "coef": 14,
+              "max": 20
             }
           ]
         }
