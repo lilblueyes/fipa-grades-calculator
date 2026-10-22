@@ -268,7 +268,7 @@ function buildGradeDialog({ course, index, courseIndex, courseId }) {
     groupTitle.classList.add("grade-group-title");
     const points = Number(group.coef.toFixed(2));
     groupTitle.textContent =
-      `${group.name} · ${points} pts` + (group.max && Number(group.max) !== 20 ? ` · notes sur ${group.max}` : "");
+      `${group.name} · ${points} pts` + (group.max ? ` · notes sur ${group.max}` : "");
 
     const inputsWrap = document.createElement("div");
     inputsWrap.classList.add("grade-group-inputs");
