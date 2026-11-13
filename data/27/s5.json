@@ -29,10 +29,6 @@
       "ue": "UE 5.2 - Sciences et Technologies",
       "courses": [
         {
-          "name": "Modélisation et implémentation des réseaux de capteurs",
-          "coef": 1
-        },
-        {
           "name": "Système d'exploitation avancé et embarqué",
           "coef": 2.5
         },
